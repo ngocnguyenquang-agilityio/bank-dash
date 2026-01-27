@@ -1,0 +1,49 @@
+{
+  "kind": "collectionType",
+  "collectionName": "cards",
+  "info": {
+    "singularName": "card",
+    "pluralName": "cards",
+    "displayName": "Card"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "balance": {
+      "type": "decimal",
+      "default": 0,
+      "min": 0
+    },
+    "expiration": {
+      "type": "date",
+      "required": true
+    },
+    "number": {
+      "type": "string",
+      "required": true,
+      "regex": "^4[0-9]{12}(?:[0-9]{3})?$"
+    },
+    "isPhysical": {
+      "type": "boolean",
+      "default": true
+    },
+    "isActive": {
+      "type": "boolean",
+      "default": true
+    },
+    "address": {
+      "type": "string"
+    },
+    "transactions": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::transaction.transaction"
+    }
+  }
+}

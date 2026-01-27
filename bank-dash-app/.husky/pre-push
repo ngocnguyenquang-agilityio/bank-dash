@@ -1,0 +1,1 @@
+cd bank-dash-app && pnpm test && pnpm build
