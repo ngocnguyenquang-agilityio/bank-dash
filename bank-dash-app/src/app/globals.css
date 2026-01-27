@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -48,6 +48,7 @@
   /* CUSTOM COLOR PALLETS */
 
   --color-black: #232323;
+  --color-accent: #2f3037;
   --color-tx-primary: #343c6a;
 
   --color-neutral-30: #b1b1b1;
