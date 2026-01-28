@@ -41,11 +41,6 @@
     "postalCode": {
       "type": "integer"
     },
-    "password": {
-      "type": "password",
-      "private": true,
-      "required": true
-    },
     "country": {
       "type": "string"
     },
@@ -62,6 +57,10 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::card.card"
+    },
+    "clerkId": {
+      "type": "string",
+      "unique": true
     }
   }
 }
