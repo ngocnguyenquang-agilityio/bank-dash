@@ -1,12 +1,17 @@
 'use client';
 
-import { SearchIcon, Settings2Icon, BellIcon, LogOutIcon } from 'lucide-react';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
+// Libraries
 import { useMemo } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
+
+// Icons
+import { SearchIcon, Settings2Icon, BellIcon, LogOutIcon } from 'lucide-react';
+
+// Components
 import { SignOutButton } from '@clerk/nextjs';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface DashboardHeaderProps {
   title?: string;

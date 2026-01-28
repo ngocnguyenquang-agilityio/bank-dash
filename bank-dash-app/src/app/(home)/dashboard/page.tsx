@@ -1,9 +1,12 @@
+// Libraries
+import Link from 'next/link';
+
+// Components
 import { CreditCard } from '@/components/CreditCard/index';
 import { RecentTransactions } from '@/components/RecentTransactions';
 import { WeeklyActivity } from '@/components/WeeklyActivity';
 import { QuickTransfer } from '@/components/QuickTransfer';
 import { BalanceHistory } from '@/components/BalanceHistory';
-import Link from 'next/link';
 
 export default function HomePage() {
   return (

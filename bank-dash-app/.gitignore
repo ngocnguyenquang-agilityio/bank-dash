@@ -45,3 +45,4 @@ storybook-static
 
 # clerk configuration (can include secrets)
 /.clerk/
+/.github

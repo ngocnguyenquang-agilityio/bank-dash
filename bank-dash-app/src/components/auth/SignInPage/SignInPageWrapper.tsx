@@ -1,8 +1,11 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { SignIn } from '@clerk/nextjs';
+// Libraries
 import { useRouter } from 'next/navigation';
+
+// Components
+import { SignIn } from '@clerk/nextjs';
+import { Button } from '@/components/ui/button';
 
 export const SignInPageWrapper = () => {
   const router = useRouter();
