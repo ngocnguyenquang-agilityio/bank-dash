@@ -1,39 +1,14 @@
-'use client';
+// Libraries
+import Link from 'next/link';
 
+// Components
 import { CreditCard } from '@/components/CreditCard/index';
 import { RecentTransactions } from '@/components/RecentTransactions';
 import { WeeklyActivity } from '@/components/WeeklyActivity';
 import { QuickTransfer } from '@/components/QuickTransfer';
 import { BalanceHistory } from '@/components/BalanceHistory';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-
-export const getTeamMembers = async () => {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  const path = '/members';
-
-  const url = `${baseUrl}${path}`;
-
-  const res = await fetch(url);
-
-  if (!res.ok) throw new Error('Failed to fetch team members');
-
-  const data = await res.json();
-
-  return data;
-};
 
 export default function HomePage() {
-  const [teamMembers, setTeamMembers] = useState(null);
-
-  useEffect(() => {
-    getTeamMembers().then((data) => {
-      setTeamMembers(data);
-    });
-  }, []);
-
-  console.log('teamMembers', teamMembers);
-
   return (
     <main className="p-4 sm:p-6 md:p-8 lg:p-10">
       <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-6 lg:gap-8 mb-6">

@@ -1,11 +1,17 @@
-"use client";
+'use client';
 
-import { SearchIcon, Settings2Icon, BellIcon } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { useMemo } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+// Libraries
+import { useMemo } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+
+// Icons
+import { SearchIcon, Settings2Icon, BellIcon, LogOutIcon } from 'lucide-react';
+
+// Components
+import { SignOutButton } from '@clerk/nextjs';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 interface DashboardHeaderProps {
   title?: string;
@@ -13,10 +19,10 @@ interface DashboardHeaderProps {
 
 function toTitleCase(segment: string) {
   return segment
-    .replace(/[-_]+/g, " ")
-    .split(" ")
+    .replace(/[-_]+/g, ' ')
+    .split(' ')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+    .join(' ');
 }
 
 export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
@@ -24,12 +30,12 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
   const searchParams = useSearchParams();
 
   const computedTitle = useMemo((): string => {
-    const paramTitle = searchParams?.get("title");
+    const paramTitle = searchParams?.get('title');
     if (paramTitle && paramTitle.trim().length > 0) return paramTitle.trim();
-    if (!pathname) return "Dashboard";
-    const parts = pathname.split("/").filter(Boolean);
-    const last = parts[parts.length - 1] ?? "";
-    return parts.length === 0 ? "Dashboard" : toTitleCase(last);
+    if (!pathname) return 'Dashboard';
+    const parts = pathname.split('/').filter(Boolean);
+    const last = parts[parts.length - 1] ?? '';
+    return parts.length === 0 ? 'Dashboard' : toTitleCase(last);
   }, [pathname, searchParams]);
 
   const finalTitle = title ?? computedTitle;
@@ -73,14 +79,22 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
 
           {/* Profile Avatar */}
           <Avatar className="w-10 h-10 md:w-[60px] md:h-[60px]">
-            <AvatarImage
-              src="https://i.pravatar.cc/150?u=eddy-cusuma"
-              alt="Profile"
-            />
+            <AvatarImage src="https://i.pravatar.cc/150?u=eddy-cusuma" alt="Profile" />
             <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-sm md:text-lg">
               EC
             </AvatarFallback>
           </Avatar>
+
+          <SignOutButton redirectUrl="/">
+            <Button
+              variant="ghost"
+              size="md"
+              className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors relative"
+              aria-label="Notifications"
+            >
+              <LogOutIcon className="w-5 h-5 md:w-6 md:h-6 text-neutral-30" />
+            </Button>
+          </SignOutButton>
         </div>
       </div>
     </header>
