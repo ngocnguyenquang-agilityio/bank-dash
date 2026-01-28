@@ -485,6 +485,7 @@ export interface ApiMemberMember extends Struct.CollectionTypeSchema {
   attributes: {
     cards: Schema.Attribute.Relation<'oneToMany', 'api::card.card'>;
     city: Schema.Attribute.String;
+    clerkId: Schema.Attribute.String & Schema.Attribute.Unique;
     country: Schema.Attribute.String;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -500,9 +501,6 @@ export interface ApiMemberMember extends Struct.CollectionTypeSchema {
     > &
       Schema.Attribute.Private;
     name: Schema.Attribute.String & Schema.Attribute.Required;
-    password: Schema.Attribute.Password &
-      Schema.Attribute.Required &
-      Schema.Attribute.Private;
     permanentAddress: Schema.Attribute.String;
     photo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     postalCode: Schema.Attribute.Integer;
