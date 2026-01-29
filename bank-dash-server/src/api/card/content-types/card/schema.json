@@ -44,6 +44,12 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::transaction.transaction"
+    },
+    "member": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::member.member",
+      "inversedBy": "cards"
     }
   }
 }
