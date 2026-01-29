@@ -1,3 +1,6 @@
+// Constants
+import { MESSAGES, STATUS_CODES } from '@/constants/error';
+
 type FieldErrors = Record<string, string[]>;
 
 interface ParsedError {
@@ -5,7 +8,7 @@ interface ParsedError {
 }
 
 export function handleApiError(errorRaw: unknown): ParsedError {
-  let message = 'An unexpected error occurred';
+  let message = MESSAGES.UNEXPECTED_ERROR;
 
   try {
     const parsed = typeof errorRaw === 'string' ? JSON.parse(errorRaw) : errorRaw;
@@ -25,9 +28,10 @@ export function handleApiError(errorRaw: unknown): ParsedError {
       return { error: fieldErrors };
     }
 
-    if (errorObj?.status === 403) message = 'You do not have permission.';
-    else if (errorObj?.status === 401) message = 'Unauthorized access.';
-    else if (errorObj?.status === 500) message = 'Internal server error.';
+    if (errorObj?.status === STATUS_CODES.FORBIDDEN) message = MESSAGES.NO_PERMISSION;
+    else if (errorObj?.status === STATUS_CODES.UNAUTHORIZED) message = MESSAGES.UNAUTHORIZED;
+    else if (errorObj?.status === STATUS_CODES.INTERNAL_SERVER_ERROR)
+      message = MESSAGES.INTERNAL_SERVER_ERROR;
     else if (typeof errorObj?.message === 'string') message = errorObj.message;
   } catch {
     message = 'Failed to parse error response.';
