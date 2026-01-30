@@ -6,6 +6,9 @@ import { format, parseISO } from 'date-fns';
 // Components
 import { Card } from '@/components/ui/card';
 
+// Icons
+import { ChipIcon, MasterIcon } from '@/components/Icons';
+
 // Utils
 import { cn, maskCardNumber, type MaskOption } from '@/lib/utils';
 
@@ -42,7 +45,7 @@ export const CreditCard = ({
             </div>
           </div>
 
-          <div className="w-[30px] h-[30px] sm:w-[35px] sm:h-[35px] rounded-md bg-gradient-to-br from-amber-200 to-amber-400" />
+          <ChipIcon />
         </div>
 
         {/* Card Details & Footer */}
@@ -79,16 +82,8 @@ export const CreditCard = ({
             >
               {maskCardNumber(cardNumber, maskOption)}
             </div>
-            <div className="flex gap-1">
-              <div
-                className={cn('w-6 h-6 sm:w-[30px] sm:h-[30px] rounded-full bg-neutral-30/50')}
-              />
-              <div
-                className={cn(
-                  'w-6 h-6 sm:w-[30px] sm:h-[30px] rounded-full -ml-2 sm:-ml-3 bg-neutral-30/50'
-                )}
-              />
-            </div>
+
+            <MasterIcon className="fill-white/50" />
           </div>
         </div>
       </div>

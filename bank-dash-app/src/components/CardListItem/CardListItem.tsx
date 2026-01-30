@@ -1,7 +1,7 @@
 'use client';
 
 // Icons
-import { CreditCard } from 'lucide-react';
+import { CardIcon } from '@/components/Icons';
 
 // Utils
 import { cn, maskCardNumber, type MaskOption } from '@/lib/utils';
@@ -44,7 +44,7 @@ export const CardListItem = ({
           gradientClasses[gradientColor]
         )}
       >
-        <CreditCard className={cn('w-10 h-7', iconColorClasses[gradientColor])} />
+        <CardIcon className={cn('w-10 h-7', iconColorClasses[gradientColor])} />
       </div>
 
       {/* Card Type */}

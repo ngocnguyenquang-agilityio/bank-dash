@@ -5,7 +5,7 @@ import { useMemo } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 // Icons
-import { SearchIcon, Settings2Icon, BellIcon, LogOutIcon } from 'lucide-react';
+import { SearchIcon, SettingIcon, NotificationIcon, SignoutIcon } from '@/components/Icons';
 
 // Components
 import { SignOutButton } from '@clerk/nextjs';
@@ -49,7 +49,7 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
         <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
           {/* Search */}
           <div className="relative w-32 sm:w-48 md:w-[255px] hidden sm:block">
-            <SearchIcon className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5 text-neutral-30" />
+            <SearchIcon className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5" />
             <Input
               placeholder="Search for something"
               className="pl-10 md:pl-14 h-10 md:h-[50px] rounded-[40px] bg-neutral-10 border-0 text-sm md:text-[15px] text-blue-10 placeholder:text-blue-10"
@@ -63,7 +63,7 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
             className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors"
             aria-label="Settings"
           >
-            <Settings2Icon className="w-5 h-5 md:w-6 md:h-6 text-neutral-30" />
+            <SettingIcon className="w-5 h-5 md:w-6 md:h-6" />
           </Button>
 
           {/* Notification Icon */}
@@ -73,7 +73,7 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
             className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors relative"
             aria-label="Notifications"
           >
-            <BellIcon className="w-5 h-5 md:w-6 md:h-6 text-neutral-30" />
+            <NotificationIcon className="w-5 h-5 md:w-6 md:h-6" />
             <span className="absolute top-2 right-2 w-2 h-2 bg-red-60 rounded-full" />
           </Button>
 
@@ -92,7 +92,7 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
               className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors relative"
               aria-label="Notifications"
             >
-              <LogOutIcon className="w-5 h-5 md:w-6 md:h-6 text-neutral-30" />
+              <SignoutIcon className="w-5 h-5 md:w-6 md:h-6 text-neutral-30" />
             </Button>
           </SignOutButton>
         </div>
