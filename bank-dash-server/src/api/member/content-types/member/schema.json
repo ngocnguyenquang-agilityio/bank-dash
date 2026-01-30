@@ -18,12 +18,7 @@
     "photo": {
       "type": "media",
       "multiple": false,
-      "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
-      ]
+      "allowedTypes": ["images", "files", "videos", "audios"]
     },
     "userName": {
       "type": "string",
@@ -56,7 +51,8 @@
     "cards": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::card.card"
+      "target": "api::card.card",
+      "mappedBy": "member"
     },
     "clerkId": {
       "type": "string",

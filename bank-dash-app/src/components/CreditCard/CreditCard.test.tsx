@@ -1,29 +1,31 @@
-import { render, screen } from "@testing-library/react";
-import { CreditCard } from "./CreditCard";
+// Libraries
+import { render, screen } from '@testing-library/react';
 
-describe("CreditCard", () => {
+// Components
+import { CreditCard } from './CreditCard';
+
+describe('CreditCard', () => {
   const props = {
-    balance: "$5,756",
-    cardHolder: "Eddy Cusuma",
-    cardNumber: "3778 **** **** 1234",
-    validThru: "12/22",
+    balance: '$5,756',
+    cardHolder: 'Eddy Cusuma',
+    cardNumber: '3778123456781234',
+    expiration: '2022-12-01',
   };
 
-  it("renders balance, holder, number and expiry", () => {
+  it('renders balance, holder, number and expiration', () => {
     render(<CreditCard {...props} />);
 
-    expect(screen.getByText("Balance")).toBeInTheDocument();
+    expect(screen.getByText('Balance')).toBeInTheDocument();
     expect(screen.getByText(props.balance)).toBeInTheDocument();
-    expect(screen.getByText("Card Holder")).toBeInTheDocument();
+    expect(screen.getByText('Card Holder')).toBeInTheDocument();
     expect(screen.getByText(props.cardHolder)).toBeInTheDocument();
-    expect(screen.getByText("Valid Thru")).toBeInTheDocument();
-    expect(screen.getByText(props.validThru)).toBeInTheDocument();
+    expect(screen.getByText('Expiration')).toBeInTheDocument();
+    expect(screen.getByText('12/22')).toBeInTheDocument();
 
-    // Card number is a prominent text element
-    expect(screen.getByText(props.cardNumber)).toBeInTheDocument();
+    expect(screen.getByText('3778 **** **** 1234')).toBeInTheDocument();
   });
 
-  it("supports custom className for container adjustments", () => {
+  it('supports custom className for container adjustments', () => {
     render(<CreditCard {...props} className="ring-1" />);
     const balanceEl = screen.getByText(props.balance);
     expect(balanceEl).toBeInTheDocument();

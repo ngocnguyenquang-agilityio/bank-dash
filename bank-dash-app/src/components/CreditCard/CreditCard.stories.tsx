@@ -1,17 +1,20 @@
-import type { Meta, StoryObj } from "@storybook/nextjs";
-import { CreditCard } from ".";
+// Libraries
+import type { Meta, StoryObj } from '@storybook/nextjs';
+
+// Components
+import { CreditCard } from '.';
 
 const meta: Meta<typeof CreditCard> = {
-  title: "Dashboard/CreditCard",
+  title: 'Dashboard/CreditCard',
   component: CreditCard,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
   },
   args: {
-    balance: "$5,756",
-    cardHolder: "Eddy Cusuma",
-    cardNumber: "3778 **** **** 1234",
-    validThru: "12/22",
+    balance: '$5,756',
+    cardHolder: 'Eddy Cusuma',
+    cardNumber: '3778 **** **** 1234',
+    expiration: '12/22',
   },
 };
 

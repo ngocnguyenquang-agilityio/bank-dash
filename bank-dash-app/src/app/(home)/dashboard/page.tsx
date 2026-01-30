@@ -28,14 +28,14 @@ export default function HomePage() {
             <CreditCard
               balance="$5,756"
               cardHolder="Eddy Cusuma"
-              cardNumber="3778 **** **** 1234"
-              validThru="12/22"
+              cardNumber="3778123456781234"
+              expiration="2022-12-01"
             />
             <CreditCard
               balance="$5,756"
               cardHolder="Eddy Cusuma"
-              cardNumber="3778 **** **** 1234"
-              validThru="12/22"
+              cardNumber="3778123456781234"
+              expiration="2022-12-01"
             />
           </div>
         </section>
