@@ -1,5 +1,6 @@
 // Libraries
 import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
 // Services
 import { getCards } from '@/services/cards';
@@ -11,11 +12,7 @@ const CardsPage = async () => {
   const { userId } = await auth();
 
   if (!userId) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <p className="text-tx-primary">Please sign in to view your cards</p>
-      </div>
-    );
+    redirect('/sign-in');
   }
 
   const { cards, error } = await getCards(userId);
