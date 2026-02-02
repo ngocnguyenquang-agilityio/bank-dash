@@ -16,8 +16,12 @@ interface FetchCardsResult {
   error: string | null;
 }
 
-export const getCards = async (userClerkId: string): Promise<FetchCardsResult> => {
-  const url = `/cards?populate=*&filters[member][clerkId][$eq]=${userClerkId}`;
+export const getCards = async (
+  userClerkId: string,
+  page: number = 1,
+  pageSize: number = 5
+): Promise<FetchCardsResult> => {
+  const url = `/cards?populate=*&filters[member][clerkId][$eq]=${userClerkId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
 
   const effect = requestEffect(apiClient.get<CardsResponse>(url)).pipe(
     Effect.map((cards) => ({ cards, error: null })),

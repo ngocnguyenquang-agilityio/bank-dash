@@ -83,12 +83,12 @@ export const Sidebar = ({ className }: SidebarProps) => {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="px-6 sm:px-9 py-6 sm:py-8">
-            <div className="flex items-center gap-3">
+            <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
               <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-bold">
                 B
               </div>
               <span className="text-xl sm:text-2xl font-black text-tx-primary">BankDash.</span>
-            </div>
+            </Link>
           </div>
 
           {/* Navigation */}

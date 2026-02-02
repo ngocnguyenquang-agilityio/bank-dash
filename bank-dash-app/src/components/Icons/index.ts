@@ -5,3 +5,5 @@ export { NotificationIcon } from './NotificationIcon';
 export { SearchIcon } from './SearchIcon';
 export { SettingIcon } from './SettingIcon';
 export { SignoutIcon } from './SignoutIcon';
+export { ChevronBackwardIcon } from './ChevronBackward';
+export { ChevronForwardIcon } from './ChevronForward';

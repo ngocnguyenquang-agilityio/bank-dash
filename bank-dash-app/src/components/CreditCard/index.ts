@@ -1,1 +1,2 @@
-export { CreditCard } from "./CreditCard";
+export { CreditCard } from './CreditCard';
+export type { CreditCardProps } from './CreditCard';
