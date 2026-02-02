@@ -74,7 +74,6 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
             aria-label="Notifications"
           >
             <NotificationIcon className="w-5 h-5 md:w-6 md:h-6" />
-            <span className="absolute top-2 right-2 w-2 h-2 bg-red-60 rounded-full" />
           </Button>
 
           {/* Profile Avatar */}
