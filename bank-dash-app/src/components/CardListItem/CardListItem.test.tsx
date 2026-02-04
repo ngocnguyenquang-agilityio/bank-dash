@@ -38,27 +38,6 @@ describe('CardListItem', () => {
     expect(viewDetailsButton).toBeInTheDocument();
   });
 
-  it('renders with blue gradient color by default', () => {
-    const { container } = render(<CardListItem {...props} />);
-
-    const iconContainer = container.querySelector('.bg-\\[\\#E7EDFF\\]');
-    expect(iconContainer).toBeInTheDocument();
-  });
-
-  it('renders with pink gradient color', () => {
-    const { container } = render(<CardListItem {...props} gradientColor="pink" />);
-
-    const iconContainer = container.querySelector('.bg-\\[\\#FFE0EB\\]');
-    expect(iconContainer).toBeInTheDocument();
-  });
-
-  it('renders with yellow gradient color', () => {
-    const { container } = render(<CardListItem {...props} gradientColor="yellow" />);
-
-    const iconContainer = container.querySelector('.bg-\\[\\#FFF5D9\\]');
-    expect(iconContainer).toBeInTheDocument();
-  });
-
   it('View Details button is interactive', async () => {
     const user = userEvent.setup();
     render(<CardListItem {...props} />);

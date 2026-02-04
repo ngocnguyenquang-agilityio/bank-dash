@@ -1,13 +1,15 @@
 'use client';
 
 // Libraries
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 // Components
 import { CreditCard } from '@/components/CreditCard';
 import { CardListItem } from '@/components/CardListItem';
 import { Pagination } from '@/components/Pagination';
+import { AddCardModal } from '@/components/AddCardModal';
+import { Button } from '@/components/ui/button';
 
 // Types
 import type { CardsResponse } from '@/types/card';
@@ -20,6 +22,7 @@ interface CardsPageContentProps {
 export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
 
   const handlePageChange = useCallback(
     (page: number) => {
@@ -52,9 +55,13 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
       <section>
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-[22px] font-semibold text-tx-primary">My Cards</h2>
-          <button className="text-[17px] font-semibold text-tx-primary hover:text-primary transition-colors">
+          <Button
+            onClick={() => setIsAddCardModalOpen(true)}
+            variant="ghost"
+            className="text-[17px] font-semibold text-tx-primary hover:text-primary"
+          >
             + Add Card
-          </button>
+          </Button>
         </div>
 
         <div className="flex gap-[30px] overflow-x-auto pb-2">
@@ -63,7 +70,7 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
 
             return (
               <CreditCard
-                key={id}
+                key={`my-card-${id}`}
                 balance={balance}
                 cardHolder={name}
                 cardNumber={number}
@@ -84,7 +91,7 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
 
             return (
               <CardListItem
-                key={id}
+                key={`card-list-${id}`}
                 isPhysical={isPhysical}
                 bank={bank}
                 cardNumber={number}
@@ -96,6 +103,9 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
 
         <Pagination page={page} pageCount={pageCount} onPageChange={handlePageChange} />
       </section>
+
+      {/* Add Card Modal */}
+      <AddCardModal open={isAddCardModalOpen} onOpenChange={setIsAddCardModalOpen} />
     </div>
   );
 };

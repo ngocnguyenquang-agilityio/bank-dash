@@ -61,6 +61,22 @@ jest.mock('@/components/Pagination', () => ({
   ),
 }));
 
+jest.mock('@/components/AddCardModal', () => ({
+  AddCardModal: ({
+    open,
+    onOpenChange,
+  }: {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+  }) => (open ? <div data-testid="add-card-modal">Add Card Modal</div> : null),
+}));
+
+jest.mock('@/components/ui/button', () => ({
+  Button: ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
+    <button onClick={onClick}>{children}</button>
+  ),
+}));
+
 // Components
 import { CardsPageContent } from './CardsPageContent';
 
@@ -80,7 +96,6 @@ const mockCards = {
       isActive: true,
       isPhysical: true,
       bank: 'DBL Bank',
-      variant: 'gradient-blue' as const,
       createdAt: '',
       updatedAt: '',
     },
@@ -94,7 +109,6 @@ const mockCards = {
       isActive: true,
       isPhysical: false,
       bank: 'BRC Bank',
-      variant: 'white' as const,
       createdAt: '',
       updatedAt: '',
     },
@@ -108,7 +122,6 @@ const mockCards = {
       isActive: true,
       isPhysical: true,
       bank: 'BRC Bank',
-      variant: 'gradient-purple' as const,
       createdAt: '',
       updatedAt: '',
     },
@@ -122,7 +135,6 @@ const mockCards = {
       isActive: true,
       isPhysical: false,
       bank: 'ABM Bank',
-      variant: 'white' as const,
       createdAt: '',
       updatedAt: '',
     },
@@ -193,7 +205,22 @@ describe('CardsPageContent', () => {
 
     const multiPageMock = {
       ...mockCards,
-      data: [...mockCards.data, mockCards.data[0]!],
+      data: [
+        ...mockCards.data,
+        {
+          id: 5,
+          documentId: 'doc5',
+          number: '1234567812349999',
+          name: 'John',
+          expiration: '2025-12-01',
+          balance: '$6,000',
+          isActive: true,
+          isPhysical: true,
+          bank: 'XYZ Bank',
+          createdAt: '',
+          updatedAt: '',
+        },
+      ],
       meta: {
         pagination: {
           ...mockCards.meta.pagination,
