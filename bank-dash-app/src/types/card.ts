@@ -1,30 +1,62 @@
+// Libraries
 import { Schema } from 'effect';
+
+// Constants
+import { REGEX } from '@/constants/regex';
+
+export enum CardTypes {
+  Physical = 'physical',
+  Virtual = 'virtual',
+}
 
 export enum Transactions {
   Deposit = 'deposit',
   Withdrawal = 'withdrawal',
 }
 
-const transactionSchema = Schema.Enums(Transactions);
+export const TransactionSchema = Schema.Enums(Transactions);
 
-export type TransactionType = typeof transactionSchema.Type;
+export type TransactionType = typeof TransactionSchema.Type;
 
 export const CardSchema = Schema.Struct({
   id: Schema.Number,
   documentId: Schema.String,
-  number: Schema.String,
-  name: Schema.String,
-  expiration: Schema.String,
+  number: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Card number is required' }),
+    Schema.pattern(REGEX.CARD_NUMBER, {
+      message: () => 'Invalid card number format',
+    })
+  ),
+  name: Schema.String.pipe(Schema.minLength(1, { message: () => 'Name on card is required' })),
+  expiration: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Expiration date is required' })
+  ),
   balance: Schema.String,
   isActive: Schema.Boolean,
   isPhysical: Schema.Boolean,
   bank: Schema.String,
-  variant: Schema.Literal('gradient-blue', 'gradient-purple', 'white'),
-  gradientColor: Schema.optional(Schema.Literal('blue', 'pink', 'yellow')),
   createdAt: Schema.String,
   updatedAt: Schema.String,
   publishedAt: Schema.optional(Schema.String),
   member: Schema.optional(Schema.Unknown),
+});
+
+// Schema for creating a new card (form input)
+export const CardFormSchema = Schema.Struct({
+  isPhysical: Schema.optional(Schema.Boolean),
+  nameOnCard: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Name on card is required' })
+  ),
+  cardNumber: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Card number is required' }),
+    Schema.pattern(REGEX.CARD_NUMBER, {
+      message: () => 'Invalid card number format',
+    })
+  ),
+  expiration: Schema.String.pipe(
+    Schema.minLength(1, { message: () => 'Expiration date is required' })
+  ),
+  address: Schema.optional(Schema.String),
 });
 
 export const CardsResponseSchema = Schema.Struct({
@@ -41,4 +73,5 @@ export const CardsResponseSchema = Schema.Struct({
 
 // Types
 export type Card = typeof CardSchema.Type;
+export type CardFormData = typeof CardFormSchema.Type;
 export type CardsResponse = typeof CardsResponseSchema.Type;

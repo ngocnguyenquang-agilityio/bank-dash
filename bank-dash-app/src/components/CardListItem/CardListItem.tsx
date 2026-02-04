@@ -11,28 +11,14 @@ export interface CardListItemProps {
   bank: string;
   cardNumber: string;
   nameOnCard: string;
-  gradientColor?: 'blue' | 'pink' | 'yellow';
   maskOption?: MaskOption;
 }
-
-const gradientClasses = {
-  blue: 'bg-[#E7EDFF]',
-  pink: 'bg-[#FFE0EB]',
-  yellow: 'bg-[#FFF5D9]',
-};
-
-const iconColorClasses = {
-  blue: 'text-[#396AFF]',
-  pink: 'text-red-50',
-  yellow: 'text-yellow-50',
-};
 
 export const CardListItem = ({
   isPhysical,
   bank,
   cardNumber,
   nameOnCard,
-  gradientColor = 'blue',
   maskOption = 'last4',
 }: CardListItemProps) => {
   return (
@@ -40,11 +26,10 @@ export const CardListItem = ({
       {/* Icon */}
       <div
         className={cn(
-          'w-[91px] h-[60px] rounded-[20px] flex items-center justify-center flex-shrink-0',
-          gradientClasses[gradientColor]
+          'w-[91px] h-[60px] rounded-[20px] flex items-center justify-center flex-shrink-0'
         )}
       >
-        <CardIcon className={cn('w-10 h-7', iconColorClasses[gradientColor])} />
+        <CardIcon className={cn('w-10 h-7')} />
       </div>
 
       {/* Card Type */}

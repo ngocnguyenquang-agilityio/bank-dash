@@ -15,7 +15,6 @@ const meta: Meta<typeof CardListItem> = {
     bank: 'DBL Bank',
     cardNumber: '**** **** 5600',
     nameOnCard: 'William',
-    gradientColor: 'blue',
   },
 };
 
@@ -37,7 +36,6 @@ export const Pink: Story = {
     bank: 'BRC Bank',
     cardNumber: '**** **** 4300',
     nameOnCard: 'Michel',
-    gradientColor: 'pink',
   },
   render: (args) => (
     <div className="p-6 bg-neutral-10 w-[1120px]">
@@ -52,7 +50,6 @@ export const Yellow: Story = {
     bank: 'ABM Bank',
     cardNumber: '**** **** 7560',
     nameOnCard: 'Edward',
-    gradientColor: 'yellow',
   },
   render: (args) => (
     <div className="p-6 bg-neutral-10 w-[1120px]">
@@ -69,21 +66,18 @@ export const AllVariants: Story = {
         bank="DBL Bank"
         cardNumber="**** **** 5600"
         nameOnCard="William"
-        gradientColor="blue"
       />
       <CardListItem
         isPhysical={false}
         bank="BRC Bank"
         cardNumber="**** **** 4300"
         nameOnCard="Michel"
-        gradientColor="pink"
       />
       <CardListItem
         isPhysical={true}
         bank="ABM Bank"
         cardNumber="**** **** 7560"
         nameOnCard="Edward"
-        gradientColor="yellow"
       />
     </div>
   ),
