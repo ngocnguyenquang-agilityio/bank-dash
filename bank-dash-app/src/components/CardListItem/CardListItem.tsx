@@ -1,5 +1,8 @@
 'use client';
 
+// Libraries
+import Link from 'next/link';
+
 // Icons
 import { CardIcon } from '@/components/Icons';
 
@@ -7,16 +10,16 @@ import { CardIcon } from '@/components/Icons';
 import { cn, maskCardNumber, type MaskOption } from '@/lib/utils';
 
 export interface CardListItemProps {
+  id: string;
   isPhysical: boolean;
-  bank: string;
   cardNumber: string;
   nameOnCard: string;
   maskOption?: MaskOption;
 }
 
 export const CardListItem = ({
+  id,
   isPhysical,
-  bank,
   cardNumber,
   nameOnCard,
   maskOption = 'last4',
@@ -38,12 +41,6 @@ export const CardListItem = ({
         <div className="text-[15px] text-[#718EBF] mt-1">{isPhysical ? 'Physical' : 'Virtual'}</div>
       </div>
 
-      {/* Bank */}
-      <div className="flex flex-col min-w-[105px]">
-        <div className="text-base font-medium text-black">Bank</div>
-        <div className="text-[15px] text-[#718EBF] mt-1">{bank}</div>
-      </div>
-
       {/* Card Number */}
       <div className="flex flex-col min-w-[162px]">
         <div className="text-base font-medium text-black">Card Number</div>
@@ -60,9 +57,12 @@ export const CardListItem = ({
 
       {/* View Details */}
       <div className="ml-auto">
-        <button className="text-[15px] font-medium text-primary hover:underline">
+        <Link
+          href={`/cards/${id}`}
+          className="text-[15px] font-medium text-blue-50 hover:underline"
+        >
           View Details
-        </button>
+        </Link>
       </div>
     </div>
   );

@@ -34,11 +34,17 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
     if (paramTitle && paramTitle.trim().length > 0) return paramTitle.trim();
     if (!pathname) return 'Dashboard';
     const parts = pathname.split('/').filter(Boolean);
+
+    if (parts.length === 2 && parts[0] === 'cards') {
+      return 'Card Details';
+    }
+
     const last = parts[parts.length - 1] ?? '';
     return parts.length === 0 ? 'Dashboard' : toTitleCase(last);
   }, [pathname, searchParams]);
 
   const finalTitle = title ?? computedTitle;
+
   return (
     <header className="h-16 sm:h-20 md:h-[100px] bg-white border-b border-neutral-10 px-4 sm:px-6 md:px-10">
       <div className="h-full flex items-center justify-between gap-4">

@@ -37,7 +37,7 @@ export const CreditCard = ({
       )}
     >
       <div className="relative z-10 p-4 sm:p-6 h-full flex flex-col">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex flex-col">
             <div className={cn('text-xs text-neutral-30')}>Balance</div>
             <div className={cn('text-lg sm:text-xl font-semibold mt-1 text-tx-primary')}>
@@ -48,32 +48,28 @@ export const CreditCard = ({
           <ChipIcon />
         </div>
 
-        {/* Card Details & Footer */}
-        <div
-          className={cn(
-            'mt-auto rounded-b-[25px] -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 px-4 sm:px-6 py-4 sm:py-5 border-t border-neutral-20'
-          )}
-        >
-          <div className="flex items-end justify-between mb-4">
-            <div>
-              <div className={cn('text-[10px] sm:text-xs uppercase text-neutral-30')}>
-                Card Holder
-              </div>
-              <div className={cn('text-sm sm:text-[15px] font-semibold mt-1 text-tx-primary')}>
-                {cardHolder}
-              </div>
+        <div className="flex items-center gap-[60px] mb-6">
+          <div>
+            <div className={cn('text-[10px] sm:text-xs uppercase text-neutral-30')}>
+              Card Holder
             </div>
-            <div>
-              <div className={cn('text-[10px] sm:text-xs uppercase text-neutral-30')}>
-                Expiration
-              </div>
-              <div className={cn('text-sm sm:text-[15px] font-semibold mt-1 text-tx-primary')}>
-                {format(parseISO(expiration), 'MM/yy')}
-              </div>
+            <div className={cn('text-sm sm:text-[15px] font-semibold mt-1 text-tx-primary')}>
+              {cardHolder}
             </div>
           </div>
+          <div>
+            <div className={cn('text-[10px] sm:text-xs uppercase text-neutral-30')}>Valid Thru</div>
+            <div className={cn('text-sm sm:text-[15px] font-semibold mt-1 text-tx-primary')}>
+              {format(parseISO(expiration), 'MM/yy')}
+            </div>
+          </div>
+        </div>
 
-          {/* Card Number & Logo */}
+        <div
+          className={cn(
+            'rounded-b-[25px] -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 px-4 sm:px-6 py-4 sm:py-5 border-t border-neutral-20'
+          )}
+        >
           <div className="flex items-center justify-between">
             <div
               className={cn(

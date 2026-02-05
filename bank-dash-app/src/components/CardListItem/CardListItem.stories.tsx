@@ -12,7 +12,6 @@ const meta: Meta<typeof CardListItem> = {
   },
   args: {
     isPhysical: false,
-    bank: 'DBL Bank',
     cardNumber: '**** **** 5600',
     nameOnCard: 'William',
   },
@@ -33,7 +32,6 @@ export const Blue: Story = {
 export const Pink: Story = {
   args: {
     isPhysical: false,
-    bank: 'BRC Bank',
     cardNumber: '**** **** 4300',
     nameOnCard: 'Michel',
   },
@@ -47,7 +45,6 @@ export const Pink: Story = {
 export const Yellow: Story = {
   args: {
     isPhysical: true,
-    bank: 'ABM Bank',
     cardNumber: '**** **** 7560',
     nameOnCard: 'Edward',
   },
@@ -61,24 +58,9 @@ export const Yellow: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div className="p-6 bg-neutral-10 w-[1120px] space-y-5">
-      <CardListItem
-        isPhysical={false}
-        bank="DBL Bank"
-        cardNumber="**** **** 5600"
-        nameOnCard="William"
-      />
-      <CardListItem
-        isPhysical={false}
-        bank="BRC Bank"
-        cardNumber="**** **** 4300"
-        nameOnCard="Michel"
-      />
-      <CardListItem
-        isPhysical={true}
-        bank="ABM Bank"
-        cardNumber="**** **** 7560"
-        nameOnCard="Edward"
-      />
+      <CardListItem id="1" isPhysical={false} cardNumber="**** **** 5600" nameOnCard="William" />
+      <CardListItem id="2" isPhysical={false} cardNumber="**** **** 4300" nameOnCard="Michel" />
+      <CardListItem id="3" isPhysical={true} cardNumber="**** **** 7560" nameOnCard="Edward" />
     </div>
   ),
 };

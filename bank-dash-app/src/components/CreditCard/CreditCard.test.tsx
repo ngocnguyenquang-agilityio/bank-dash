@@ -19,7 +19,7 @@ describe('CreditCard', () => {
     expect(screen.getByText(props.balance)).toBeInTheDocument();
     expect(screen.getByText('Card Holder')).toBeInTheDocument();
     expect(screen.getByText(props.cardHolder)).toBeInTheDocument();
-    expect(screen.getByText('Expiration')).toBeInTheDocument();
+    expect(screen.getByText('Valid Thru')).toBeInTheDocument();
     expect(screen.getByText('12/22')).toBeInTheDocument();
 
     expect(screen.getByText('3778 **** **** 1234')).toBeInTheDocument();
