@@ -1,17 +1,15 @@
 // Libraries
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 
 // Components
 import { CardListItem } from './CardListItem';
 
 describe('CardListItem', () => {
   const props = {
+    id: '1',
     isPhysical: true,
-    bank: 'DBL Bank',
     cardNumber: '1234567890125600',
     nameOnCard: 'William',
-    gradientColor: 'blue' as const,
   };
 
   it('renders all card information', () => {
@@ -19,9 +17,6 @@ describe('CardListItem', () => {
 
     expect(screen.getByText('Card Type')).toBeInTheDocument();
     expect(screen.getByText('Physical')).toBeInTheDocument();
-
-    expect(screen.getByText('Bank')).toBeInTheDocument();
-    expect(screen.getByText(props.bank)).toBeInTheDocument();
 
     expect(screen.getByText('Card Number')).toBeInTheDocument();
     // Default masking is last4: "**** **** **** 5600"
@@ -31,22 +26,19 @@ describe('CardListItem', () => {
     expect(screen.getByText(props.nameOnCard)).toBeInTheDocument();
   });
 
-  it('renders View Details button', () => {
+  it('renders View Details link', () => {
     render(<CardListItem {...props} />);
 
-    const viewDetailsButton = screen.getByRole('button', { name: /view details/i });
-    expect(viewDetailsButton).toBeInTheDocument();
+    const viewDetailsLink = screen.getByRole('link', { name: /view details/i });
+    expect(viewDetailsLink).toBeInTheDocument();
+    expect(viewDetailsLink).toHaveAttribute('href', '/cards/1');
   });
 
-  it('View Details button is interactive', async () => {
-    const user = userEvent.setup();
+  it('View Details link has correct href', () => {
     render(<CardListItem {...props} />);
 
-    const viewDetailsButton = screen.getByRole('button', { name: /view details/i });
-    await user.click(viewDetailsButton);
-
-    // Button should still be in document after click (no default behavior)
-    expect(viewDetailsButton).toBeInTheDocument();
+    const viewDetailsLink = screen.getByRole('link', { name: /view details/i });
+    expect(viewDetailsLink).toHaveAttribute('href', '/cards/1');
   });
 
   it('renders credit card icon', () => {

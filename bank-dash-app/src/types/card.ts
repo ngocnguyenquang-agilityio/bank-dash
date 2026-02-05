@@ -34,7 +34,7 @@ export const CardSchema = Schema.Struct({
   balance: Schema.String,
   isActive: Schema.Boolean,
   isPhysical: Schema.Boolean,
-  bank: Schema.String,
+  address: Schema.optional(Schema.String),
   createdAt: Schema.String,
   updatedAt: Schema.String,
   publishedAt: Schema.optional(Schema.String),
@@ -44,6 +44,7 @@ export const CardSchema = Schema.Struct({
 // Schema for creating a new card (form input)
 export const CardFormSchema = Schema.Struct({
   isPhysical: Schema.optional(Schema.Boolean),
+  isActive: Schema.optional(Schema.Boolean),
   nameOnCard: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Name on card is required' })
   ),

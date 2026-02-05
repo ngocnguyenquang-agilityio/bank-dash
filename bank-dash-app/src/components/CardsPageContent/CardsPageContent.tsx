@@ -87,13 +87,13 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
 
         <div className="space-y-[20px]">
           {paginatedCards.map((card) => {
-            const { id, isPhysical, bank, number, name } = card;
+            const { id, isPhysical, number, name, documentId } = card;
 
             return (
               <CardListItem
                 key={`card-list-${id}`}
+                id={documentId}
                 isPhysical={isPhysical}
-                bank={bank}
                 cardNumber={number}
                 nameOnCard={name}
               />

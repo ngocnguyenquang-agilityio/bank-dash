@@ -95,7 +95,8 @@ export const Sidebar = ({ className }: SidebarProps) => {
           <nav className="flex-1 px-4 overflow-y-auto">
             <ul className="space-y-1">
               {menuItems.map((item) => {
-                const isActive = pathname === item.href;
+                const isActive =
+                  item.href === '/cards' ? pathname?.startsWith('/cards') : pathname === item.href;
                 return (
                   <li key={item.label}>
                     <Link

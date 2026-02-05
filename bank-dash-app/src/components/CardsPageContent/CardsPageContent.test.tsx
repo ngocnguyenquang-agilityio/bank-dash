@@ -28,14 +28,13 @@ jest.mock('@/components/CreditCard', () => ({
 }));
 
 jest.mock('@/components/CardListItem', () => ({
-  CardListItem: ({ nameOnCard, bank, cardNumber, isPhysical }: CardListItemProps) => {
+  CardListItem: ({ nameOnCard, cardNumber, isPhysical }: CardListItemProps) => {
     // Basic masking for the test expectation
     const last4 = cardNumber.slice(-4);
     const masked = `**** **** **** ${last4}`;
     return (
       <div data-testid="card-list-item">
         <span>{nameOnCard}</span>
-        <span>{bank}</span>
         <span>{masked}</span>
         <span>{isPhysical ? 'Physical' : 'Virtual'}</span>
         <button>View Details</button>
@@ -247,13 +246,6 @@ describe('CardsPageContent', () => {
     await user.click(addCardButton);
 
     expect(addCardButton).toBeInTheDocument();
-  });
-
-  it('renders correct bank names in card list', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
-    expect(screen.getByText('DBL Bank')).toBeInTheDocument();
-    expect(screen.getAllByText('BRC Bank')).toHaveLength(2);
-    expect(screen.getByText('ABM Bank')).toBeInTheDocument();
   });
 
   it('renders card numbers in card list', () => {
