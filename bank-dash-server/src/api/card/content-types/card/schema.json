@@ -43,7 +43,8 @@
     "transactions": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::transaction.transaction"
+      "target": "api::transaction.transaction",
+      "mappedBy": "card"
     },
     "member": {
       "type": "relation",

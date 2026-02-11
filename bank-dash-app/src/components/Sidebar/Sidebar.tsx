@@ -39,7 +39,7 @@ const menuItems = [
   { icon: BadgeDollarSignIcon, label: 'Loans', href: '/loans' },
   { icon: LifeBuoyIcon, label: 'Services', href: '/services' },
   { icon: AwardIcon, label: 'My Privileges', href: '/privileges' },
-  { icon: Settings2Icon, label: 'Setting', href: '/settings' },
+  { icon: Settings2Icon, label: 'Setting', href: '/setting' },
 ];
 
 export const Sidebar = ({ className }: SidebarProps) => {
@@ -77,7 +77,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
           'w-[250px] bg-white border-r border-neutral-20 transition-transform duration-300 ease-in-out',
           'fixed lg:sticky top-0 h-screen z-40',
           isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0',
-          className
+          className,
         )}
       >
         <div className="flex flex-col h-full">
@@ -104,7 +104,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
                         'flex items-center gap-4 sm:gap-6 px-4 sm:px-7 py-3 sm:py-4 rounded-r-[10px] text-base sm:text-[18px] font-medium transition-colors relative',
-                        isActive ? 'text-blue-30' : 'text-neutral-30 hover:text-tx-primary'
+                        isActive ? 'text-blue-30' : 'text-neutral-30 hover:text-tx-primary',
                       )}
                     >
                       {isActive && (
