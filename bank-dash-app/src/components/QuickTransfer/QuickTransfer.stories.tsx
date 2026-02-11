@@ -1,11 +1,15 @@
-import type { Meta, StoryObj } from "@storybook/nextjs";
-import { QuickTransfer } from ".";
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import { QuickTransfer } from '.';
 
 const meta: Meta<typeof QuickTransfer> = {
-  title: "Dashboard/QuickTransfer",
+  title: 'Dashboard/QuickTransfer',
   component: QuickTransfer,
   parameters: {
-    layout: "centered",
+    layout: 'centered',
+  },
+  args: {
+    cardDocumentId: 'test-card-123',
+    cardBalance: '5000.00',
   },
 };
 
@@ -14,9 +18,20 @@ export default meta;
 type Story = StoryObj<typeof QuickTransfer>;
 
 export const Default: Story = {
-  render: () => (
+  render: (args) => (
     <div className="w-[520px] p-6 bg-neutral-10">
-      <QuickTransfer />
+      <QuickTransfer {...args} />
+    </div>
+  ),
+};
+
+export const LowBalance: Story = {
+  args: {
+    cardBalance: '50.00',
+  },
+  render: (args) => (
+    <div className="w-[520px] p-6 bg-neutral-10">
+      <QuickTransfer {...args} />
     </div>
   ),
 };

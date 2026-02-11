@@ -30,8 +30,36 @@ export const getMemberByClerkId = async (clerkId: string): Promise<GetMemberResu
       Effect.succeed({
         member: null,
         error: error.message || 'Failed to fetch member',
-      })
-    )
+      }),
+    ),
+  );
+
+  return runServerEffect(effect);
+};
+
+interface UpdateMemberResult {
+  success: boolean;
+  error: string | null;
+}
+
+export const updateMember = async (
+  documentId: string,
+  data: Partial<MembersResponse['data'][0]>,
+): Promise<UpdateMemberResult> => {
+  const url = `/members/${documentId}`;
+
+  const effect = requestEffect(
+    apiClient.put<{ data: MembersResponse['data'][0] }>(url, {
+      body: { data },
+    }),
+  ).pipe(
+    Effect.map(() => ({ success: true, error: null })),
+    Effect.catchAll((error) =>
+      Effect.succeed({
+        success: false,
+        error: error.message || 'Failed to update member',
+      }),
+    ),
   );
 
   return runServerEffect(effect);

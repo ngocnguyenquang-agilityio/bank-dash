@@ -1,17 +1,76 @@
-import { render, screen } from "@testing-library/react";
-import { QuickTransfer } from "./QuickTransfer";
+import { render, screen, fireEvent } from '@testing-library/react';
+import { QuickTransfer } from './QuickTransfer';
 
-describe("QuickTransfer", () => {
-  it("renders contacts, input label, and send button", () => {
-    render(<QuickTransfer />);
+// Mock next/navigation
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({
+    refresh: jest.fn(),
+  }),
+}));
+
+// Mock the sendAmount service
+jest.mock('@/services/transfers', () => ({
+  sendAmount: jest.fn(),
+}));
+
+const defaultProps = {
+  cardDocumentId: 'test-card-123',
+  cardBalance: '1000.00',
+};
+
+describe('QuickTransfer', () => {
+  it('renders contacts, input label, and send button', () => {
+    render(<QuickTransfer {...defaultProps} />);
 
     // Static label
-    expect(screen.getByText("Write Amount")).toBeInTheDocument();
+    expect(screen.getByText('Write Amount')).toBeInTheDocument();
 
     // Placeholder present
-    expect(screen.getByPlaceholderText("525.50")).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('525.50')).toBeInTheDocument();
 
     // Send button
-    expect(screen.getByRole("button", { name: /send/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument();
+  });
+
+  it('shows error when amount exceeds balance', async () => {
+    render(<QuickTransfer {...defaultProps} />);
+
+    const input = screen.getByPlaceholderText('525.50');
+    const sendButton = screen.getByRole('button', { name: /send/i });
+
+    // Enter amount greater than balance
+    fireEvent.change(input, { target: { value: '2000' } });
+    fireEvent.click(sendButton);
+
+    // Should show error
+    expect(screen.getByText('Balance not enough')).toBeInTheDocument();
+  });
+
+  it('shows error when amount is invalid', async () => {
+    render(<QuickTransfer {...defaultProps} />);
+
+    const input = screen.getByPlaceholderText('525.50');
+    const sendButton = screen.getByRole('button', { name: /send/i });
+
+    // Enter invalid amount
+    fireEvent.change(input, { target: { value: 'abc' } });
+    fireEvent.click(sendButton);
+
+    // Should show error
+    expect(screen.getByText('Please enter a valid amount')).toBeInTheDocument();
+  });
+
+  it('shows error when amount is negative', async () => {
+    render(<QuickTransfer {...defaultProps} />);
+
+    const input = screen.getByPlaceholderText('525.50');
+    const sendButton = screen.getByRole('button', { name: /send/i });
+
+    // Enter negative amount
+    fireEvent.change(input, { target: { value: '-100' } });
+    fireEvent.click(sendButton);
+
+    // Should show error
+    expect(screen.getByText('Please enter a valid amount')).toBeInTheDocument();
   });
 });

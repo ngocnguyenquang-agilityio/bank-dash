@@ -30,6 +30,12 @@
       "type": "decimal",
       "required": true,
       "min": 1
+    },
+    "card": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::card.card",
+      "inversedBy": "transactions"
     }
   }
 }

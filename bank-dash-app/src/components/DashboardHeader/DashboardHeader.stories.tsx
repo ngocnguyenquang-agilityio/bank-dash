@@ -1,14 +1,16 @@
-import type { Meta, StoryObj } from "@storybook/nextjs";
-import { DashboardHeader } from ".";
+import type { Meta, StoryObj } from '@storybook/nextjs';
+import { DashboardHeader } from '.';
 
 const meta: Meta<typeof DashboardHeader> = {
-  title: "Dashboard/DashboardHeader",
+  title: 'Dashboard/DashboardHeader',
   component: DashboardHeader,
   parameters: {
-    layout: "fullscreen",
+    layout: 'fullscreen',
   },
   args: {
-    title: "Overview",
+    memberName: 'John Doe',
+    memberInitials: 'JD',
+    memberImageUrl: 'https://i.pravatar.cc/150?u=john',
   },
 };
 

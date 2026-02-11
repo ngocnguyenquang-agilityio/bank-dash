@@ -1,0 +1,60 @@
+'use server';
+
+// Libraries
+import { Effect } from 'effect';
+
+// Services
+import { apiClient } from '@/services/api';
+import { requestEffect } from '@/services/api.effect';
+import { getRecentTransactionsEffect } from '@/services/transactions.effect';
+
+// Utils
+import { runServerEffect } from '@/lib/effect/runtime';
+
+// Types
+import type { Transactions } from '@/types/card';
+
+type ServiceResult<T extends Record<string, unknown> = Record<string, never>> = {
+  error: string | null;
+} & T;
+
+export const getRecentTransactions = async (
+  userClerkId: string,
+): Promise<ServiceResult<{ transactions: unknown | null }>> => {
+  return runServerEffect(getRecentTransactionsEffect(userClerkId));
+};
+
+interface CreateTransactionData {
+  cardDocumentId: string;
+  amount: number;
+  message: string;
+  type: Transactions;
+}
+
+export const createTransaction = async (
+  data: CreateTransactionData,
+): Promise<ServiceResult<{ success: boolean }>> => {
+  const payload = {
+    message: data.message,
+    amount: data.amount,
+    type: data.type,
+    card: data.cardDocumentId,
+    date: new Date().toISOString().split('T')[0],
+  };
+
+  const effect = requestEffect(
+    apiClient.post('/transactions', {
+      body: { data: payload },
+    }),
+  ).pipe(
+    Effect.map(() => ({ success: true, error: null })),
+    Effect.catchAll((error) =>
+      Effect.succeed({
+        success: false,
+        error: error.message || 'Failed to create transaction',
+      }),
+    ),
+  );
+
+  return runServerEffect(effect);
+};

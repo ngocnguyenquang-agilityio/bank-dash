@@ -16,3 +16,21 @@ export const STATUS_CODES = {
   OK: 200,
   CREATED: 201,
 };
+
+export const NOT_FOUND_ERRORS = {
+  MEMBER_NOT_FOUND: 'Member not found',
+  CARD_NOT_FOUND: 'Card not found',
+  TRANSACTION_NOT_FOUND: 'Transaction not found',
+};
+
+export const CARD_ERRORS = {
+  ADD_CARD_FAILED: 'Failed to add card',
+  UPDATE_CARD_FAILED: 'Failed to update card details',
+  GET_CARD_FAILED: 'Failed to fetch card details',
+};
+
+export const TRANSACTION_ERRORS = {
+  INVALID_AMOUNT: 'Please enter a valid amount',
+  INSUFFICIENT_BALANCE: 'Balance not enough',
+  FAILED_TRANSACTION: 'Transaction failed',
+};

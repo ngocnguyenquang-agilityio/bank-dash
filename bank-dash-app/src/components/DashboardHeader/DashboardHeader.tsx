@@ -5,31 +5,36 @@ import { useMemo } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 // Icons
-import { SearchIcon, SettingIcon, NotificationIcon, SignoutIcon } from '@/components/Icons';
+import { SearchIcon, SettingIcon, NotificationIcon } from '@/components/Icons';
 
 // Components
-import { SignOutButton } from '@clerk/nextjs';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { AvatarProfile } from '@/components/AvatarProfile';
 
 interface DashboardHeaderProps {
-  title?: string;
+  memberName: string;
+  memberInitials: string;
+  memberImageUrl: string;
 }
 
-function toTitleCase(segment: string) {
+const toTitleCase = (segment: string) => {
   return segment
     .replace(/[-_]+/g, ' ')
     .split(' ')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
-}
+};
 
-export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
+export const DashboardHeader = ({
+  memberName,
+  memberInitials,
+  memberImageUrl,
+}: DashboardHeaderProps) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const computedTitle = useMemo((): string => {
+  const generatedTitle = useMemo((): string => {
     const paramTitle = searchParams?.get('title');
     if (paramTitle && paramTitle.trim().length > 0) return paramTitle.trim();
     if (!pathname) return 'Dashboard';
@@ -43,13 +48,11 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
     return parts.length === 0 ? 'Dashboard' : toTitleCase(last);
   }, [pathname, searchParams]);
 
-  const finalTitle = title ?? computedTitle;
-
   return (
     <header className="h-16 sm:h-20 md:h-[100px] bg-white border-b border-neutral-10 px-4 sm:px-6 md:px-10">
       <div className="h-full flex items-center justify-between gap-4">
         <h1 className="text-xl sm:text-2xl md:text-[28px] font-semibold text-tx-primary lg:ml-0">
-          {finalTitle}
+          {generatedTitle}
         </h1>
 
         <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
@@ -82,24 +85,8 @@ export const DashboardHeader = ({ title }: DashboardHeaderProps) => {
             <NotificationIcon className="w-5 h-5 md:w-6 md:h-6" />
           </Button>
 
-          {/* Profile Avatar */}
-          <Avatar className="w-10 h-10 md:w-[60px] md:h-[60px]">
-            <AvatarImage src="https://i.pravatar.cc/150?u=eddy-cusuma" alt="Profile" />
-            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-sm md:text-lg">
-              EC
-            </AvatarFallback>
-          </Avatar>
-
-          <SignOutButton redirectUrl="/">
-            <Button
-              variant="ghost"
-              size="md"
-              className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors relative"
-              aria-label="Notifications"
-            >
-              <SignoutIcon className="w-5 h-5 md:w-6 md:h-6 text-neutral-30" />
-            </Button>
-          </SignOutButton>
+          {/* Profile Avatar with Dropdown */}
+          <AvatarProfile imageUrl={memberImageUrl} fallback={memberInitials} alt={memberName} />
         </div>
       </div>
     </header>

@@ -63,7 +63,8 @@ jest.mock('@/components/Pagination', () => ({
 jest.mock('@/components/AddCardModal', () => ({
   AddCardModal: ({
     open,
-    onOpenChange,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    onOpenChange: _onOpenChange,
   }: {
     open: boolean;
     onOpenChange: (open: boolean) => void;

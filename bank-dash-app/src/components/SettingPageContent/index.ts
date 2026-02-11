@@ -1,0 +1,1 @@
+export { SettingPageContent } from './SettingPageContent';

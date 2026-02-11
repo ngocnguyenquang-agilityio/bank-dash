@@ -535,6 +535,7 @@ export interface ApiTransactionTransaction extends Struct.CollectionTypeSchema {
         },
         number
       >;
+    card: Schema.Attribute.Relation<'manyToOne', 'api::card.card'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
