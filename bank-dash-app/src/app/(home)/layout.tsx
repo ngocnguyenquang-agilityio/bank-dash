@@ -11,7 +11,7 @@ import { DashboardHeader } from '@/components/DashboardHeader';
 import { getMemberByClerkId } from '@/services/members';
 
 // Utils
-import { getInitials } from '@/utils';
+import { getInitials, getStrapiMedia } from '@/utils';
 
 // Constants
 import { ROUTES } from '@/constants/route';
@@ -31,7 +31,7 @@ const HomeLayout = async ({ children }: HomeLayoutProps) => {
 
   const memberName = member?.name || 'User';
   const memberInitials = getInitials(memberName);
-  const memberImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL}${member?.photo?.url}`;
+  const memberImageUrl = getStrapiMedia(member?.photo?.url) ?? '';
 
   return (
     <div className="h-screen overflow-hidden lg:grid lg:grid-cols-[250px_1fr] bg-background">

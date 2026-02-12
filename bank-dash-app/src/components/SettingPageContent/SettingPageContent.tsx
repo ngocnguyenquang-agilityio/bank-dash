@@ -25,6 +25,9 @@ import { updateMember } from '@/services/members';
 // Types
 import { MemberProfileSchema, type Member, type MemberProfile } from '@/types/member';
 
+// Utils
+import { getStrapiMedia } from '@/utils';
+
 const PROFILE_IMAGE = '/next.svg';
 
 interface SettingPageContentProps {
@@ -125,11 +128,16 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
               <div className="relative w-[130px] h-[130px]">
                 <div className="w-[130px] h-[130px] rounded-full overflow-hidden bg-neutral-20">
                   <Image
-                    src={initialData?.photo?.url || PROFILE_IMAGE}
+                    src={getStrapiMedia(initialData?.photo?.url) || PROFILE_IMAGE}
                     alt="Profile"
                     width={130}
                     height={130}
                     className="w-full h-full object-cover"
+                    unoptimized={
+                      getStrapiMedia(initialData?.photo?.url)?.includes('localhost') ||
+                      getStrapiMedia(initialData?.photo?.url)?.includes('127.0.0.1') ||
+                      false
+                    }
                   />
                 </div>
                 <button

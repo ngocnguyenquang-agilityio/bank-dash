@@ -69,20 +69,20 @@ export const QuickTransfer = ({ cardDocumentId, cardBalance }: QuickTransferProp
   };
 
   return (
-    <Card className="w-full rounded-[25px] border-0 outline-none shadow-none">
-      <CardContent className="px-4 py-6 flex flex-col gap-6">
+    <Card className="w-full flex-1 rounded-[25px] border-0 outline-none shadow-none">
+      <CardContent className="px-4 py-6 flex flex-col justify-between h-full gap-6">
         {/* Contacts */}
         <div className="flex items-center justify-between gap-3 sm:gap-4 md:gap-7 overflow-x-auto pb-2 scrollbar-hide">
           <div className="flex items-center gap-6">
             {contacts.map((contact, index) => (
               <Button
                 key={index}
-                type="button"
+                variant="ghost"
                 onClick={() => setSelectedContact(contact)}
-                className={`flex flex-col items-center gap-2 flex-shrink-0 p-3 rounded-2xl transition-all duration-200 ${
+                className={`flex flex-col items-center gap-2 flex-shrink-0 p-3 h-auto rounded-2xl transition-all duration-200 ${
                   selectedContact?.name === contact.name
-                    ? 'bg-blue-50/5 border-2 border-blue-50 shadow-md'
-                    : 'border-2 border-transparent hover:bg-neutral-10'
+                    ? 'bg-transparent border-2 border-blue-50 shadow-md'
+                    : 'border-2 border-transparent hover:bg-black/5'
                 }`}
               >
                 <Avatar className="w-14 h-14 sm:w-16 sm:h-16 md:w-[70px] md:h-[70px]">

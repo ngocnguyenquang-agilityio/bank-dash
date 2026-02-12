@@ -12,3 +12,20 @@ export const getInitials = (name: string): string => {
     .map((word) => word.charAt(0).toUpperCase())
     .join('');
 };
+
+export const getStrapiMedia = (url: string | null | undefined) => {
+  if (url == null || url === '') {
+    return null;
+  }
+
+  // Return the full URL if the media is hosted on an external provider
+  if (url.startsWith('http') || url.startsWith('//')) {
+    return url;
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://127.0.0.1:1337';
+  const cleanBase = baseUrl.replace(/\/+$/, '');
+  const cleanPath = url.replace(/^\/+/, '');
+
+  return `${cleanBase}/${cleanPath}`;
+};

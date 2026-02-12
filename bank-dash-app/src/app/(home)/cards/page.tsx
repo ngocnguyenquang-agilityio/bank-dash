@@ -8,6 +8,9 @@ import { getCards } from '@/services/cards';
 // Components
 import { CardsPageContent } from '@/components/CardsPageContent';
 
+// Constants
+import { ROUTES } from '@/constants/route';
+
 const CardsPage = async ({
   searchParams,
 }: {
@@ -18,7 +21,7 @@ const CardsPage = async ({
   const currentPage = Number(page) || 1;
 
   if (!userId) {
-    redirect('/sign-in');
+    redirect(ROUTES.SIGN_IN);
   }
 
   const { cards, error } = await getCards(userId, currentPage);

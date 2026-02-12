@@ -4,6 +4,9 @@
 import { useMemo } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
+// Utils
+import { getStrapiMedia } from '@/utils';
+
 // Icons
 import { SearchIcon, SettingIcon, NotificationIcon } from '@/components/Icons';
 
@@ -84,9 +87,12 @@ export const DashboardHeader = ({
           >
             <NotificationIcon className="w-5 h-5 md:w-6 md:h-6" />
           </Button>
-
           {/* Profile Avatar with Dropdown */}
-          <AvatarProfile imageUrl={memberImageUrl} fallback={memberInitials} alt={memberName} />
+          <AvatarProfile
+            imageUrl={getStrapiMedia(memberImageUrl) ?? ''}
+            fallback={memberInitials}
+            alt={memberName}
+          />
         </div>
       </div>
     </header>

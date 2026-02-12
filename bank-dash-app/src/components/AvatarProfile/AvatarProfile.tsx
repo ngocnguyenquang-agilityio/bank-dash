@@ -42,7 +42,13 @@ export const AvatarProfile = ({ imageUrl, fallback, alt }: AvatarProfileProps) =
       <DropdownMenuTrigger asChild>
         <button className="focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-full">
           <Avatar className="w-10 h-10 md:w-[60px] md:h-[60px] cursor-pointer hover:opacity-80 transition-opacity">
-            <AvatarImage src={imageUrl} alt={alt} className="sr-only" />
+            {imageUrl ? (
+              <AvatarImage
+                src={imageUrl}
+                alt={alt}
+                unoptimized={imageUrl.includes('localhost') || imageUrl.includes('127.0.0.1')}
+              />
+            ) : null}
             <AvatarFallback className="bg-gradient-to-br from-blue-500 to-purple-600 text-white text-sm md:text-lg">
               {fallback}
             </AvatarFallback>
