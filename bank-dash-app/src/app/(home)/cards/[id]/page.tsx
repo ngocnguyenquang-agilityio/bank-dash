@@ -1,8 +1,25 @@
+// Libraries
+import type { Metadata } from 'next';
+
 // Services
 import { getCardDetails } from '@/services/cards';
 
 // Components
 import { CardDetailsContent } from '@/components/CardDetailsContent/CardDetailsContent';
+
+// Utils
+import { createMetadata } from '@/utils';
+
+export const generateMetadata = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> => {
+  const { id } = await params;
+  const { card } = await getCardDetails(id);
+
+  return createMetadata(card?.name ? `${card.name}'s Card` : 'Card Details');
+};
 
 const CardDetailsPage = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id: documentId } = await params;

@@ -16,6 +16,11 @@ import { runServerEffect } from '@/lib/effect/runtime';
 // Constants
 import { ROUTES } from '@/constants/route';
 
+// Utils
+import { createMetadata } from '@/utils';
+
+export const metadata = createMetadata('Dashboard');
+
 const HomePage = async () => {
   const { userId } = await auth();
 

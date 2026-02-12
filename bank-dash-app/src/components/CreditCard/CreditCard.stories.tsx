@@ -29,3 +29,14 @@ export const Default: Story = {
     </div>
   ),
 };
+
+export const Blue: Story = {
+  args: {
+    variant: 'blue',
+  },
+  render: (args) => (
+    <div className="p-6 bg-neutral-10">
+      <CreditCard {...args} />
+    </div>
+  ),
+};

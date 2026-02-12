@@ -11,6 +11,11 @@ import { CardsPageContent } from '@/components/CardsPageContent';
 // Constants
 import { ROUTES } from '@/constants/route';
 
+// Utils
+import { createMetadata } from '@/utils';
+
+export const metadata = createMetadata('Cards');
+
 const CardsPage = async ({
   searchParams,
 }: {

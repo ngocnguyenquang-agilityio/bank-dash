@@ -34,7 +34,7 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
       }
       router.push(`/cards?${params.toString()}`);
     },
-    [router, searchParams]
+    [router, searchParams],
   );
 
   if (error) {
@@ -65,8 +65,9 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
         </div>
 
         <div className="flex gap-[30px] overflow-x-auto pb-2">
-          {cards?.data?.slice(0, 3).map((card) => {
+          {cards?.data?.slice(0, 3).map((card, index) => {
             const { id, balance, name, number, expiration } = card;
+            const variant = index % 2 === 0 ? 'blue' : 'white';
 
             return (
               <CreditCard
@@ -75,6 +76,7 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
                 cardHolder={name}
                 cardNumber={number}
                 expiration={expiration}
+                variant={variant}
               />
             );
           })}

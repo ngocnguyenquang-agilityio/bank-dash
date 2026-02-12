@@ -47,13 +47,14 @@ export const DashboardWrapper = ({ cards, transactions, error }: DashboardWrappe
             </Link>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 overflow-x-auto pb-2 scrollbar-hide">
-            {cardsData.map((card) => (
+            {cardsData.map((card, index) => (
               <CreditCard
                 key={card.documentId}
                 balance={card.balance}
                 cardHolder={card.name}
                 cardNumber={card.number}
                 expiration={card.expiration}
+                variant={index % 2 === 0 ? 'blue' : 'white'}
               />
             ))}
           </div>

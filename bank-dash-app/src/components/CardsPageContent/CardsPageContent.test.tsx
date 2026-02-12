@@ -19,8 +19,8 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('@/components/CreditCard', () => ({
-  CreditCard: ({ balance, cardHolder }: CreditCardProps) => (
-    <div data-testid="credit-card">
+  CreditCard: ({ balance, cardHolder, variant }: CreditCardProps) => (
+    <div data-testid="credit-card" data-variant={variant}>
       <span>{balance}</span>
       <span>{cardHolder}</span>
     </div>
@@ -169,6 +169,15 @@ describe('CardsPageContent', () => {
     // Only first 3 cards are shown in My Cards section
     const creditCards = screen.getAllByTestId('credit-card');
     expect(creditCards.length).toBe(3);
+  });
+
+  it('passes correct variants (blue/white) to credit cards', () => {
+    render(<CardsPageContent cards={mockCards} error={null} />);
+    const creditCards = screen.getAllByTestId('credit-card');
+
+    expect(creditCards[0]).toHaveAttribute('data-variant', 'blue');
+    expect(creditCards[1]).toHaveAttribute('data-variant', 'white');
+    expect(creditCards[2]).toHaveAttribute('data-variant', 'blue');
   });
 
   it('renders Card List section heading', () => {

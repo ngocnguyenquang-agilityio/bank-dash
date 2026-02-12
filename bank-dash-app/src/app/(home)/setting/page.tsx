@@ -11,6 +11,11 @@ import { getMemberByClerkId } from '@/services/members';
 // Constants
 import { ROUTES } from '@/constants/route';
 
+// Utils
+import { createMetadata } from '@/utils';
+
+export const metadata = createMetadata('Setting');
+
 const SettingPage = async () => {
   const { userId } = await auth();
 

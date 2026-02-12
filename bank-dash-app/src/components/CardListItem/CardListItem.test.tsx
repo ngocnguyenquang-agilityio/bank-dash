@@ -26,6 +26,18 @@ describe('CardListItem', () => {
     expect(screen.getByText(props.nameOnCard)).toBeInTheDocument();
   });
 
+  it('renders correct styling based on isPhysical', () => {
+    const { container, rerender } = render(<CardListItem {...props} isPhysical={true} />);
+
+    // isPhysical=true -> Blue
+    expect(container.firstChild?.firstChild).toHaveClass('bg-blue-10');
+
+    rerender(<CardListItem {...props} isPhysical={false} />);
+
+    // isPhysical=false -> Red
+    expect(container.firstChild?.firstChild).toHaveClass('bg-red-30');
+  });
+
   it('renders View Details link', () => {
     render(<CardListItem {...props} />);
 

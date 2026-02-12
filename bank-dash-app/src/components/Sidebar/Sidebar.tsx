@@ -12,34 +12,23 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
 // Icons
-import {
-  HomeIcon,
-  CreditCardIcon,
-  ArrowLeftRightIcon,
-  LineChartIcon,
-  BadgeDollarSignIcon,
-  LifeBuoyIcon,
-  Settings2Icon,
-  AwardIcon,
-  BuildingIcon,
-  MenuIcon,
-  XIcon,
-} from 'lucide-react';
+import { MenuIcon, XIcon } from 'lucide-react';
+import { Icons } from '@/components/Icons/Icons';
 
 interface SidebarProps {
   className?: string;
 }
 
 const menuItems = [
-  { icon: HomeIcon, label: 'Dashboard', href: '/dashboard' },
-  { icon: ArrowLeftRightIcon, label: 'Transactions', href: '/transactions' },
-  { icon: BuildingIcon, label: 'Accounts', href: '/accounts' },
-  { icon: LineChartIcon, label: 'Investments', href: '/investments' },
-  { icon: CreditCardIcon, label: 'Cards', href: '/cards' },
-  { icon: BadgeDollarSignIcon, label: 'Loans', href: '/loans' },
-  { icon: LifeBuoyIcon, label: 'Services', href: '/services' },
-  { icon: AwardIcon, label: 'My Privileges', href: '/privileges' },
-  { icon: Settings2Icon, label: 'Setting', href: '/setting' },
+  { icon: Icons.Home, label: 'Dashboard', href: '/dashboard' },
+  { icon: Icons.Transactions, label: 'Transactions', href: '/transactions' },
+  { icon: Icons.User, label: 'Accounts', href: '/accounts' },
+  { icon: Icons.Investment, label: 'Investments', href: '/investments' },
+  { icon: Icons.CreditCard, label: 'Cards', href: '/cards' },
+  { icon: Icons.Loan, label: 'Loans', href: '/loans' },
+  { icon: Icons.Service, label: 'Services', href: '/services' },
+  { icon: Icons.Econometrics, label: 'My Privileges', href: '/privileges' },
+  { icon: Icons.Settings, label: 'Setting', href: '/setting' },
 ];
 
 export const Sidebar = ({ className }: SidebarProps) => {
@@ -84,9 +73,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
           {/* Logo */}
           <div className="px-6 sm:px-9 py-6 sm:py-8">
             <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center text-white font-bold">
-                B
-              </div>
+              <Icons.Logo />
               <span className="text-xl sm:text-2xl font-black text-tx-primary">BankDash.</span>
             </Link>
           </div>
@@ -111,7 +98,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
                         <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-30 rounded-r-[10px]" />
                       )}
                       <item.icon
-                        className={cn('w-6 h-6', isActive ? 'text-blue-30' : 'text-neutral-30')}
+                        className={cn('w-6 h-6', isActive ? 'fill-blue-30' : 'fill-neutral-30')}
                       />
                       <span>{item.label}</span>
                     </Link>

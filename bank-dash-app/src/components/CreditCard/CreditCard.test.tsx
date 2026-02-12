@@ -6,7 +6,7 @@ import { CreditCard } from './CreditCard';
 
 describe('CreditCard', () => {
   const props = {
-    balance: '$5,756',
+    balance: '5,756',
     cardHolder: 'Eddy Cusuma',
     cardNumber: '3778123456781234',
     expiration: '2022-12-01',
@@ -16,7 +16,7 @@ describe('CreditCard', () => {
     render(<CreditCard {...props} />);
 
     expect(screen.getByText('Balance')).toBeInTheDocument();
-    expect(screen.getByText(props.balance)).toBeInTheDocument();
+    expect(screen.getByText(`$${props.balance}`)).toBeInTheDocument();
     expect(screen.getByText('Card Holder')).toBeInTheDocument();
     expect(screen.getByText(props.cardHolder)).toBeInTheDocument();
     expect(screen.getByText('Valid Thru')).toBeInTheDocument();
@@ -27,7 +27,17 @@ describe('CreditCard', () => {
 
   it('supports custom className for container adjustments', () => {
     render(<CreditCard {...props} className="ring-1" />);
-    const balanceEl = screen.getByText(props.balance);
+    const balanceEl = screen.getByText(`$${props.balance}`);
     expect(balanceEl).toBeInTheDocument();
+  });
+
+  it('renders blue variant with correct styles', () => {
+    render(<CreditCard {...props} variant="blue" />);
+
+    const balanceEl = screen.getByText(`$${props.balance}`);
+    expect(balanceEl).toHaveClass('text-white');
+
+    const labelEl = screen.getByText('Balance');
+    expect(labelEl).toHaveClass('text-white/70');
   });
 });

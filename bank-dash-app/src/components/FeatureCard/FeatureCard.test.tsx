@@ -14,6 +14,6 @@ describe('FeatureCard', () => {
 
     expect(screen.getByText('Test Title')).toBeInTheDocument();
     expect(screen.getByText('Test Description')).toBeInTheDocument();
-    expect(screen.getByTestId('icon')).toBeInTheDocument();
+    expect(screen.getAllByTestId('icon').length).toBeGreaterThan(0);
   });
 });

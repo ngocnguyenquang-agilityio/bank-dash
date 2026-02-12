@@ -1,3 +1,7 @@
+import type { Metadata } from 'next';
+
+const SITE_NAME = 'BankDash';
+
 export const getInitials = (name: string): string => {
   if (!name) return '';
 
@@ -29,3 +33,8 @@ export const getStrapiMedia = (url: string | null | undefined) => {
 
   return `${cleanBase}/${cleanPath}`;
 };
+
+export const createMetadata = (title: string, description?: string): Metadata => ({
+  title: `${title} | ${SITE_NAME}`,
+  description,
+});

@@ -3,8 +3,8 @@
 // Libraries
 import Link from 'next/link';
 
-// Icons
-import { CardIcon } from '@/components/Icons';
+// Components
+import { Icons } from '@/components/Icons/Icons';
 
 // Utils
 import { cn, maskCardNumber, type MaskOption } from '@/lib/utils';
@@ -29,10 +29,11 @@ export const CardListItem = ({
       {/* Icon */}
       <div
         className={cn(
-          'w-[91px] h-[60px] rounded-[20px] flex items-center justify-center flex-shrink-0'
+          'flex items-center justify-center w-[80px] h-[50px] rounded-xl pt-1',
+          isPhysical ? 'bg-blue-10' : 'bg-red-30',
         )}
       >
-        <CardIcon className={cn('w-10 h-7')} />
+        <Icons.CreditCard className={cn('w-8 h-8', isPhysical ? 'fill-blue-60' : 'fill-red-60')} />
       </div>
 
       {/* Card Type */}
