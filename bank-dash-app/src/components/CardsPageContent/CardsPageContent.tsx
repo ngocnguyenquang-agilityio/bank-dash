@@ -48,6 +48,31 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
   const pagination = cards?.meta?.pagination;
   const { page = 1, pageCount = 1 } = pagination || {};
   const paginatedCards = cards?.data || [];
+  const hasCards = paginatedCards.length > 0;
+
+  // Empty state when user has no cards
+  if (!hasCards) {
+    return (
+      <div className="space-y-6">
+        <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-dashed border-neutral-20 bg-background p-8">
+          <div className="text-center space-y-4">
+            <p className="text-neutral-30 text-base">
+              There is no available card. Click &ldquo;Add&rdquo; to create your first card
+            </p>
+            <Button
+              onClick={() => setIsAddCardModalOpen(true)}
+              className="bg-blue-50 hover:bg-blue-60 text-white font-semibold px-6"
+            >
+              Add
+            </Button>
+          </div>
+        </div>
+
+        {/* Add Card Modal */}
+        <AddCardModal open={isAddCardModalOpen} onOpenChange={setIsAddCardModalOpen} />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
