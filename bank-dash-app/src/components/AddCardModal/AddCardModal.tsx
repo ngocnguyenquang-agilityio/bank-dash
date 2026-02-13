@@ -81,17 +81,36 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
     onReset: reset,
   });
 
+  const formatCardNumber = (value: string): string => {
+    // Remove all non-digit characters
+    const digitsOnly = value.replace(/\D/g, '');
+
+    // Limit to 16 digits
+    const limitedDigits = digitsOnly.slice(0, 16);
+
+    // Add dashes every 4 digits
+    const formatted = limitedDigits.replace(/(\d{4})(?=\d)/g, '$1-');
+
+    return formatted;
+  };
+
   const onSubmit = (data: CardFormData) => {
     setIsSubmitting(true);
 
+    // Remove dashes from card number before sending to API
+    const sanitizedData = {
+      ...data,
+      cardNumber: data.cardNumber.replace(/-/g, ''),
+    };
+
     const addCardEffect = Effect.tryPromise({
-      try: () => addCard(user!.id, data),
+      try: () => addCard(user!.id, sanitizedData),
       catch: () => new Error(MESSAGES.UNEXPECTED_ERROR),
     }).pipe(
       Effect.flatMap((result) =>
         result.success
           ? Effect.succeed(result)
-          : Effect.fail(new Error(result.error || 'Failed to add card'))
+          : Effect.fail(new Error(result.error || 'Failed to add card')),
       ),
       Effect.tap(() => {
         toast.success('Card added successfully');
@@ -102,7 +121,7 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
         toast.error(error.message);
         return Effect.succeed(null);
       }),
-      Effect.ensuring(Effect.sync(() => setIsSubmitting(false)))
+      Effect.ensuring(Effect.sync(() => setIsSubmitting(false))),
     );
 
     Effect.runPromise(addCardEffect);
@@ -184,11 +203,21 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
                   <Label htmlFor="card-number" className="text-base text-black">
                     Card Number
                   </Label>
-                  <Input
-                    id="card-number"
-                    placeholder="**** **** **** ****"
-                    {...register('cardNumber')}
-                    className="h-[50px] rounded-[15px] border-neutral-20 text-[15px] text-primary placeholder:text-neutral-30"
+                  <Controller
+                    name="cardNumber"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="card-number"
+                        placeholder="**** **** **** ****"
+                        value={field.value}
+                        onChange={(e) => {
+                          const formatted = formatCardNumber(e.target.value);
+                          field.onChange(formatted);
+                        }}
+                        className="h-[50px] rounded-[15px] border-neutral-20 text-[15px] text-primary placeholder:text-neutral-30"
+                      />
+                    )}
                   />
                   {errors.cardNumber && (
                     <p className="text-sm text-red-500">{errors.cardNumber.message}</p>

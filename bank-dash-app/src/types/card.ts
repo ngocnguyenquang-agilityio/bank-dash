@@ -25,11 +25,11 @@ export const CardSchema = Schema.Struct({
     Schema.minLength(1, { message: () => 'Card number is required' }),
     Schema.pattern(REGEX.CARD_NUMBER, {
       message: () => 'Invalid card number format',
-    })
+    }),
   ),
   name: Schema.String.pipe(Schema.minLength(1, { message: () => 'Name on card is required' })),
   expiration: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Expiration date is required' })
+    Schema.minLength(1, { message: () => 'Expiration date is required' }),
   ),
   balance: Schema.String,
   isActive: Schema.Boolean,
@@ -46,16 +46,17 @@ export const CardFormSchema = Schema.Struct({
   isPhysical: Schema.optional(Schema.Boolean),
   isActive: Schema.optional(Schema.Boolean),
   nameOnCard: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Name on card is required' })
+    Schema.minLength(1, { message: () => 'Name on card is required' }),
   ),
   cardNumber: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Card number is required' }),
+    Schema.maxLength(19, { message: () => 'The maximum number is 16 digits' }),
     Schema.pattern(REGEX.CARD_NUMBER, {
       message: () => 'Invalid card number format',
-    })
+    }),
   ),
   expiration: Schema.String.pipe(
-    Schema.minLength(1, { message: () => 'Expiration date is required' })
+    Schema.minLength(1, { message: () => 'Expiration date is required' }),
   ),
   address: Schema.optional(Schema.String),
 });
