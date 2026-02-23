@@ -2,6 +2,7 @@
 
 // Libraries
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useUser } from '@clerk/nextjs';
@@ -49,6 +50,7 @@ interface AddCardModalProps {
 
 export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
   const { user } = useUser();
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
@@ -116,6 +118,7 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
         toast.success('Card added successfully');
         reset();
         onOpenChange(false);
+        router.refresh();
       }),
       Effect.catchAll((error) => {
         toast.error(error.message);
