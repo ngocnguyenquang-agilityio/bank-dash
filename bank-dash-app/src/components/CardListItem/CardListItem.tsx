@@ -29,7 +29,7 @@ export const CardListItem = ({
       {/* Icon */}
       <div
         className={cn(
-          'flex items-center justify-center w-[80px] h-[50px] rounded-xl pt-1',
+          'flex items-center justify-center w-[80px] h-[50px] rounded-xl pt-1 shrink-0',
           isPhysical ? 'bg-blue-10' : 'bg-red-30',
         )}
       >
@@ -37,27 +37,35 @@ export const CardListItem = ({
       </div>
 
       {/* Card Type */}
-      <div className="flex flex-col min-w-[120px]">
+      <div className="flex flex-col flex-1 min-w-0">
         <div className="text-base font-medium text-black">Card Type</div>
-        <div className="text-[15px] text-[#718EBF] mt-1">{isPhysical ? 'Physical' : 'Virtual'}</div>
+        <div className="text-[15px] text-tx-secondary mt-1">
+          {isPhysical ? 'Physical' : 'Virtual'}
+        </div>
+      </div>
+
+      {/* Bank */}
+      <div className="flex flex-col flex-1 min-w-0">
+        <div className="text-base font-medium text-black">Bank</div>
+        <div className="text-[15px] text-tx-secondary mt-1">--</div>
       </div>
 
       {/* Card Number */}
-      <div className="flex flex-col min-w-[162px]">
+      <div className="flex flex-col flex-1 min-w-0">
         <div className="text-base font-medium text-black">Card Number</div>
-        <div className="text-[15px] text-[#718EBF] mt-1">
+        <div className="text-[15px] text-tx-secondary mt-1">
           {maskCardNumber(cardNumber, maskOption)}
         </div>
       </div>
 
       {/* Name on Card */}
-      <div className="flex flex-col min-w-[150px]">
+      <div className="flex flex-col flex-1 min-w-0">
         <div className="text-base font-medium text-black">Name on Card</div>
-        <div className="text-[15px] text-[#718EBF] mt-1">{nameOnCard}</div>
+        <div className="text-[15px] text-tx-secondary mt-1">{nameOnCard}</div>
       </div>
 
       {/* View Details */}
-      <div className="ml-auto">
+      <div className="shrink-0">
         <Link
           href={`/cards/${id}`}
           className="text-[15px] font-medium text-blue-50 hover:underline"

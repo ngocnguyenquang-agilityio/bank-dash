@@ -29,7 +29,7 @@ const HomePage = async () => {
   }
 
   const [cardsResult, transactionsResult] = await runServerEffect(
-    Effect.all([getCardsEffect(userId, 1, 3), getRecentTransactionsEffect(userId)]),
+    Effect.all([getCardsEffect(userId, 1, 2), getRecentTransactionsEffect(userId)]),
   );
 
   const { cards, error: cardsError } = cardsResult;

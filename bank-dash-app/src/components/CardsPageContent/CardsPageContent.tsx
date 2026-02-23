@@ -10,6 +10,7 @@ import { CardListItem } from '@/components/CardListItem';
 import { Pagination } from '@/components/Pagination';
 import { AddCardModal } from '@/components/AddCardModal';
 import { Button } from '@/components/ui/button';
+import { Icons } from '@/components/Icons/Icons';
 
 // Types
 import type { CardsResponse } from '@/types/card';
@@ -54,16 +55,22 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
   if (!hasCards) {
     return (
       <div className="space-y-6">
-        <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-dashed border-neutral-20 bg-background p-8">
-          <div className="text-center space-y-4">
-            <p className="text-neutral-30 text-base">
-              There is no available card. Click &ldquo;Add&rdquo; to create your first card
-            </p>
+        <div className="flex min-h-[400px] items-center justify-center rounded-2xl bg-background p-8">
+          <div className="flex flex-col items-center text-center space-y-5 max-w-sm">
+            <div className="w-20 h-20 rounded-full bg-blue-10 flex items-center justify-center">
+              <Icons.CreditCard className="w-10 h-10 fill-blue-50" />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-lg font-semibold text-tx-primary">No cards yet</h3>
+              <p className="text-sm text-tx-secondary">
+                Add your first card to start managing your finances
+              </p>
+            </div>
             <Button
               onClick={() => setIsAddCardModalOpen(true)}
-              className="bg-blue-50 hover:bg-blue-60 text-white font-semibold px-6"
+              className="bg-blue-50 hover:bg-blue-60 text-white font-semibold px-8 rounded-full h-11"
             >
-              Add
+              + Add Card
             </Button>
           </div>
         </div>

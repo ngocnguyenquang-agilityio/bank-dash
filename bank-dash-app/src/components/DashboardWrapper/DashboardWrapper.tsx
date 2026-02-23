@@ -9,6 +9,7 @@ import { RecentTransactions } from '@/components/RecentTransactions';
 import { WeeklyActivity } from '@/components/WeeklyActivity';
 import { QuickTransfer } from '@/components/QuickTransfer';
 import { BalanceHistory } from '@/components/BalanceHistory';
+import { Icons } from '@/components/Icons/Icons';
 
 // Types
 import type { CardsResponse } from '@/types/card';
@@ -32,35 +33,48 @@ export const DashboardWrapper = ({ cards, transactions, error }: DashboardWrappe
   const cardsData = cards?.data || [];
 
   return (
-    <main className="p-4 sm:p-6 md:p-8 lg:p-10">
-      <div className="grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-6 lg:gap-8 mb-6">
-        <section className="space-y-4">
+    <main>
+      <div className="flex items-start gap-[30px] mb-6">
+        <section className="space-y-4 flex flex-col">
           <div className="flex items-center justify-between">
             <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">
               My Cards
             </h2>
-            <Link
-              href="/cards"
-              className="text-sm sm:text-base md:text-[17px] font-semibold text-tx-primary hover:text-blue-50"
-            >
-              See All
-            </Link>
+
+            {cardsData.length !== 0 ? (
+              <Link
+                href="/cards"
+                className="text-sm sm:text-base md:text-[17px] font-semibold text-tx-primary hover:text-blue-50"
+              >
+                See All
+              </Link>
+            ) : null}
           </div>
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 overflow-x-auto pb-2 scrollbar-hide">
-            {cardsData.map((card, index) => (
-              <CreditCard
-                key={card.documentId}
-                balance={card.balance}
-                cardHolder={card.name}
-                cardNumber={card.number}
-                expiration={card.expiration}
-                variant={index % 2 === 0 ? 'blue' : 'white'}
-              />
-            ))}
+            {cardsData.length === 0 ? (
+              <div className="w-full sm:w-[350px] h-[200px] sm:h-[235px] rounded-[25px] border border-dashed border-neutral-20 flex flex-col items-center justify-center gap-3 flex-shrink-0 bg-white">
+                <Icons.CreditCard className="w-10 h-10 fill-blue-50" />
+                <p className="text-sm text-tx-secondary">No cards yet</p>
+                <Link href="/cards" className="text-sm font-medium text-blue-50 hover:underline">
+                  Add your first card
+                </Link>
+              </div>
+            ) : (
+              cardsData.map((card, index) => (
+                <CreditCard
+                  key={card.documentId}
+                  balance={card.balance}
+                  cardHolder={card.name}
+                  cardNumber={card.number}
+                  expiration={card.expiration}
+                  variant={index % 2 === 0 ? 'blue' : 'white'}
+                />
+              ))
+            )}
           </div>
         </section>
 
-        <section className="space-y-4">
+        <section className="space-y-4 flex flex-col lg:flex-1">
           <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">
             Recent Transaction
           </h2>
@@ -75,7 +89,7 @@ export const DashboardWrapper = ({ cards, transactions, error }: DashboardWrappe
         <WeeklyActivity />
       </section>
 
-      <section className="flex flex-col lg:flex-row gap-4 sm:gap-6 lg:gap-8">
+      <section className="flex items-stretch gap-[30px]">
         <div className="flex flex-col space-y-4 lg:flex-1">
           <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">
             Quick Transfer

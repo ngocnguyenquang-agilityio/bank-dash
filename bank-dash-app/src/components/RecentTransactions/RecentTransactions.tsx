@@ -32,7 +32,7 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
     return (
       <Card className="w-full h-auto xl:h-[235px] rounded-[25px] border-0">
         <CardContent className="flex items-center justify-center h-full">
-          <p className="text-neutral-30 text-sm">No recent transactions</p>
+          <p className="text-tx-secondary text-sm">No recent transactions</p>
         </CardContent>
       </Card>
     );
