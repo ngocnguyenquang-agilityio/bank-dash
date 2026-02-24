@@ -54,30 +54,28 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
   // Empty state when user has no cards
   if (!hasCards) {
     return (
-      <div className="space-y-6">
-        <div className="flex min-h-[400px] items-center justify-center rounded-2xl bg-background p-8">
-          <div className="flex flex-col items-center text-center space-y-5 max-w-sm">
-            <div className="w-20 h-20 rounded-full bg-blue-10 flex items-center justify-center">
-              <Icons.CreditCard className="w-10 h-10 fill-blue-50" />
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-lg font-semibold text-tx-primary">No cards yet</h3>
-              <p className="text-sm text-tx-secondary">
-                Add your first card to start managing your finances
-              </p>
-            </div>
-            <Button
-              onClick={() => setIsAddCardModalOpen(true)}
-              className="bg-blue-50 hover:bg-blue-60 text-white font-semibold px-8 rounded-full h-11"
-            >
-              + Add Card
-            </Button>
+      <>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4">
+          <div className="w-20 h-20 rounded-full bg-blue-10 flex items-center justify-center">
+            <Icons.CreditCard className="w-10 h-10 fill-blue-50" />
           </div>
+          <div className="space-y-2">
+            <h2 className="text-2xl sm:text-3xl font-semibold text-tx-primary">No cards yet</h2>
+            <p className="text-base sm:text-lg text-neutral-30 max-w-md">
+              Add your first card to start managing your finances
+            </p>
+          </div>
+          <Button
+            onClick={() => setIsAddCardModalOpen(true)}
+            className="h-[50px] px-8 rounded-[15px] bg-blue-50 text-white text-base font-medium hover:bg-blue-60 transition-colors"
+          >
+            + Add Card
+          </Button>
         </div>
 
         {/* Add Card Modal */}
         <AddCardModal open={isAddCardModalOpen} onOpenChange={setIsAddCardModalOpen} />
-      </div>
+      </>
     );
   }
 
