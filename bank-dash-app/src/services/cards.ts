@@ -2,6 +2,7 @@
 
 // Libraries
 import { Effect } from 'effect';
+import { revalidatePath } from 'next/cache';
 
 // Services
 import { apiClient } from '@/services/api';
@@ -57,7 +58,10 @@ export const addCard = async (
       body: { data: payload },
     }),
   ).pipe(
-    Effect.map(() => ({ success: true, error: null })),
+    Effect.map(() => {
+      revalidatePath('/cards');
+      return { success: true, error: null };
+    }),
     Effect.catchAll((error) =>
       Effect.succeed({
         success: false,
