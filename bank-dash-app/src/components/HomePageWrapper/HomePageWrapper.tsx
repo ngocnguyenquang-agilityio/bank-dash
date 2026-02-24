@@ -24,9 +24,7 @@ export const HomePageWrapper = () => {
       <nav className="border-b bg-white">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="bg-tx-primary p-2 rounded-lg">
-              <Icons.CreditCard className="w-6 h-6 text-white" />
-            </div>
+            <Icons.Logo />
             <span className="text-xl font-bold text-tx-primary">Bank Dash</span>
           </div>
           <Button onClick={handleNavigateSignIn} className="rounded-full px-6 font-medium">

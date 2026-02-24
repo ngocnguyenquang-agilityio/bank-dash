@@ -11,7 +11,7 @@ import type { CardsResponse } from '@/types/card';
 export const getCardsEffect = (userClerkId: string, page: number = 1, pageSize: number = 5) => {
   const url = `/cards?populate=*&sort=updatedAt:desc&filters[member][clerkId][$eq]=${userClerkId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
 
-  return requestEffect(apiClient.get<CardsResponse>(url)).pipe(
+  return requestEffect(apiClient.get<CardsResponse>(url, { next: { revalidate: 60 } })).pipe(
     Effect.map((cards) => ({ cards, error: null as string | null })),
     Effect.catchAll((error) =>
       Effect.succeed({

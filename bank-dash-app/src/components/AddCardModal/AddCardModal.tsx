@@ -66,6 +66,7 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
       nameOnCard: '',
       cardNumber: '',
       expiration: '',
+      address: '',
     },
   });
 
@@ -292,7 +293,7 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
               </Button>
               <Button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={!isDirty || isSubmitting}
                 className="h-[50px] w-[160px] rounded-[9px] bg-blue-50 hover:bg-blue-50/90 text-white text-[18px] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Adding...' : 'Add Card'}

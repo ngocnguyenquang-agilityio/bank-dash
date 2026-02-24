@@ -1,6 +1,7 @@
 export type RequestInitExtended = Omit<RequestInit, 'body'> & {
   body?: object | null;
   baseUrl?: string;
+  next?: { revalidate?: number | false; tags?: string[] };
 };
 
 export type FieldErrors = Record<string, string[]>;
@@ -11,7 +12,7 @@ type ErrorWithDetails = {
 };
 
 export const withBaseOptions = (
-  options: RequestInitExtended | RequestInit = {}
+  options: RequestInitExtended | RequestInit = {},
 ): RequestInitExtended => ({
   ...(options as RequestInitExtended),
   baseUrl: process.env.NEXT_PUBLIC_API_URL,

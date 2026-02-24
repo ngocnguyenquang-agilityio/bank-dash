@@ -20,7 +20,7 @@ export const SignUpPageWrapper = () => {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 relative z-10">
-          <div className="bg-white/20 rounded-xl p-1.5">
+          <div className="bg-white rounded-xl p-1.5">
             <Icons.Logo />
           </div>
           <span className="text-2xl font-black text-white">BankDash.</span>

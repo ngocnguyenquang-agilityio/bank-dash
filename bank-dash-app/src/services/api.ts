@@ -41,22 +41,24 @@ export class ApiClient {
 
   private request<T>(
     url: string,
-    config: RequestInit & { baseUrl?: string }
+    config: Omit<RequestInitExtended, 'body'> & { body?: BodyInit | null },
   ): Effect.Effect<T, ApiError | NetworkError> {
     return withAbortController<T, ApiError | NetworkError, never>((signal) =>
       Effect.tryPromise({
         try: async () => {
-          const baseUrl = config?.baseUrl || this.baseURL;
+          const { baseUrl: configBaseUrl, next, ...restConfig } = config;
+          const baseUrl = configBaseUrl || this.baseURL;
           const fullUrl = `${baseUrl}${url}`;
 
           const response = await fetch(fullUrl, {
             ...this.config,
-            ...config,
+            ...(restConfig as RequestInit),
             headers: {
               ...this.config.headers,
               ...config?.headers,
             },
             signal,
+            ...(next !== undefined ? { next } : {}),
           });
 
           if (!response.ok) {
@@ -76,20 +78,20 @@ export class ApiClient {
           }
           return new NetworkError({ message: 'Network error', originalError: error });
         },
-      })
+      }),
     );
   }
 
   get<T>(
     url: string,
-    config: Omit<RequestInitExtended, 'body'> = {}
+    config: Omit<RequestInitExtended, 'body'> = {},
   ): Effect.Effect<T, ApiError | NetworkError> {
     return this.request<T>(url, config);
   }
 
   post<T>(
     url: string,
-    config: RequestInitExtended = {}
+    config: RequestInitExtended = {},
   ): Effect.Effect<T, ApiError | NetworkError> {
     return this.request<T>(url, {
       ...config,
@@ -116,7 +118,7 @@ export class ApiClient {
 
   delete<T>(
     url: string,
-    config: Omit<RequestInitExtended, 'body'> = {}
+    config: Omit<RequestInitExtended, 'body'> = {},
   ): Effect.Effect<T, ApiError | NetworkError> {
     return this.request<T>(url, {
       ...config,

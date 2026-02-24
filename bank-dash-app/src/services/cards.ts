@@ -74,7 +74,9 @@ export const getCardDetails = async (
 ): Promise<ServiceResult<{ card: Card | null }>> => {
   const url = `/cards/${documentId}?populate=*`;
 
-  const effect = requestEffect(apiClient.get<{ data: Card }>(url)).pipe(
+  const effect = requestEffect(
+    apiClient.get<{ data: Card }>(url, { next: { revalidate: 60 } }),
+  ).pipe(
     Effect.map((response) => ({ card: response.data, error: null })),
     Effect.catchAll((error) =>
       Effect.succeed({

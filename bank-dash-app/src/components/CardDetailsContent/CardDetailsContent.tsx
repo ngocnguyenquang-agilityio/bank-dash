@@ -84,8 +84,8 @@ export const CardDetailsContent = ({ card }: CardDetailsContentProps) => {
               cardHolder={cardData.cardHolder}
               cardNumber={maskCardNumber(cardData.cardNumber)}
               expiration={cardData.expiration}
-              className="bg-gradient-to-br from-blue-30 to-blue-20"
               maskOption="firstAndLast4"
+              variant="blue"
             />
           </div>
 

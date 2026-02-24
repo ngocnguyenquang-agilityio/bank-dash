@@ -64,7 +64,7 @@ export const DashboardHeader = ({
             <SearchIcon className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5" />
             <Input
               placeholder="Search for something"
-              className="pl-10 md:pl-14 h-10 md:h-[50px] rounded-[40px] bg-neutral-10 border-0 text-sm md:text-[15px] text-blue-10 placeholder:text-blue-10"
+              className="pl-10 md:pl-14 h-10 md:h-[50px] rounded-[40px] bg-neutral-10 border-0 text-sm md:text-[15px] text-tx-primary placeholder:text-neutral-30"
             />
           </div>
 
