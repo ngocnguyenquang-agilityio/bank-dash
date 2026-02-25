@@ -1,5 +1,8 @@
 'use server';
 
+// Libraries
+import { revalidatePath } from 'next/cache';
+
 // Services
 import { getCardDetails, updateCardBalance } from '@/services/cards';
 import { createTransaction } from '@/services/transactions';
@@ -64,6 +67,8 @@ export const sendAmount = async (
     // Note: In a real app, we'd want to rollback the balance update here
     return { success: false, error: txError || TRANSACTION_ERRORS.FAILED_TRANSACTION };
   }
+
+  revalidatePath('/dashboard');
 
   return { success: true, error: null };
 };

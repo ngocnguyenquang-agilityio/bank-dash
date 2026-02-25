@@ -51,6 +51,7 @@ export const addCard = async (
         expiration: cardData.expiration,
         isPhysical: cardData.isPhysical,
         address: cardData.address,
+        balance: cardData.balance,
         member: member.documentId,
       };
 
@@ -80,9 +81,7 @@ export const getCardDetails = async (
 ): Promise<ServiceResult<{ card: Card | null }>> => {
   const url = `/cards/${documentId}?populate=*`;
 
-  const effect = requestEffect(
-    apiClient.get<{ data: Card }>(url, { next: { revalidate: 60 } }),
-  ).pipe(
+  const effect = requestEffect(apiClient.get<{ data: Card }>(url)).pipe(
     Effect.map((response) => ({ card: response.data, error: null })),
     Effect.catchAll((error) =>
       Effect.succeed({

@@ -21,9 +21,7 @@ interface GetMemberResult {
 export const getMemberByClerkId = async (clerkId: string): Promise<GetMemberResult> => {
   const url = `/members?populate=*&filters[clerkId][$eq]=${clerkId}`;
 
-  const effect = requestEffect(
-    apiClient.get<MembersResponse>(url, { next: { revalidate: 60 } }),
-  ).pipe(
+  const effect = requestEffect(apiClient.get<MembersResponse>(url)).pipe(
     Effect.map((response) => ({
       member: response.data[0] || null,
       error: null,

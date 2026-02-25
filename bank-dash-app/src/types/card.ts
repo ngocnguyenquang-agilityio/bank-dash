@@ -58,6 +58,11 @@ export const CardFormSchema = Schema.Struct({
   expiration: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Expiration date is required' }),
   ),
+  balance: Schema.optional(
+    Schema.String.pipe(
+      Schema.pattern(/^[\d,]+(\.\d{1,2})?$/, { message: () => 'Invalid balance amount' }),
+    ),
+  ),
   address: Schema.optional(Schema.String),
 });
 

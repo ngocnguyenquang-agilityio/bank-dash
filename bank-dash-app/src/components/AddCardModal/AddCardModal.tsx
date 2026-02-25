@@ -62,6 +62,7 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
       nameOnCard: '',
       cardNumber: '',
       expiration: '',
+      balance: '',
       address: '',
     },
   });
@@ -93,15 +94,27 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
     return formatted;
   };
 
+  const formatBalance = (value: string): string => {
+    // Remove commas to get raw digits
+    const raw = value.replace(/,/g, '');
+
+    // Allow only digits and one decimal point with max 2 decimal places
+    if (raw !== '' && !/^\d*\.?\d{0,2}$/.test(raw)) return value;
+
+    const parts = raw.split('.');
+    const integerPart = (parts[0] ?? '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    return parts.length === 2 ? `${integerPart}.${parts[1] ?? ''}` : integerPart;
+  };
+
   const onSubmit = useCallback(
     async (data: CardFormData) => {
       setIsSubmitting(true);
 
       try {
-        // Remove dashes from card number before sending to API
         const sanitizedData = {
           ...data,
           cardNumber: data.cardNumber.replace(/-/g, ''),
+          balance: data.balance?.replace(/,/g, ''),
         };
 
         const result = await addCard(user!.id, sanitizedData);
@@ -254,6 +267,30 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
                     <p className="text-sm text-red-500">{errors.expiration.message}</p>
                   )}
                 </div>
+              </div>
+
+              {/* Balance - Third Row */}
+              <div className="space-y-[11px]">
+                <Label htmlFor="balance" className="text-base text-black">
+                  Balance
+                </Label>
+                <Controller
+                  name="balance"
+                  control={control}
+                  render={({ field }) => (
+                    <Input
+                      id="balance"
+                      placeholder="0.00"
+                      value={field.value ?? ''}
+                      onChange={(e) => {
+                        const formatted = formatBalance(e.target.value);
+                        field.onChange(formatted);
+                      }}
+                      className="h-[50px] rounded-[15px] border-neutral-20 text-[15px] text-primary placeholder:text-neutral-30"
+                    />
+                  )}
+                />
+                {errors.balance && <p className="text-sm text-red-500">{errors.balance.message}</p>}
               </div>
 
               {isPhysical && (

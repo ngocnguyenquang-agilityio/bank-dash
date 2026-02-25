@@ -51,9 +51,9 @@ export const Pagination = ({ page, pageCount, onPageChange }: PaginationProps) =
         variant="ghost"
         onClick={handlePreviousPage}
         disabled={page === 1}
-        className="group flex items-center gap-2 text-[15px] font-medium text-primary hover:bg-transparent hover:text-primary/80"
+        className="group flex items-center gap-2 text-[15px] font-medium text-tx-primary hover:bg-transparent hover:text-tx-primary/80"
       >
-        <ChevronBackwardIcon className="fill-primary group-hover:fill-primary/80" />
+        <ChevronBackwardIcon className="fill-tx-primary group-hover:fill-tx-primary/80" />
         Previous
       </Button>
 
@@ -66,7 +66,7 @@ export const Pagination = ({ page, pageCount, onPageChange }: PaginationProps) =
             onClick={() => handlePageChange(pageNum)}
             className={cn(
               'w-10 h-10 rounded-[10px] text-[15px] font-medium',
-              page === pageNum ? 'bg-primary text-white hover:bg-primary/90' : 'text-primary'
+              page === pageNum ? 'bg-primary text-white hover:bg-primary/90' : 'text-tx-primary',
             )}
           >
             {pageNum}
@@ -78,10 +78,10 @@ export const Pagination = ({ page, pageCount, onPageChange }: PaginationProps) =
         variant="ghost"
         onClick={handleNextPage}
         disabled={page === totalPages}
-        className="flex items-center gap-2 text-[15px] font-medium text-primary hover:bg-transparent hover:text-primary/80"
+        className="flex items-center gap-2 text-[15px] font-medium text-tx-primary hover:bg-transparent hover:text-tx-primary/80"
       >
         Next
-        <ChevronForwardIcon className="fill-primary group-hover:fill-primary/80" />
+        <ChevronForwardIcon className="fill-tx-primary group-hover:fill-tx-primary/80" />
       </Button>
     </div>
   );
