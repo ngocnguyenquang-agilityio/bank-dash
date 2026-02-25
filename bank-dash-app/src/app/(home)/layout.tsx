@@ -32,7 +32,7 @@ const HomeLayout = async ({ children }: HomeLayoutProps) => {
         >
           <DashboardHeader />
         </Suspense>
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-10">{children}</main>
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 md:px-10 md:py-6">{children}</main>
       </div>
     </div>
   );

@@ -79,7 +79,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 overflow-y-auto">
+          <nav className="flex-1 overflow-y-auto">
             <ul className="space-y-1">
               {menuItems.map((item) => {
                 const isActive =
@@ -90,7 +90,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        'flex items-center gap-4 sm:gap-6 px-4 sm:px-7 py-3 sm:py-4 rounded-r-[10px] text-base sm:text-[18px] font-medium transition-colors relative',
+                        'flex items-center gap-4 sm:gap-6 px-4 sm:px-7 md:px-11 py-6 rounded-r-[10px] text-base sm:text-[18px] font-medium transition-colors relative',
                         isActive ? 'text-blue-30' : 'text-neutral-30 hover:text-tx-primary',
                       )}
                     >
