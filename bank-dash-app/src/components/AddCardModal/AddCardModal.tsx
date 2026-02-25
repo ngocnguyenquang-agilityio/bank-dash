@@ -1,14 +1,13 @@
 'use client';
 
 // Libraries
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller, useWatch } from 'react-hook-form';
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useUser } from '@clerk/nextjs';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
-import { Effect } from 'effect';
 
 // Types
 import { CardFormSchema, CardTypes, type CardFormData } from '@/types/card';
@@ -39,9 +38,6 @@ import { CalendarIcon } from 'lucide-react';
 
 // Services
 import { addCard } from '@/services/cards';
-
-// Constants
-import { MESSAGES } from '@/constants/error';
 
 interface AddCardModalProps {
   open: boolean;
@@ -97,39 +93,35 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
     return formatted;
   };
 
-  const onSubmit = (data: CardFormData) => {
-    setIsSubmitting(true);
+  const onSubmit = useCallback(
+    async (data: CardFormData) => {
+      setIsSubmitting(true);
 
-    // Remove dashes from card number before sending to API
-    const sanitizedData = {
-      ...data,
-      cardNumber: data.cardNumber.replace(/-/g, ''),
-    };
+      try {
+        // Remove dashes from card number before sending to API
+        const sanitizedData = {
+          ...data,
+          cardNumber: data.cardNumber.replace(/-/g, ''),
+        };
 
-    const addCardEffect = Effect.tryPromise({
-      try: () => addCard(user!.id, sanitizedData),
-      catch: () => new Error(MESSAGES.UNEXPECTED_ERROR),
-    }).pipe(
-      Effect.flatMap((result) =>
-        result.success
-          ? Effect.succeed(result)
-          : Effect.fail(new Error(result.error || 'Failed to add card')),
-      ),
-      Effect.tap(() => {
-        toast.success('Card added successfully');
-        reset();
-        onOpenChange(false);
-        router.refresh();
-      }),
-      Effect.catchAll((error) => {
-        toast.error(error.message);
-        return Effect.succeed(null);
-      }),
-      Effect.ensuring(Effect.sync(() => setIsSubmitting(false))),
-    );
+        const result = await addCard(user!.id, sanitizedData);
 
-    Effect.runPromise(addCardEffect);
-  };
+        if (result.success) {
+          toast.success('Card added successfully');
+          reset();
+          onOpenChange(false);
+          router.refresh();
+        } else {
+          toast.error(result.error || 'Failed to add card');
+        }
+      } catch {
+        toast.error('An unexpected error occurred');
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [user, reset, onOpenChange, router],
+  );
 
   return (
     <>

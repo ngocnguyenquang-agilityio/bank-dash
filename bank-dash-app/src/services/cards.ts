@@ -6,8 +6,7 @@ import { revalidatePath } from 'next/cache';
 
 // Services
 import { apiClient } from '@/services/api';
-import { requestEffect } from '@/services/api.effect';
-import { getMemberByClerkId } from '@/services/members';
+import { ApiRequestError, requestEffect } from '@/services/api.effect';
 import { getCardsEffect } from '@/services/cards.effect';
 
 // Utils
@@ -15,6 +14,7 @@ import { runServerEffect } from '@/lib/effect/runtime';
 
 // Types
 import type { CardsResponse, CardFormData, Card } from '@/types/card';
+import type { MembersResponse } from '@/types/member';
 
 // Constants
 import { CARD_ERRORS, NOT_FOUND_ERRORS } from '@/constants/error';
@@ -35,29 +35,31 @@ export const addCard = async (
   userId: string,
   cardData: CardFormData,
 ): Promise<ServiceResult<{ success: boolean }>> => {
-  const { member, error } = await getMemberByClerkId(userId);
+  const memberUrl = `/members?populate=*&filters[clerkId][$eq]=${userId}`;
 
-  if (error || !member) {
-    return {
-      success: false,
-      error: error || NOT_FOUND_ERRORS.MEMBER_NOT_FOUND,
-    };
-  }
+  const effect = requestEffect(apiClient.get<MembersResponse>(memberUrl)).pipe(
+    Effect.flatMap((response) => {
+      const member = response.data[0];
 
-  const payload = {
-    number: cardData.cardNumber,
-    name: cardData.nameOnCard,
-    expiration: cardData.expiration,
-    isPhysical: cardData.isPhysical,
-    address: cardData.address,
-    member: member.documentId,
-  };
+      if (!member) {
+        return Effect.fail(new ApiRequestError({ message: NOT_FOUND_ERRORS.MEMBER_NOT_FOUND }));
+      }
 
-  const effect = requestEffect(
-    apiClient.post('/cards', {
-      body: { data: payload },
+      const payload = {
+        number: cardData.cardNumber,
+        name: cardData.nameOnCard,
+        expiration: cardData.expiration,
+        isPhysical: cardData.isPhysical,
+        address: cardData.address,
+        member: member.documentId,
+      };
+
+      return requestEffect(
+        apiClient.post('/cards', {
+          body: { data: payload },
+        }),
+      );
     }),
-  ).pipe(
     Effect.map(() => {
       revalidatePath('/cards');
       return { success: true, error: null };

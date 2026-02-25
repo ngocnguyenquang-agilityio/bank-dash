@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import { DashboardHeader } from '.';
+import { DashboardHeaderContent } from './DashboardHeaderContent';
 
-const meta: Meta<typeof DashboardHeader> = {
+const meta: Meta<typeof DashboardHeaderContent> = {
   title: 'Dashboard/DashboardHeader',
-  component: DashboardHeader,
+  component: DashboardHeaderContent,
   parameters: {
     layout: 'fullscreen',
   },
@@ -16,12 +16,12 @@ const meta: Meta<typeof DashboardHeader> = {
 
 export default meta;
 
-type Story = StoryObj<typeof DashboardHeader>;
+type Story = StoryObj<typeof DashboardHeaderContent>;
 
 export const Default: Story = {
   render: (args) => (
     <div className="min-h-screen bg-gray-50">
-      <DashboardHeader {...args} />
+      <DashboardHeaderContent {...args} />
     </div>
   ),
 };

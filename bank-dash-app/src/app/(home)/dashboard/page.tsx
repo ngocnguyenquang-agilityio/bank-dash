@@ -29,7 +29,9 @@ const HomePage = async () => {
   }
 
   const [cardsResult, transactionsResult] = await runServerEffect(
-    Effect.all([getCardsEffect(userId, 1, 2), getRecentTransactionsEffect(userId)]),
+    Effect.all([getCardsEffect(userId, 1, 2), getRecentTransactionsEffect(userId)], {
+      concurrency: 'unbounded',
+    }),
   );
 
   const { cards, error: cardsError } = cardsResult;
