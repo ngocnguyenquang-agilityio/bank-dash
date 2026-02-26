@@ -1,17 +1,19 @@
 'use server';
 
 // Libraries
+import { Effect } from 'effect';
 import { revalidatePath } from 'next/cache';
 
 // Services
-import { getCardDetails, updateCardBalance } from '@/services/cards';
-import { createTransaction } from '@/services/transactions';
+import { apiClient } from '@/services/api';
+import { requestEffect, ApiRequestError } from '@/services/api.effect';
+import { runServerEffect } from '@/lib/effect/runtime';
 
 // Types
-import { Transactions } from '@/types/card';
+import { Transactions, type Card } from '@/types/card';
 
 // Constants
-import { NOT_FOUND_ERRORS, TRANSACTION_ERRORS } from '@/constants/error';
+import { TRANSACTION_ERRORS } from '@/constants/error';
 
 interface SendAmountResult {
   success: boolean;
@@ -23,52 +25,61 @@ export const sendAmount = async (
   amount: number,
   recipientName: string,
 ): Promise<SendAmountResult> => {
-  // Validate amount
   if (amount <= 0) {
     return { success: false, error: TRANSACTION_ERRORS.INVALID_AMOUNT };
   }
 
-  // Fetch current card details
-  const { card, error: fetchError } = await getCardDetails(cardDocumentId);
+  const effect = Effect.gen(function* () {
+    // Fetch card to read current balance
+    const { data: card } = yield* requestEffect(
+      apiClient.get<{ data: Card }>(`/cards/${cardDocumentId}?populate=*`),
+    );
 
-  if (fetchError || !card) {
-    return { success: false, error: fetchError || NOT_FOUND_ERRORS.CARD_NOT_FOUND };
-  }
+    const currentBalance = parseFloat(card.balance);
 
-  const currentBalance = parseFloat(card.balance);
+    if (currentBalance < amount) {
+      return yield* Effect.fail(
+        new ApiRequestError({ message: TRANSACTION_ERRORS.INSUFFICIENT_BALANCE }),
+      );
+    }
 
-  // Check if balance is sufficient
-  if (currentBalance < amount) {
-    return { success: false, error: TRANSACTION_ERRORS.INSUFFICIENT_BALANCE };
-  }
+    const newBalance = (currentBalance - amount).toFixed(2);
 
-  // Calculate new balance
-  const newBalance = (currentBalance - amount).toFixed(2);
+    // Update balance and create transaction concurrently via Effect fibers
+    yield* Effect.all(
+      [
+        requestEffect(
+          apiClient.put(`/cards/${cardDocumentId}`, {
+            body: { data: { balance: newBalance } },
+          }),
+        ),
+        requestEffect(
+          apiClient.post('/transactions', {
+            body: {
+              data: {
+                message: `Transfer to ${recipientName}`,
+                amount,
+                type: Transactions.Withdrawal,
+                card: cardDocumentId,
+                date: new Date().toISOString().split('T')[0],
+              },
+            },
+          }),
+        ),
+      ],
+      { concurrency: 'unbounded' },
+    );
 
-  // Update card balance
-  const { success: updateSuccess, error: updateError } = await updateCardBalance(
-    cardDocumentId,
-    newBalance,
+    revalidatePath('/dashboard');
+    return { success: true, error: null } satisfies SendAmountResult;
+  }).pipe(
+    Effect.catchAll((error) =>
+      Effect.succeed<SendAmountResult>({
+        success: false,
+        error: error.message || TRANSACTION_ERRORS.FAILED_TRANSACTION,
+      }),
+    ),
   );
 
-  if (!updateSuccess) {
-    return { success: false, error: updateError || TRANSACTION_ERRORS.FAILED_TRANSACTION };
-  }
-
-  // Create transaction record
-  const { success: txSuccess, error: txError } = await createTransaction({
-    cardDocumentId,
-    amount,
-    message: `Transfer to ${recipientName}`,
-    type: Transactions.Withdrawal,
-  });
-
-  if (!txSuccess) {
-    // Note: In a real app, we'd want to rollback the balance update here
-    return { success: false, error: txError || TRANSACTION_ERRORS.FAILED_TRANSACTION };
-  }
-
-  revalidatePath('/dashboard');
-
-  return { success: true, error: null };
+  return runServerEffect(effect);
 };

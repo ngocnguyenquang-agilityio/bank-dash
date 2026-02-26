@@ -7,6 +7,7 @@ import { format } from 'date-fns';
 // Components
 import { CreditCard } from '@/components/CreditCard';
 import { CardSetting } from '@/components/CardSetting';
+import { Icons } from '@/components/Icons/Icons';
 
 // Services
 import { updateCardDetails } from '@/services/cards';
@@ -77,7 +78,7 @@ export const CardDetailsContent = ({ card }: CardDetailsContentProps) => {
       <div className="flex-1">
         <h2 className="text-[22px] font-semibold text-tx-primary mb-5">{cardData.cardHolder}</h2>
 
-        <div className="flex flex-col lg:flex-row gap-6 bg-white rounded-xl p-6">
+        <div className="relative flex flex-col lg:flex-row gap-6 bg-white rounded-xl p-6">
           <div className="flex-shrink-0">
             <CreditCard
               balance={cardData.balance}
@@ -90,6 +91,12 @@ export const CardDetailsContent = ({ card }: CardDetailsContentProps) => {
           </div>
 
           <div className="flex-1 bg-white rounded-[25px] p-7">{renderCardDetails()}</div>
+
+          {!isActive && (
+            <div className="absolute inset-0 bg-white/60 z-10 rounded-xl flex items-center justify-center p-6">
+              <Icons.Lock className="w-8 h-8 fill-red-500" />
+            </div>
+          )}
         </div>
       </div>
 

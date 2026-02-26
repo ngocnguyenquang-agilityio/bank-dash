@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2 } from 'lucide-react';
+import { ChevronDown, Loader2 } from 'lucide-react';
 import { useForm, useWatch } from 'react-hook-form';
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
 import { useRouter } from 'next/navigation';
@@ -100,25 +100,25 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
         >
           <TabsTrigger
             value="edit-profile"
-            className="px-4 sm:px-6 pb-3 text-base font-medium text-blue-20 rounded-none border-0 data-[state=active]:text-blue-50 data-[state=active]:shadow-none after:h-[3px] after:bottom-0 after:rounded-t-[10px] after:bg-blue-50"
+            className="flex-none justify-start px-4 sm:px-6 pb-3 text-base font-medium text-blue-20 rounded-none border-0 data-[state=active]:text-blue-50 data-[state=active]:shadow-none after:h-[3px] after:rounded-t-[10px] after:bg-blue-50"
           >
             Edit Profile
           </TabsTrigger>
           <TabsTrigger
             value="preferences"
-            className="px-4 sm:px-6 pb-3 text-base font-medium text-blue-20 rounded-none border-0 data-[state=active]:text-blue-50 data-[state=active]:shadow-none after:h-[3px] after:bottom-0 after:rounded-t-[10px] after:bg-blue-50"
+            className="flex-none justify-start px-4 sm:px-6 pb-3 text-base font-medium text-blue-20 rounded-none border-0 data-[state=active]:text-blue-50 data-[state=active]:shadow-none after:h-[3px] after:rounded-t-[10px] after:bg-blue-50"
           >
             Preferences
           </TabsTrigger>
           <TabsTrigger
             value="security"
-            className="px-4 sm:px-6 pb-3 text-base font-medium text-blue-20 rounded-none border-0 data-[state=active]:text-blue-50 data-[state=active]:shadow-none after:h-[3px] after:bottom-0 after:rounded-t-[10px] after:bg-blue-50"
+            className="flex-none justify-start px-4 sm:px-6 pb-3 text-base font-medium text-blue-20 rounded-none border-0 data-[state=active]:text-blue-50 data-[state=active]:shadow-none after:h-[3px] after:rounded-t-[10px] after:bg-blue-50"
           >
             Security
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="edit-profile" className="mt-6 sm:mt-8 lg:mt-10">
+        <TabsContent value="edit-profile" className="mt-6 sm:mt-8 lg:mt-[53px]">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="flex flex-col lg:flex-row gap-8 lg:gap-14"
@@ -160,7 +160,8 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                 <Input
                   id="name"
                   {...register('name')}
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-blue-20 placeholder:text-blue-20 focus-visible:ring-blue-50"
+                  placeholder="Enter your name"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-tx-primary placeholder:text-tx-secondary focus-visible:ring-blue-50"
                 />
                 {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
               </div>
@@ -172,7 +173,8 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                 <Input
                   id="userName"
                   {...register('userName')}
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-blue-20 placeholder:text-blue-20 focus-visible:ring-blue-50"
+                  placeholder="Enter your username"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-tx-primary placeholder:text-tx-secondary focus-visible:ring-blue-50"
                 />
                 {errors.userName && (
                   <p className="text-red-500 text-sm">{errors.userName.message}</p>
@@ -188,7 +190,8 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                   id="email"
                   {...register('email')}
                   type="email"
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-blue-20 placeholder:text-blue-20 focus-visible:ring-blue-50"
+                  placeholder="Enter your email"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-tx-primary placeholder:text-tx-secondary focus-visible:ring-blue-50"
                 />
                 {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
               </div>
@@ -202,7 +205,7 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                   type="password"
                   value="**********"
                   disabled
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-neutral-10 px-5 text-[15px] text-blue-20 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-neutral-10 px-5 text-[15px] text-tx-primary disabled:cursor-not-allowed disabled:opacity-50"
                 />
               </div>
 
@@ -215,10 +218,10 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                   <PopoverTrigger asChild>
                     <Button
                       variant="outline"
-                      className="w-full h-[50px] rounded-[15px] border-neutral-20 bg-white text-[15px] text-blue-20 justify-start text-left font-normal"
+                      className={`w-full h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] justify-between text-left font-normal ${dob ? 'text-tx-primary' : 'text-tx-secondary'}`}
                     >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
                       {dob ? format(new Date(dob), 'PPP') : 'Select date'}
+                      <ChevronDown className="h-5 w-5 shrink-0 opacity-50" />
                     </Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-auto p-0">
@@ -242,7 +245,8 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                 <Input
                   id="presentAddress"
                   {...register('presentAddress')}
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-blue-20 placeholder:text-blue-20 focus-visible:ring-blue-50"
+                  placeholder="Enter present address"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-tx-primary placeholder:text-tx-secondary focus-visible:ring-blue-50"
                 />
               </div>
 
@@ -254,7 +258,8 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                 <Input
                   id="permanentAddress"
                   {...register('permanentAddress')}
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-blue-20 placeholder:text-blue-20 focus-visible:ring-blue-50"
+                  placeholder="Enter permanent address"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-tx-primary placeholder:text-tx-secondary focus-visible:ring-blue-50"
                 />
               </div>
 
@@ -265,7 +270,8 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                 <Input
                   id="city"
                   {...register('city')}
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-blue-20 placeholder:text-blue-20 focus-visible:ring-blue-50"
+                  placeholder="Enter your city"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-tx-primary placeholder:text-tx-secondary focus-visible:ring-blue-50"
                 />
               </div>
 
@@ -277,7 +283,8 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                 <Input
                   id="postalCode"
                   {...register('postalCode')}
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-blue-20 placeholder:text-blue-20 focus-visible:ring-blue-50"
+                  placeholder="Enter postal code"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-tx-primary placeholder:text-tx-secondary focus-visible:ring-blue-50"
                 />
               </div>
 
@@ -288,7 +295,8 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                 <Input
                   id="country"
                   {...register('country')}
-                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-blue-20 placeholder:text-blue-20 focus-visible:ring-blue-50"
+                  placeholder="Enter your country"
+                  className="h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] text-tx-primary placeholder:text-tx-secondary focus-visible:ring-blue-50"
                 />
               </div>
 
@@ -306,13 +314,13 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
           </form>
         </TabsContent>
 
-        <TabsContent value="preferences" className="mt-6 sm:mt-8 lg:mt-10">
+        <TabsContent value="preferences" className="mt-6 sm:mt-8 lg:mt-[53px]">
           <div className="flex min-h-[400px] items-center justify-center text-blue-20">
             <p className="text-lg">Preferences settings coming soon.</p>
           </div>
         </TabsContent>
 
-        <TabsContent value="security" className="mt-6 sm:mt-8 lg:mt-10">
+        <TabsContent value="security" className="mt-6 sm:mt-8 lg:mt-[53px]">
           <div className="flex min-h-[400px] items-center justify-center text-blue-20">
             <p className="text-lg">Security settings coming soon.</p>
           </div>

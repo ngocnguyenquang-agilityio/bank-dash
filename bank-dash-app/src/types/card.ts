@@ -51,9 +51,6 @@ export const CardFormSchema = Schema.Struct({
   cardNumber: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Card number is required' }),
     Schema.maxLength(19, { message: () => 'The maximum number is 16 digits' }),
-    Schema.pattern(REGEX.CARD_NUMBER, {
-      message: () => 'Invalid card number format',
-    }),
   ),
   expiration: Schema.String.pipe(
     Schema.minLength(1, { message: () => 'Expiration date is required' }),

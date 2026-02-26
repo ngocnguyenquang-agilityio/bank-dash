@@ -54,7 +54,7 @@ export const DashboardHeaderContent = ({
   return (
     <header className="h-16 sm:h-20 md:h-[100px] bg-white border-b border-neutral-10 px-4 sm:px-6 md:px-10">
       <div className="h-full flex items-center justify-between gap-4">
-        <h1 className="text-xl sm:text-2xl md:text-[28px] font-semibold text-tx-primary lg:ml-0">
+        <h1 className="text-xl sm:text-2xl md:text-[28px] font-semibold text-tx-primary ml-14 lg:ml-0">
           {generatedTitle}
         </h1>
 

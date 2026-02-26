@@ -20,11 +20,17 @@ const createApiError = (errorRaw: unknown, status?: number): ApiRequestError => 
   const { error } = handleApiError(errorRaw);
 
   if (typeof error === 'string') {
+    console.error('[API Error]', { message: error, status, cause: errorRaw });
     return new ApiRequestError({ message: error, status, cause: errorRaw });
   }
 
+  const message = Object.entries(error)
+    .map(([field, msgs]) => `${field}: ${msgs.join(', ')}`)
+    .join('; ');
+
+  console.error('[API Error]', { message, details: error, status, cause: errorRaw });
   return new ApiRequestError({
-    message: 'Validation error',
+    message,
     details: error,
     status,
     cause: errorRaw,
@@ -32,7 +38,7 @@ const createApiError = (errorRaw: unknown, status?: number): ApiRequestError => 
 };
 
 export const requestEffect = <T>(
-  effect: Effect.Effect<T, ApiError | NetworkError>
+  effect: Effect.Effect<T, ApiError | NetworkError>,
 ): Effect.Effect<T, ApiRequestError> =>
   effect.pipe(
     Effect.catchTags({
@@ -51,5 +57,5 @@ export const requestEffect = <T>(
         return Effect.fail(createApiError((result as Record<string, unknown>).error));
       }
       return Effect.succeed(result);
-    })
+    }),
   );

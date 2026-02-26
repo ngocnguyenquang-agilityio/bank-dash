@@ -29,7 +29,7 @@ export const CardListItem = ({
       {/* Icon */}
       <div
         className={cn(
-          'flex items-center justify-center w-[80px] h-[50px] rounded-xl pt-1 shrink-0',
+          'flex items-center justify-center w-[91px] h-[60px] rounded-[20px] shrink-0',
           isPhysical ? 'bg-blue-10' : 'bg-red-30',
         )}
       >

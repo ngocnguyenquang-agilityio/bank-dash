@@ -146,8 +146,8 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
       />
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-w-[743px] rounded-[20px] p-0 gap-0">
-          <form onSubmit={handleSubmit(onSubmit)} className="p-[30px] space-y-[30px]">
+        <DialogContent className="rounded-[20px] p-0 gap-0">
+          <form onSubmit={handleSubmit(onSubmit)} className="px-[30px] py-[27px] space-y-[30px]">
             <DialogHeader>
               <DialogTitle className="sr-only">Add New Credit Card</DialogTitle>
               <DialogDescription className="text-base leading-[28px] text-neutral-30">

@@ -38,19 +38,17 @@ export const Sidebar = ({ className }: SidebarProps) => {
   return (
     <>
       {/* Mobile Menu Button */}
-      <Button
-        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        variant="ghost"
-        size="md"
-        className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 px-0 bg-white rounded-lg shadow-md flex items-center justify-center"
-        aria-label="Toggle menu"
-      >
-        {isMobileMenuOpen ? (
-          <XIcon className="w-6 h-6 text-tx-primary" />
-        ) : (
+      {!isMobileMenuOpen && (
+        <Button
+          onClick={() => setIsMobileMenuOpen(true)}
+          variant="ghost"
+          size="md"
+          className="lg:hidden fixed top-4 left-4 z-50 w-10 h-10 px-0 bg-white rounded-lg shadow-md flex items-center justify-center"
+          aria-label="Open menu"
+        >
           <MenuIcon className="w-6 h-6 text-tx-primary" />
-        )}
-      </Button>
+        </Button>
+      )}
 
       {/* Overlay for mobile */}
       {isMobileMenuOpen && (
@@ -70,6 +68,17 @@ export const Sidebar = ({ className }: SidebarProps) => {
         )}
       >
         <div className="flex flex-col h-full">
+          {/* Close button - top-right corner on mobile */}
+          <Button
+            onClick={() => setIsMobileMenuOpen(false)}
+            variant="ghost"
+            size="md"
+            className="lg:hidden absolute top-3 right-3 w-8 h-8 px-0 flex items-center justify-center hover:bg-neutral-10 rounded-md"
+            aria-label="Close menu"
+          >
+            <XIcon className="w-5 h-5 text-tx-primary" />
+          </Button>
+
           {/* Logo */}
           <div className="px-6 sm:px-9 py-6 sm:py-8">
             <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
@@ -90,7 +99,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
                       href={item.href}
                       onClick={() => setIsMobileMenuOpen(false)}
                       className={cn(
-                        'flex items-center gap-4 sm:gap-6 px-4 sm:px-7 md:px-11 py-6 rounded-r-[10px] text-base sm:text-[18px] font-medium transition-colors relative',
+                        'flex items-center gap-4 sm:gap-6 px-4 sm:px-7 md:px-11 py-[18px] rounded-r-[10px] text-base sm:text-[18px] font-medium transition-colors relative',
                         isActive ? 'text-blue-30' : 'text-neutral-30 hover:text-tx-primary',
                       )}
                     >

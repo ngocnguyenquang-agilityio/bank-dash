@@ -55,8 +55,8 @@ describe('Sidebar', () => {
     const sidebar = screen.getByRole('complementary');
     expect(sidebar.className).toContain('-translate-x-full');
 
-    // Toggle open via the button (only button in component)
-    const toggleButton = screen.getByRole('button');
+    // Toggle open via the hamburger button
+    const toggleButton = screen.getByRole('button', { name: 'Open menu' });
     fireEvent.click(toggleButton);
     expect(sidebar.className).toContain('translate-x-0');
     expect(sidebar.className).not.toContain('-translate-x-full');
