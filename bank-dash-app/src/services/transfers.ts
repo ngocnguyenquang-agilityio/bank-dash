@@ -45,29 +45,26 @@ export const sendAmount = async (
 
     const newBalance = (currentBalance - amount).toFixed(2);
 
-    // Update balance and create transaction concurrently via Effect fibers
-    yield* Effect.all(
-      [
-        requestEffect(
-          apiClient.put(`/cards/${cardDocumentId}`, {
-            body: { data: { balance: newBalance } },
-          }),
-        ),
-        requestEffect(
-          apiClient.post('/transactions', {
-            body: {
-              data: {
-                message: `Transfer to ${recipientName}`,
-                amount,
-                type: Transactions.Withdrawal,
-                card: cardDocumentId,
-                date: new Date().toISOString().split('T')[0],
-              },
-            },
-          }),
-        ),
-      ],
-      { concurrency: 'unbounded' },
+    // Create transaction first, then update balance only on success
+    // Sequential to prevent inconsistent state (balance deducted without transaction)
+    yield* requestEffect(
+      apiClient.post('/transactions', {
+        body: {
+          data: {
+            message: `Transfer to ${recipientName}`,
+            amount,
+            type: Transactions.Withdrawal,
+            card: cardDocumentId,
+            date: new Date().toISOString().split('T')[0],
+          },
+        },
+      }),
+    );
+
+    yield* requestEffect(
+      apiClient.put(`/cards/${cardDocumentId}`, {
+        body: { data: { balance: newBalance } },
+      }),
     );
 
     revalidatePath('/dashboard');
