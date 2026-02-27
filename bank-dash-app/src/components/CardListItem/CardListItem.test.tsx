@@ -23,40 +23,41 @@ describe('CardListItem', () => {
     expect(screen.getByText('**** **** **** 5600')).toBeInTheDocument();
 
     expect(screen.getByText('Name on Card')).toBeInTheDocument();
-    expect(screen.getByText(props.nameOnCard)).toBeInTheDocument();
+    // Name appears in both mobile and desktop layouts
+    expect(screen.getAllByText(props.nameOnCard).length).toBeGreaterThanOrEqual(1);
   });
 
   it('renders correct styling based on isPhysical', () => {
     const { container, rerender } = render(<CardListItem {...props} isPhysical={true} />);
 
-    // isPhysical=true -> Blue
-    expect(container.firstChild?.firstChild).toHaveClass('bg-blue-10');
+    // The icon container is inside the wrapper div
+    const iconDiv = container.querySelector('[class*="bg-blue-10"]');
+    expect(iconDiv).toBeInTheDocument();
 
     rerender(<CardListItem {...props} isPhysical={false} />);
 
-    // isPhysical=false -> Red
-    expect(container.firstChild?.firstChild).toHaveClass('bg-red-30');
+    const redIconDiv = container.querySelector('[class*="bg-red-30"]');
+    expect(redIconDiv).toBeInTheDocument();
   });
 
   it('renders View Details link', () => {
     render(<CardListItem {...props} />);
 
-    const viewDetailsLink = screen.getByRole('link', { name: /view details/i });
-    expect(viewDetailsLink).toBeInTheDocument();
-    expect(viewDetailsLink).toHaveAttribute('href', '/cards/1');
+    const viewDetailsLinks = screen.getAllByRole('link', { name: /view details/i });
+    expect(viewDetailsLinks.length).toBeGreaterThanOrEqual(1);
+    expect(viewDetailsLinks[0]).toHaveAttribute('href', '/cards/1');
   });
 
   it('View Details link has correct href', () => {
     render(<CardListItem {...props} />);
 
-    const viewDetailsLink = screen.getByRole('link', { name: /view details/i });
-    expect(viewDetailsLink).toHaveAttribute('href', '/cards/1');
+    const viewDetailsLinks = screen.getAllByRole('link', { name: /view details/i });
+    expect(viewDetailsLinks[0]).toHaveAttribute('href', '/cards/1');
   });
 
   it('renders credit card icon', () => {
     const { container } = render(<CardListItem {...props} />);
 
-    // lucide-react CreditCard component renders an svg
     const svg = container.querySelector('svg');
     expect(svg).toBeInTheDocument();
   });

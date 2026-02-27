@@ -25,53 +25,71 @@ export const CardListItem = ({
   maskOption = 'last4',
 }: CardListItemProps) => {
   return (
-    <div className="w-full h-[90px] bg-white rounded-[20px] border border-neutral-10 flex items-center px-6 gap-6">
-      {/* Icon */}
-      <div
-        className={cn(
-          'flex items-center justify-center w-[91px] h-[60px] rounded-[20px] shrink-0',
-          isPhysical ? 'bg-blue-10' : 'bg-red-30',
-        )}
-      >
-        <Icons.CreditCard className={cn('w-8 h-8', isPhysical ? 'fill-blue-60' : 'fill-red-60')} />
-      </div>
-
-      {/* Card Type */}
-      <div className="flex flex-col flex-1 min-w-0">
-        <div className="text-base font-medium text-black">Card Type</div>
-        <div className="text-[15px] text-tx-secondary mt-1">
-          {isPhysical ? 'Physical' : 'Virtual'}
+    <div className="w-full bg-white rounded-[20px] border border-neutral-10 p-4 sm:h-[90px] sm:flex sm:items-center sm:px-6 sm:py-0 sm:gap-6">
+      {/* Mobile layout */}
+      <div className="flex items-center gap-4 sm:contents">
+        {/* Icon */}
+        <div
+          className={cn(
+            'flex items-center justify-center w-[60px] h-[60px] sm:w-[91px] rounded-[20px] shrink-0',
+            isPhysical ? 'bg-blue-10' : 'bg-red-30',
+          )}
+        >
+          <Icons.CreditCard
+            className={cn('w-8 h-8', isPhysical ? 'fill-blue-60' : 'fill-red-60')}
+          />
         </div>
-      </div>
 
-      {/* Bank */}
-      <div className="flex flex-col flex-1 min-w-0">
-        <div className="text-base font-medium text-black">Bank</div>
-        <div className="text-[15px] text-tx-secondary mt-1">--</div>
-      </div>
-
-      {/* Card Number */}
-      <div className="flex flex-col flex-1 min-w-0">
-        <div className="text-base font-medium text-black">Card Number</div>
-        <div className="text-[15px] text-tx-secondary mt-1">
-          {maskCardNumber(cardNumber, maskOption)}
+        {/* Mobile: Primary info beside icon */}
+        <div className="flex flex-col flex-1 min-w-0 sm:hidden">
+          <div className="text-base font-medium text-black truncate">{nameOnCard}</div>
+          <div className="text-[13px] text-tx-secondary mt-0.5">
+            {isPhysical ? 'Physical' : 'Virtual'} | {maskCardNumber(cardNumber, maskOption)}
+          </div>
         </div>
-      </div>
 
-      {/* Name on Card */}
-      <div className="flex flex-col flex-1 min-w-0">
-        <div className="text-base font-medium text-black">Name on Card</div>
-        <div className="text-[15px] text-tx-secondary mt-1">{nameOnCard}</div>
-      </div>
-
-      {/* View Details */}
-      <div className="shrink-0">
+        {/* Mobile: View Details arrow */}
         <Link
           href={`/cards/${id}`}
-          className="text-[15px] font-medium text-blue-50 hover:underline"
+          className="sm:hidden text-[15px] font-medium text-blue-50 shrink-0"
+          aria-label="View Details"
         >
-          View Details
+          <Icons.ChevronForwardIcon className="w-5 h-5 fill-blue-50" />
         </Link>
+
+        {/* Desktop columns */}
+        <div className="hidden sm:flex sm:flex-col sm:flex-1 sm:min-w-0">
+          <div className="text-base font-medium text-black">Card Type</div>
+          <div className="text-[15px] text-tx-secondary mt-1">
+            {isPhysical ? 'Physical' : 'Virtual'}
+          </div>
+        </div>
+
+        <div className="hidden sm:flex sm:flex-col sm:flex-1 sm:min-w-0">
+          <div className="text-base font-medium text-black">Bank</div>
+          <div className="text-[15px] text-tx-secondary mt-1">--</div>
+        </div>
+
+        <div className="hidden sm:flex sm:flex-col sm:flex-1 sm:min-w-0">
+          <div className="text-base font-medium text-black">Card Number</div>
+          <div className="text-[15px] text-tx-secondary mt-1">
+            {maskCardNumber(cardNumber, maskOption)}
+          </div>
+        </div>
+
+        <div className="hidden sm:flex sm:flex-col sm:flex-1 sm:min-w-0">
+          <div className="text-base font-medium text-black">Name on Card</div>
+          <div className="text-[15px] text-tx-secondary mt-1">{nameOnCard}</div>
+        </div>
+
+        <div className="hidden sm:block shrink-0">
+          <Link
+            href={`/cards/${id}`}
+            className="text-[15px] font-medium text-blue-50 hover:underline"
+          >
+            View Details
+          </Link>
+        </div>
       </div>
     </div>
   );

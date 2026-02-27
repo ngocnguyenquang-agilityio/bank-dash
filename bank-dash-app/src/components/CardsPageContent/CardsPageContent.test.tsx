@@ -156,11 +156,12 @@ describe('CardsPageContent', () => {
     expect(screen.getByText('My Cards')).toBeInTheDocument();
   });
 
-  it('renders Add Card button', () => {
+  it('renders Add Card buttons', () => {
     render(<CardsPageContent cards={mockCards} error={null} />);
 
-    const addCardButton = screen.getByRole('button', { name: /add card/i });
-    expect(addCardButton).toBeInTheDocument();
+    // Two Add Card buttons: one for small screens (text), one for large screens (card-style)
+    const addCardButtons = screen.getAllByRole('button', { name: /add card/i });
+    expect(addCardButtons.length).toBe(2);
   });
 
   it('renders credit cards in My Cards section', () => {
@@ -248,14 +249,15 @@ describe('CardsPageContent', () => {
     expect(pushMock).toHaveBeenCalledWith(expect.stringContaining('page=2'));
   });
 
-  it('Add Card button is clickable', async () => {
+  it('Add Card button is clickable and opens modal', async () => {
     const user = userEvent.setup();
     render(<CardsPageContent cards={mockCards} error={null} />);
 
-    const addCardButton = screen.getByRole('button', { name: /add card/i });
-    await user.click(addCardButton);
+    const addCardButtons = screen.getAllByRole('button', { name: /add card/i });
+    expect(addCardButtons[0]).toBeDefined();
+    await user.click(addCardButtons[0]!);
 
-    expect(addCardButton).toBeInTheDocument();
+    expect(screen.getByTestId('add-card-modal')).toBeInTheDocument();
   });
 
   it('renders card numbers in card list', () => {

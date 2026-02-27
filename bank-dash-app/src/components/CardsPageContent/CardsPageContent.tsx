@@ -88,13 +88,13 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
           <Button
             onClick={() => setIsAddCardModalOpen(true)}
             variant="ghost"
-            className="text-[17px] font-semibold text-tx-primary hover:text-primary"
+            className="lg:hidden text-[17px] font-semibold text-tx-primary hover:text-primary"
           >
             + Add Card
           </Button>
         </div>
 
-        <div className="flex gap-[30px] overflow-x-auto pb-2">
+        <div className="flex gap-[30px] overflow-x-auto pb-2 lg:scrollbar-hide">
           {cards?.data?.slice(0, 3).map((card, index) => {
             const { id, balance, name, number, expiration } = card;
             const variant = index % 2 === 0 ? 'blue' : 'white';
@@ -110,6 +110,18 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
               />
             );
           })}
+
+          {/* Add Card Button — visible only on large screens inside the scroll row */}
+          <Button
+            onClick={() => setIsAddCardModalOpen(true)}
+            variant="ghost"
+            className="group hidden lg:flex w-[350px] h-[235px] rounded-[25px] flex-shrink-0 border-2 border-dashed border-neutral-20 flex-col items-center justify-center gap-3 bg-white hover:border-blue-50 hover:bg-blue-10/50"
+          >
+            <div className="w-12 h-12 rounded-full bg-blue-10 group-hover:bg-blue-50/20 flex items-center justify-center transition-colors">
+              <span className="text-2xl text-blue-50 font-light leading-none">+</span>
+            </div>
+            <span className="text-[15px] font-semibold text-tx-primary">Add Card</span>
+          </Button>
         </div>
       </section>
 

@@ -6,6 +6,13 @@ const meta: Meta<typeof DashboardHeaderContent> = {
   component: DashboardHeaderContent,
   parameters: {
     layout: 'fullscreen',
+    nextjs: {
+      appDirectory: true,
+      navigation: {
+        pathname: '/dashboard',
+        searchParams: {},
+      },
+    },
   },
   args: {
     memberName: 'John Doe',

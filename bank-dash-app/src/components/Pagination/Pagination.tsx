@@ -46,7 +46,7 @@ export const Pagination = ({ page, pageCount, onPageChange }: PaginationProps) =
   };
 
   return (
-    <div className="flex items-center justify-end gap-3 mt-8">
+    <div className="flex items-center justify-center sm:justify-end gap-3 mt-8">
       <Button
         variant="ghost"
         onClick={handlePreviousPage}
@@ -66,7 +66,7 @@ export const Pagination = ({ page, pageCount, onPageChange }: PaginationProps) =
             onClick={() => handlePageChange(pageNum)}
             className={cn(
               'w-10 h-10 rounded-[10px] text-[15px] font-medium',
-              page === pageNum ? 'bg-primary text-white hover:bg-primary/90' : 'text-tx-primary',
+              page === pageNum ? 'bg-blue-50 text-white hover:bg-blue-60' : 'text-tx-primary',
             )}
           >
             {pageNum}

@@ -26,7 +26,7 @@ describe('Pagination', () => {
     render(<Pagination page={3} pageCount={5} onPageChange={mockOnPageChange} />);
 
     const page3Button = screen.getByRole('button', { name: '3' });
-    expect(page3Button).toHaveClass('bg-primary');
+    expect(page3Button).toHaveClass('bg-blue-50');
   });
 
   it('renders Previous and Next buttons', () => {
@@ -92,7 +92,7 @@ describe('Pagination', () => {
 
   it('does not render when pageCount is 1', () => {
     const { container } = render(
-      <Pagination page={1} pageCount={1} onPageChange={mockOnPageChange} />
+      <Pagination page={1} pageCount={1} onPageChange={mockOnPageChange} />,
     );
 
     expect(container.firstChild).toBeNull();

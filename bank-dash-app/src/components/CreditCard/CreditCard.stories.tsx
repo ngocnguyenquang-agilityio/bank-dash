@@ -14,7 +14,7 @@ const meta: Meta<typeof CreditCard> = {
     balance: '$5,756',
     cardHolder: 'Eddy Cusuma',
     cardNumber: '3778 **** **** 1234',
-    expiration: '12/22',
+    expiration: '2022-12-01',
   },
 };
 

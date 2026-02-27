@@ -24,8 +24,8 @@ const chartConfig = {
 export const BalanceHistory = () => {
   return (
     <Card className="w-full min-h-[276px] flex-1 rounded-[25px] border-0 outline-none shadow-none">
-      <CardContent className="px-5 py-6 h-full">
-        <div className="h-full">
+      <CardContent className="px-5 py-6">
+        <div className="h-[220px]">
           <ChartContainer config={chartConfig} className="h-full w-full">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={data}>

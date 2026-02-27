@@ -34,8 +34,8 @@ export const DashboardWrapper = ({ cards, transactions, error }: DashboardWrappe
 
   return (
     <main>
-      <div className="flex items-start gap-[30px] mb-6">
-        <section className="space-y-4 flex flex-col">
+      <div className="flex flex-col xl:flex-row items-start gap-6 xl:gap-[30px] mb-6">
+        <section className="space-y-4 flex flex-col w-full xl:w-auto">
           <div className="flex items-center justify-between">
             <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">
               My Cards
@@ -74,7 +74,7 @@ export const DashboardWrapper = ({ cards, transactions, error }: DashboardWrappe
           </div>
         </section>
 
-        <section className="space-y-4 flex flex-col lg:flex-1">
+        <section className="space-y-4 flex flex-col w-full xl:flex-1">
           <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">
             Recent Transaction
           </h2>
@@ -89,7 +89,7 @@ export const DashboardWrapper = ({ cards, transactions, error }: DashboardWrappe
         <WeeklyActivity />
       </section>
 
-      <section className="flex items-stretch gap-[30px]">
+      <section className="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-[30px]">
         <div className="flex flex-col space-y-4 lg:flex-1">
           <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">
             Quick Transfer

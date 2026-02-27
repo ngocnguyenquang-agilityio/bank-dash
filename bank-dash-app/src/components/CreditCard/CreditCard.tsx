@@ -34,7 +34,7 @@ export const CreditCard = ({
   return (
     <Card
       className={cn(
-        'relative w-full sm:w-[350px] h-[200px] sm:h-[235px] rounded-[25px] p-0 overflow-hidden flex-shrink-0 border',
+        'relative w-[300px] sm:w-[350px] h-[200px] sm:h-[235px] rounded-[25px] p-0 overflow-hidden flex-shrink-0 border',
         isBlue
           ? 'bg-gradient-to-br from-blue-50 to-blue-60 border-none text-white'
           : 'bg-white border-neutral-20 text-tx-primary',
@@ -42,7 +42,7 @@ export const CreditCard = ({
       )}
     >
       <div className="relative z-10 p-4 sm:p-6 h-full flex flex-col">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <div className="flex flex-col">
             <div className={cn('text-xs', isBlue ? 'text-white/70' : 'text-neutral-30')}>
               Balance
@@ -60,7 +60,7 @@ export const CreditCard = ({
           {isBlue ? <Icons.ChipWhite /> : <Icons.Chip />}
         </div>
 
-        <div className="flex items-center gap-[60px] mb-6">
+        <div className="flex items-center gap-[60px] mb-4 sm:mb-6">
           <div>
             <div
               className={cn(
@@ -101,7 +101,7 @@ export const CreditCard = ({
 
         <div
           className={cn(
-            'rounded-b-[25px] -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 px-4 sm:px-6 py-4 sm:py-5 border-t',
+            'mt-auto rounded-b-[25px] -mx-4 sm:-mx-6 -mb-4 sm:-mb-6 px-4 sm:px-6 py-4 sm:py-5 border-t',
             isBlue ? 'bg-gradient-to-b from-white/15 to-white/0 border-none' : 'border-neutral-20',
           )}
         >

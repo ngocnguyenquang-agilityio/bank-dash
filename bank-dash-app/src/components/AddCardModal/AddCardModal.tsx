@@ -146,8 +146,11 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
       />
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="rounded-[20px] p-0 gap-0">
-          <form onSubmit={handleSubmit(onSubmit)} className="px-[30px] py-[27px] space-y-[30px]">
+        <DialogContent className="rounded-[20px] p-0 gap-0 sm:max-w-2xl">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="px-5 py-6 sm:px-[30px] sm:py-[27px] space-y-[30px]"
+          >
             <DialogHeader>
               <DialogTitle className="sr-only">Add New Credit Card</DialogTitle>
               <DialogDescription className="text-base leading-[28px] text-neutral-30">
@@ -159,7 +162,7 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
 
             <div className="space-y-[22px]">
               {/* Card Type and Name On Card - First Row */}
-              <div className="grid grid-cols-2 gap-[30px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-[22px] sm:gap-[30px]">
                 <div className="space-y-[11px]">
                   <Label htmlFor="card-type" className="text-base text-black">
                     Card Type
@@ -207,7 +210,7 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
               </div>
 
               {/* Card Number and Expiration Date - Second Row */}
-              <div className="grid grid-cols-2 gap-[30px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-[22px] sm:gap-[30px]">
                 <div className="space-y-[11px]">
                   <Label htmlFor="card-number" className="text-base text-black">
                     Card Number
@@ -269,61 +272,65 @@ export const AddCardModal = ({ open, onOpenChange }: AddCardModalProps) => {
                 </div>
               </div>
 
-              {/* Balance - Third Row */}
-              <div className="space-y-[11px]">
-                <Label htmlFor="balance" className="text-base text-black">
-                  Balance
-                </Label>
-                <Controller
-                  name="balance"
-                  control={control}
-                  render={({ field }) => (
-                    <Input
-                      id="balance"
-                      placeholder="0.00"
-                      value={field.value ?? ''}
-                      onChange={(e) => {
-                        const formatted = formatBalance(e.target.value);
-                        field.onChange(formatted);
-                      }}
-                      className="h-[50px] rounded-[15px] border-neutral-20 text-[15px] text-primary placeholder:text-neutral-30"
-                    />
-                  )}
-                />
-                {errors.balance && <p className="text-sm text-red-500">{errors.balance.message}</p>}
-              </div>
-
-              {isPhysical && (
+              {/* Balance and Address - Third Row */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-[22px] sm:gap-[30px]">
                 <div className="space-y-[11px]">
-                  <Label htmlFor="address" className="text-base text-black">
-                    Address
+                  <Label htmlFor="balance" className="text-base text-black">
+                    Balance
                   </Label>
-                  <Input
-                    id="address"
-                    placeholder="Enter your address"
-                    {...register('address')}
-                    className="h-[50px] rounded-[15px] border-neutral-20 text-[15px] text-primary placeholder:text-neutral-30"
+                  <Controller
+                    name="balance"
+                    control={control}
+                    render={({ field }) => (
+                      <Input
+                        id="balance"
+                        placeholder="0.00"
+                        value={field.value ?? ''}
+                        onChange={(e) => {
+                          const formatted = formatBalance(e.target.value);
+                          field.onChange(formatted);
+                        }}
+                        className="h-[50px] rounded-[15px] border-neutral-20 text-[15px] text-primary placeholder:text-neutral-30"
+                      />
+                    )}
                   />
-                  {errors.address && (
-                    <p className="text-sm text-red-500">{errors.address.message}</p>
+                  {errors.balance && (
+                    <p className="text-sm text-red-500">{errors.balance.message}</p>
                   )}
                 </div>
-              )}
+
+                {isPhysical && (
+                  <div className="space-y-[11px]">
+                    <Label htmlFor="address" className="text-base text-black">
+                      Address
+                    </Label>
+                    <Input
+                      id="address"
+                      placeholder="Enter your address"
+                      {...register('address')}
+                      className="h-[50px] rounded-[15px] border-neutral-20 text-[15px] text-primary placeholder:text-neutral-30"
+                    />
+                    {errors.address && (
+                      <p className="text-sm text-red-500">{errors.address.message}</p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Action Buttons */}
-            <div className="flex justify-end gap-[24px] pt-[9px]">
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-[24px] pt-[9px]">
               <Button
                 type="button"
                 onClick={() => handleOpenChange(false)}
-                className="h-[50px] w-[160px] rounded-[9px] bg-neutral-30 hover:bg-neutral-30/90 text-white text-[18px] font-medium"
+                className="h-[50px] w-full sm:w-[160px] rounded-[9px] bg-neutral-30 hover:bg-neutral-30/90 text-white text-[18px] font-medium"
               >
                 Close
               </Button>
               <Button
                 type="submit"
                 disabled={!isDirty || isSubmitting}
-                className="h-[50px] w-[160px] rounded-[9px] bg-blue-50 hover:bg-blue-50/90 text-white text-[18px] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-[50px] w-full sm:w-[160px] rounded-[9px] bg-blue-50 hover:bg-blue-50/90 text-white text-[18px] font-medium disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Adding...' : 'Add Card'}
               </Button>
