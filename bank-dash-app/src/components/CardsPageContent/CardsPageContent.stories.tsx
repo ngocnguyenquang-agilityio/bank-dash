@@ -15,7 +15,7 @@ const mockCardsData: CardsResponse = {
       balance: '$5,756',
       name: 'Eddy Cusuma',
       number: '3778 **** **** 1234',
-      expiration: '12/22',
+      expiration: '2022-12-01',
       isActive: true,
       isPhysical: true,
       createdAt: '2024-01-01T00:00:00Z',
@@ -27,7 +27,7 @@ const mockCardsData: CardsResponse = {
       balance: '$8,234',
       name: 'Eddy Cusuma',
       number: '4532 **** **** 5678',
-      expiration: '06/24',
+      expiration: '2024-06-01',
       isActive: true,
       isPhysical: false,
       createdAt: '2024-01-01T00:00:00Z',
@@ -39,7 +39,7 @@ const mockCardsData: CardsResponse = {
       balance: '$3,120',
       name: 'Eddy Cusuma',
       number: '6011 **** **** 9012',
-      expiration: '09/25',
+      expiration: '2025-09-01',
       isActive: true,
       isPhysical: true,
       createdAt: '2024-01-01T00:00:00Z',
@@ -61,6 +61,13 @@ const meta: Meta<typeof CardsPageContent> = {
   component: CardsPageContent,
   parameters: {
     layout: 'fullscreen',
+    nextjs: {
+      appDirectory: true,
+      navigation: {
+        pathname: '/cards',
+        searchParams: {},
+      },
+    },
   },
 };
 

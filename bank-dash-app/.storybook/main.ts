@@ -28,8 +28,8 @@ const config: StorybookConfig = {
           __dirname,
           "mocks/effect-runtime.ts"
         ),
-        "@clerk/nextjs$": clerkMock,
         "@clerk/nextjs/server": clerkMock,
+        "@clerk/nextjs": clerkMock,
       };
     }
     return config;
