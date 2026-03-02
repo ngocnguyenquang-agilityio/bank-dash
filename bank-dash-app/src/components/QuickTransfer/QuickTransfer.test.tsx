@@ -14,8 +14,7 @@ jest.mock('@/services/transfers', () => ({
 }));
 
 const defaultProps = {
-  cardDocumentId: 'test-card-123',
-  cardBalance: '1000.00',
+  userClerkId: 'test-user-123',
 };
 
 describe('QuickTransfer', () => {
@@ -30,20 +29,6 @@ describe('QuickTransfer', () => {
 
     // Send button
     expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument();
-  });
-
-  it('shows error when amount exceeds balance', async () => {
-    render(<QuickTransfer {...defaultProps} />);
-
-    const input = screen.getByPlaceholderText('525.50');
-    const sendButton = screen.getByRole('button', { name: /send/i });
-
-    // Enter amount greater than balance
-    fireEvent.change(input, { target: { value: '2000' } });
-    fireEvent.click(sendButton);
-
-    // Should show error
-    expect(screen.getByText('Balance not enough')).toBeInTheDocument();
   });
 
   it('shows error when amount is invalid', async () => {

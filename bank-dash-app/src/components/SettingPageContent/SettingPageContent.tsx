@@ -1,7 +1,7 @@
 'use client';
 
 // Libraries
-import { useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { ChevronDown, Loader2 } from 'lucide-react';
@@ -20,7 +20,7 @@ import { Icons } from '@/components/Icons/Icons';
 import { UnsavedChangesModal } from '@/components/UnsavedChangesModal/UnsavedChangesModal';
 
 // Services
-import { updateMember } from '@/services/members';
+import { updateMember, uploadAvatar } from '@/services/members';
 
 // Types
 import { MemberProfileSchema, type Member, type MemberProfile } from '@/types/member';
@@ -34,9 +34,16 @@ interface SettingPageContentProps {
   initialData?: Member | null;
 }
 
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
 export const SettingPageContent = ({ initialData }: SettingPageContentProps) => {
   const router = useRouter();
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const {
     register,
@@ -44,7 +51,7 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
     setValue,
     reset,
     control,
-    formState: { errors, isDirty, isSubmitting, dirtyFields },
+    formState: { errors, isDirty, dirtyFields },
   } = useForm({
     resolver: effectTsResolver(MemberProfileSchema),
     defaultValues: {
@@ -62,33 +69,99 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
 
   const dob = useWatch({ control, name: 'dob' });
 
+  const handleFileSelect = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+        toast.error('Invalid file type. Please upload a JPEG, PNG, or WebP image.');
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error('File is too large. Maximum size is 5MB.');
+        return;
+      }
+
+      // Clean up previous preview URL
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+
+      setSelectedFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+
+      // Reset input so the same file can be re-selected
+      e.target.value = '';
+    },
+    [previewUrl],
+  );
+
   const onSubmit = async (data: MemberProfile) => {
     if (!initialData?.documentId) {
       toast.error('User not found');
       return;
     }
 
-    const changedData = Object.keys(dirtyFields).reduce((acc, key) => {
-      const fieldKey = key as keyof MemberProfile;
-      if (dirtyFields[fieldKey]) {
-        return { ...acc, [fieldKey]: data[fieldKey] };
+    setIsLoading(true);
+
+    try {
+      // Upload avatar if a new file was selected
+      if (selectedFile) {
+        const formData = new FormData();
+        formData.append('file', selectedFile);
+
+        const uploadResult = await uploadAvatar(Number(initialData.id), formData);
+
+        if (!uploadResult.success) {
+          toast.error(uploadResult.error || 'Failed to upload avatar');
+          return;
+        }
       }
-      return acc;
-    }, {} as Partial<MemberProfile>);
 
-    if (Object.keys(changedData).length === 0) {
-      return;
-    }
+      // Update profile fields if any changed
+      const hasChangedFields = Object.values(dirtyFields).some(Boolean);
 
-    const { success, error } = await updateMember(initialData.documentId, changedData);
+      if (hasChangedFields) {
+        // Send all form data (not just dirty fields) because Strapi PUT replaces the entire entity.
+        // Sending only changed fields would clear unmentioned fields like photo.
+        // Convert empty strings to null for fields that are non-string types in Strapi.
+        // Preserve the existing photo relation so PUT doesn't clear it.
+        const sanitizedData = {
+          ...data,
+          postalCode: data.postalCode || null,
+          dob: data.dob || null,
+          ...(initialData.photo && !selectedFile ? { photo: initialData.photo.id } : {}),
+        };
+        const { success, error } = await updateMember(initialData.documentId, sanitizedData);
 
-    if (success) {
+        if (!success) {
+          toast.error(error || 'Failed to update profile');
+          return;
+        }
+      }
+
       toast.success('Profile updated successfully');
-      reset(data); // Reset form state with new data
-      router.refresh();
-    } else {
-      toast.error(error || 'Failed to update profile');
+      reset(data);
+
+      // Clean up file state
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+      setSelectedFile(null);
+      setPreviewUrl(null);
+    } finally {
+      setIsLoading(false);
     }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // Let handleSubmit run and fully complete (including resetting isSubmitting)
+    // before calling router.refresh(), which can cause re-renders that interfere
+    // with react-hook-form's internal state management.
+    await handleSubmit(onSubmit)(e);
+    router.refresh();
   };
 
   return (
@@ -119,29 +192,46 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
         </TabsList>
 
         <TabsContent value="edit-profile" className="mt-6 sm:mt-8 lg:mt-[53px]">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col lg:flex-row gap-8 lg:gap-14"
-          >
+          <form onSubmit={handleFormSubmit} className="flex flex-col lg:flex-row gap-8 lg:gap-14">
             {/* Profile Avatar */}
             <div className="flex justify-center lg:justify-start shrink-0">
               <div className="relative w-[130px] h-[130px]">
                 <div className="w-[130px] h-[130px] rounded-full overflow-hidden bg-neutral-20">
-                  <Image
-                    src={getStrapiMedia(initialData?.photo?.url) || PROFILE_IMAGE}
-                    alt="Profile"
-                    width={130}
-                    height={130}
-                    className="w-full h-full object-cover"
-                    unoptimized={
-                      getStrapiMedia(initialData?.photo?.url)?.includes('localhost') ||
-                      getStrapiMedia(initialData?.photo?.url)?.includes('127.0.0.1') ||
-                      false
-                    }
-                  />
+                  {previewUrl ? (
+                    <Image
+                      src={previewUrl}
+                      alt="Profile preview"
+                      width={130}
+                      height={130}
+                      className="w-full h-full object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <Image
+                      src={getStrapiMedia(initialData?.photo?.url) || PROFILE_IMAGE}
+                      alt="Profile"
+                      width={130}
+                      height={130}
+                      className="w-full h-full object-cover"
+                      unoptimized={
+                        getStrapiMedia(initialData?.photo?.url)?.includes('localhost') ||
+                        getStrapiMedia(initialData?.photo?.url)?.includes('127.0.0.1') ||
+                        false
+                      }
+                    />
+                  )}
                 </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleFileSelect}
+                  className="hidden"
+                  aria-label="Upload profile picture"
+                />
                 <button
                   type="button"
+                  onClick={() => fileInputRef.current?.click()}
                   className="absolute bottom-0 right-0 w-[30px] h-[30px] rounded-full bg-blue-50 flex items-center justify-center cursor-pointer hover:bg-blue-60 transition-colors"
                   aria-label="Edit profile picture"
                 >
@@ -233,6 +323,9 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                           shouldDirty: true,
                         })
                       }
+                      startMonth={new Date(1900, 0)}
+                      endMonth={new Date()}
+                      disabled={{ after: new Date() }}
                     />
                   </PopoverContent>
                 </Popover>
@@ -304,10 +397,10 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
               <div className="md:col-span-2 flex justify-end mt-2">
                 <Button
                   type="submit"
-                  disabled={isSubmitting || !isDirty}
+                  disabled={isLoading || (!isDirty && !selectedFile)}
                   className="w-full md:w-[190px] h-[50px] rounded-[15px] bg-blue-50 text-white text-lg font-medium hover:bg-blue-60 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save'}
+                  {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Save'}
                 </Button>
               </div>
             </div>

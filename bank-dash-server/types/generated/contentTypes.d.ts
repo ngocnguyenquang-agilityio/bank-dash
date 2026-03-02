@@ -503,7 +503,7 @@ export interface ApiMemberMember extends Struct.CollectionTypeSchema {
       Schema.Attribute.Private;
     name: Schema.Attribute.String & Schema.Attribute.Required;
     permanentAddress: Schema.Attribute.String;
-    photo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    photo: Schema.Attribute.Media<'images' | 'files'>;
     postalCode: Schema.Attribute.Integer;
     presentAddress: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;

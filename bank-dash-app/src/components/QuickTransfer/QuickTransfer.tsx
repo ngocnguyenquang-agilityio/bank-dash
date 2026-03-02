@@ -24,11 +24,10 @@ const contacts = [
 ];
 
 interface QuickTransferProps {
-  cardDocumentId: string;
-  cardBalance: string;
+  userClerkId: string;
 }
 
-export const QuickTransfer = ({ cardDocumentId, cardBalance }: QuickTransferProps) => {
+export const QuickTransfer = ({ userClerkId }: QuickTransferProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -46,16 +45,9 @@ export const QuickTransfer = ({ cardDocumentId, cardBalance }: QuickTransferProp
       return;
     }
 
-    // Check balance
-    const balance = parseFloat(cardBalance);
-    if (numericAmount > balance) {
-      setError(TRANSACTION_ERRORS.INSUFFICIENT_BALANCE);
-      return;
-    }
-
-    // Call API
+    // Call API — server handles multi-card balance check
     startTransition(async () => {
-      const result = await sendAmount(cardDocumentId, numericAmount, selectedContact?.name ?? '');
+      const result = await sendAmount(userClerkId, numericAmount, selectedContact?.name ?? '');
 
       if (!result.success) {
         setError(result.error || TRANSACTION_ERRORS.FAILED_TRANSACTION);
@@ -141,7 +133,7 @@ export const QuickTransfer = ({ cardDocumentId, cardBalance }: QuickTransferProp
             </div>
             <Button
               onClick={handleSend}
-              disabled={isPending || !cardDocumentId}
+              disabled={isPending || !userClerkId}
               className="h-12 sm:h-[50px] px-5 sm:px-6 rounded-[50px] bg-blue-50 hover:bg-blue-50/90 text-white gap-2 shadow-lg disabled:opacity-50"
             >
               {isPending ? (

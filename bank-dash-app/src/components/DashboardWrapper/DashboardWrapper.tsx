@@ -19,9 +19,10 @@ interface DashboardWrapperProps {
   cards: CardsResponse | null;
   transactions: TransactionsResponse | null;
   error: string | null;
+  userId: string;
 }
 
-export const DashboardWrapper = ({ cards, transactions, error }: DashboardWrapperProps) => {
+export const DashboardWrapper = ({ cards, transactions, error, userId }: DashboardWrapperProps) => {
   if (error) {
     return (
       <div className="flex min-h-[400px] items-center justify-center rounded-2xl border border-dashed border-red-200 bg-red-50/50 p-8 text-center">
@@ -94,10 +95,7 @@ export const DashboardWrapper = ({ cards, transactions, error }: DashboardWrappe
           <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">
             Quick Transfer
           </h2>
-          <QuickTransfer
-            cardDocumentId={cardsData[0]?.documentId ?? ''}
-            cardBalance={cardsData[0]?.balance ?? '0'}
-          />
+          <QuickTransfer userClerkId={userId} />
         </div>
         <div className="flex flex-col space-y-4 lg:flex-[2]">
           <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">

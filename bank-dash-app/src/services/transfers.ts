@@ -7,10 +7,11 @@ import { revalidatePath } from 'next/cache';
 // Services
 import { apiClient } from '@/services/api';
 import { requestEffect, ApiRequestError } from '@/services/api.effect';
+import { getCardsEffect } from '@/services/cards.effect';
 import { runServerEffect } from '@/lib/effect/runtime';
 
 // Types
-import { Transactions, type Card } from '@/types/card';
+import { Transactions } from '@/types/card';
 
 // Constants
 import { TRANSACTION_ERRORS } from '@/constants/error';
@@ -21,7 +22,7 @@ interface SendAmountResult {
 }
 
 export const sendAmount = async (
-  cardDocumentId: string,
+  userClerkId: string,
   amount: number,
   recipientName: string,
 ): Promise<SendAmountResult> => {
@@ -30,20 +31,25 @@ export const sendAmount = async (
   }
 
   const effect = Effect.gen(function* () {
-    // Fetch card to read current balance
-    const { data: card } = yield* requestEffect(
-      apiClient.get<{ data: Card }>(`/cards/${cardDocumentId}?populate=*`),
-    );
+    // Fetch all cards for the user
+    const { cards, error: cardsError } = yield* getCardsEffect(userClerkId, 1, 100);
 
-    const currentBalance = parseFloat(card.balance);
+    if (cardsError || !cards) {
+      return yield* Effect.fail(
+        new ApiRequestError({ message: cardsError || TRANSACTION_ERRORS.FAILED_TRANSACTION }),
+      );
+    }
 
-    if (currentBalance < amount) {
+    // Find the first card with sufficient balance
+    const targetCard = cards.data.find((card) => parseFloat(card.balance) >= amount);
+
+    if (!targetCard) {
       return yield* Effect.fail(
         new ApiRequestError({ message: TRANSACTION_ERRORS.INSUFFICIENT_BALANCE }),
       );
     }
 
-    const newBalance = (currentBalance - amount).toFixed(2);
+    const newBalance = (parseFloat(targetCard.balance) - amount).toFixed(2);
 
     // Create transaction first, then update balance only on success
     // Sequential to prevent inconsistent state (balance deducted without transaction)
@@ -54,7 +60,7 @@ export const sendAmount = async (
             message: `Transfer to ${recipientName}`,
             amount,
             type: Transactions.Withdrawal,
-            card: cardDocumentId,
+            card: targetCard.documentId,
             date: new Date().toISOString().split('T')[0],
           },
         },
@@ -62,7 +68,7 @@ export const sendAmount = async (
     );
 
     yield* requestEffect(
-      apiClient.put(`/cards/${cardDocumentId}`, {
+      apiClient.put(`/cards/${targetCard.documentId}`, {
         body: { data: { balance: newBalance } },
       }),
     );

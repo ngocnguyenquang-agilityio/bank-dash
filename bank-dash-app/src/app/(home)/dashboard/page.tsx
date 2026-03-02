@@ -37,7 +37,9 @@ const HomePage = async () => {
 
   const error = [cardsError, transactionsError].filter(Boolean).join('; ') || null;
 
-  return <DashboardWrapper cards={cards} transactions={transactions} error={error} />;
+  return (
+    <DashboardWrapper cards={cards} transactions={transactions} error={error} userId={userId} />
+  );
 };
 
 export default HomePage;
