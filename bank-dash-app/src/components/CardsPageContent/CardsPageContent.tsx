@@ -13,14 +13,15 @@ import { Button } from '@/components/ui/button';
 import { Icons } from '@/components/Icons/Icons';
 
 // Types
-import type { CardsResponse } from '@/types/card';
+import type { Card, CardsResponse } from '@/types/card';
 
 interface CardsPageContentProps {
   cards: CardsResponse | null;
+  topCards: Card[];
   error: string | null;
 }
 
-export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
+export const CardsPageContent = ({ cards, topCards, error }: CardsPageContentProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
@@ -49,7 +50,7 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
   const pagination = cards?.meta?.pagination;
   const { page = 1, pageCount = 1 } = pagination || {};
   const paginatedCards = cards?.data || [];
-  const hasCards = paginatedCards.length > 0;
+  const hasCards = topCards.length > 0;
 
   // Empty state when user has no cards
   if (!hasCards) {
@@ -95,7 +96,7 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
         </div>
 
         <div className="flex gap-[30px] overflow-x-auto pb-2 lg:scrollbar-hide">
-          {cards?.data?.slice(0, 3).map((card, index) => {
+          {topCards.map((card, index) => {
             const { id, balance, name, number, expiration } = card;
             const variant = index % 2 === 0 ? 'blue' : 'white';
 
@@ -131,7 +132,7 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
 
         <div className="space-y-[20px]">
           {paginatedCards.map((card) => {
-            const { id, isPhysical, number, name, documentId } = card;
+            const { id, isPhysical, number, name, documentId, address } = card;
 
             return (
               <CardListItem
@@ -140,6 +141,7 @@ export const CardsPageContent = ({ cards, error }: CardsPageContentProps) => {
                 isPhysical={isPhysical}
                 cardNumber={number}
                 nameOnCard={name}
+                address={address}
               />
             );
           })}

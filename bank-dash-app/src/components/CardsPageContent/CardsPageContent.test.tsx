@@ -28,7 +28,7 @@ jest.mock('@/components/CreditCard', () => ({
 }));
 
 jest.mock('@/components/CardListItem', () => ({
-  CardListItem: ({ nameOnCard, cardNumber, isPhysical }: CardListItemProps) => {
+  CardListItem: ({ nameOnCard, cardNumber, isPhysical, address }: CardListItemProps) => {
     // Basic masking for the test expectation
     const last4 = cardNumber.slice(-4);
     const masked = `**** **** **** ${last4}`;
@@ -37,6 +37,7 @@ jest.mock('@/components/CardListItem', () => ({
         <span>{nameOnCard}</span>
         <span>{masked}</span>
         <span>{isPhysical ? 'Physical' : 'Virtual'}</span>
+        <span>{address || '--'}</span>
         <button>View Details</button>
       </div>
     );
@@ -95,7 +96,7 @@ const mockCards = {
       balance: '$5,756',
       isActive: true,
       isPhysical: true,
-      bank: 'DBL Bank',
+      address: '123 Main St, New York',
       createdAt: '',
       updatedAt: '',
     },
@@ -108,7 +109,7 @@ const mockCards = {
       balance: '$5,756',
       isActive: true,
       isPhysical: false,
-      bank: 'BRC Bank',
+      address: '456 Oak Ave, Los Angeles',
       createdAt: '',
       updatedAt: '',
     },
@@ -121,7 +122,7 @@ const mockCards = {
       balance: '$5,756',
       isActive: true,
       isPhysical: true,
-      bank: 'BRC Bank',
+      address: '456 Oak Ave, Los Angeles',
       createdAt: '',
       updatedAt: '',
     },
@@ -134,7 +135,7 @@ const mockCards = {
       balance: '$5,756',
       isActive: true,
       isPhysical: false,
-      bank: 'ABM Bank',
+      address: '101 Elm Blvd, Houston',
       createdAt: '',
       updatedAt: '',
     },
@@ -149,15 +150,17 @@ const mockCards = {
   },
 };
 
+const topCards = mockCards.data.slice(0, 3);
+
 describe('CardsPageContent', () => {
   it('renders My Cards section heading', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
 
     expect(screen.getByText('My Cards')).toBeInTheDocument();
   });
 
   it('renders Add Card buttons', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
 
     // Two Add Card buttons: one for small screens (text), one for large screens (card-style)
     const addCardButtons = screen.getAllByRole('button', { name: /add card/i });
@@ -165,7 +168,7 @@ describe('CardsPageContent', () => {
   });
 
   it('renders credit cards in My Cards section', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
 
     // Only first 3 cards are shown in My Cards section
     const creditCards = screen.getAllByTestId('credit-card');
@@ -173,7 +176,7 @@ describe('CardsPageContent', () => {
   });
 
   it('passes correct variants (blue/white) to credit cards', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
     const creditCards = screen.getAllByTestId('credit-card');
 
     expect(creditCards[0]).toHaveAttribute('data-variant', 'blue');
@@ -182,13 +185,13 @@ describe('CardsPageContent', () => {
   });
 
   it('renders Card List section heading', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
 
     expect(screen.getByText('Card List')).toBeInTheDocument();
   });
 
   it('renders four card list items', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
 
     // Check for specific card names (they appear in both sections now)
     expect(screen.getAllByText('William').length).toBeGreaterThan(0);
@@ -198,13 +201,13 @@ describe('CardsPageContent', () => {
   });
 
   it('renders all four View Details buttons in card list', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
     const viewDetailsButtons = screen.getAllByRole('button', { name: /view details/i });
     expect(viewDetailsButtons).toHaveLength(4);
   });
 
   it('renders pagination controls', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
 
     expect(screen.getByRole('button', { name: 'Previous' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Next' })).toBeInTheDocument();
@@ -226,7 +229,7 @@ describe('CardsPageContent', () => {
           balance: '$6,000',
           isActive: true,
           isPhysical: true,
-          bank: 'XYZ Bank',
+          address: '202 Maple Dr, Seattle',
           createdAt: '',
           updatedAt: '',
         },
@@ -240,7 +243,7 @@ describe('CardsPageContent', () => {
       },
     };
 
-    render(<CardsPageContent cards={multiPageMock} error={null} />);
+    render(<CardsPageContent cards={multiPageMock} topCards={topCards} error={null} />);
 
     const nextButton = screen.getByRole('button', { name: 'Next' });
     expect(nextButton).not.toBeDisabled();
@@ -251,7 +254,7 @@ describe('CardsPageContent', () => {
 
   it('Add Card button is clickable and opens modal', async () => {
     const user = userEvent.setup();
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
 
     const addCardButtons = screen.getAllByRole('button', { name: /add card/i });
     expect(addCardButtons[0]).toBeDefined();
@@ -261,7 +264,7 @@ describe('CardsPageContent', () => {
   });
 
   it('renders card numbers in card list', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
     // CardListItem uses last4 masking by default
     expect(screen.getByText('**** **** **** 5600')).toBeInTheDocument();
     expect(screen.getByText('**** **** **** 4300')).toBeInTheDocument();
@@ -270,7 +273,7 @@ describe('CardsPageContent', () => {
   });
 
   it('renders card types correctly', () => {
-    render(<CardsPageContent cards={mockCards} error={null} />);
+    render(<CardsPageContent cards={mockCards} topCards={topCards} error={null} />);
 
     const physicalElements = screen.getAllByText('Physical');
     const virtualElements = screen.getAllByText('Virtual');

@@ -58,6 +58,25 @@ export const BlockedCard: Story = {
   ),
 };
 
+export const WithPageParam: Story = {
+  args: {
+    card: mockCard,
+  },
+  parameters: {
+    nextjs: {
+      appDirectory: true,
+      navigation: {
+        searchParams: { page: '3' },
+      },
+    },
+  },
+  render: (args) => (
+    <div className="p-6 bg-neutral-10 min-h-screen">
+      <CardDetailsContent {...args} />
+    </div>
+  ),
+};
+
 export const VirtualCard: Story = {
   args: {
     card: {

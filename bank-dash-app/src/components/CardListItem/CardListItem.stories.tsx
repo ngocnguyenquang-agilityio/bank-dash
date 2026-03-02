@@ -14,6 +14,7 @@ const meta: Meta<typeof CardListItem> = {
     isPhysical: false,
     cardNumber: '**** **** 5600',
     nameOnCard: 'William',
+    address: '123 Main St, New York',
   },
 };
 
@@ -34,6 +35,7 @@ export const Pink: Story = {
     isPhysical: false,
     cardNumber: '**** **** 4300',
     nameOnCard: 'Michel',
+    address: '456 Oak Ave, Los Angeles',
   },
   render: (args) => (
     <div className="p-6 bg-neutral-10 w-[1120px]">
@@ -47,6 +49,7 @@ export const Yellow: Story = {
     isPhysical: true,
     cardNumber: '**** **** 7560',
     nameOnCard: 'Edward',
+    address: '789 Pine Rd, Chicago',
   },
   render: (args) => (
     <div className="p-6 bg-neutral-10 w-[1120px]">
@@ -58,9 +61,27 @@ export const Yellow: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div className="p-6 bg-neutral-10 w-[1120px] space-y-5">
-      <CardListItem id="1" isPhysical={false} cardNumber="**** **** 5600" nameOnCard="William" />
-      <CardListItem id="2" isPhysical={false} cardNumber="**** **** 4300" nameOnCard="Michel" />
-      <CardListItem id="3" isPhysical={true} cardNumber="**** **** 7560" nameOnCard="Edward" />
+      <CardListItem
+        id="1"
+        isPhysical={false}
+        cardNumber="**** **** 5600"
+        nameOnCard="William"
+        address="123 Main St, New York"
+      />
+      <CardListItem
+        id="2"
+        isPhysical={false}
+        cardNumber="**** **** 4300"
+        nameOnCard="Michel"
+        address="456 Oak Ave, Los Angeles"
+      />
+      <CardListItem
+        id="3"
+        isPhysical={true}
+        cardNumber="**** **** 7560"
+        nameOnCard="Edward"
+        address="789 Pine Rd, Chicago"
+      />
     </div>
   ),
 };

@@ -4,19 +4,34 @@ import { render, screen } from '@testing-library/react';
 // Components
 import { CardListItem } from './CardListItem';
 
+const mockGet = jest.fn();
+jest.mock('next/navigation', () => ({
+  useSearchParams: () => ({
+    get: mockGet,
+  }),
+}));
+
 describe('CardListItem', () => {
   const props = {
     id: '1',
     isPhysical: true,
     cardNumber: '1234567890125600',
     nameOnCard: 'William',
+    address: '123 Main St, New York',
   };
+
+  beforeEach(() => {
+    mockGet.mockReturnValue(null);
+  });
 
   it('renders all card information', () => {
     render(<CardListItem {...props} />);
 
     expect(screen.getByText('Card Type')).toBeInTheDocument();
     expect(screen.getByText('Physical')).toBeInTheDocument();
+
+    expect(screen.getByText('Card Address')).toBeInTheDocument();
+    expect(screen.getByText('123 Main St, New York')).toBeInTheDocument();
 
     expect(screen.getByText('Card Number')).toBeInTheDocument();
     // Default masking is last4: "**** **** **** 5600"
@@ -49,6 +64,22 @@ describe('CardListItem', () => {
   });
 
   it('View Details link has correct href', () => {
+    render(<CardListItem {...props} />);
+
+    const viewDetailsLinks = screen.getAllByRole('link', { name: /view details/i });
+    expect(viewDetailsLinks[0]).toHaveAttribute('href', '/cards/1');
+  });
+
+  it('View Details link includes page param when page > 1', () => {
+    mockGet.mockReturnValue('2');
+    render(<CardListItem {...props} />);
+
+    const viewDetailsLinks = screen.getAllByRole('link', { name: /view details/i });
+    expect(viewDetailsLinks[0]).toHaveAttribute('href', '/cards/1?page=2');
+  });
+
+  it('View Details link has no page param when page is 1', () => {
+    mockGet.mockReturnValue('1');
     render(<CardListItem {...props} />);
 
     const viewDetailsLinks = screen.getAllByRole('link', { name: /view details/i });

@@ -1,9 +1,10 @@
 // Libraries
+import { Effect } from 'effect';
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
 // Services
-import { getCards } from '@/services/cards';
+import { getCardsEffect } from '@/services/cards.effect';
 
 // Components
 import { CardsPageContent } from '@/components/CardsPageContent';
@@ -13,6 +14,7 @@ import { ROUTES } from '@/constants/route';
 
 // Utils
 import { createMetadata } from '@/utils';
+import { runServerEffect } from '@/lib/effect/runtime';
 
 export const metadata = createMetadata('Cards');
 
@@ -29,9 +31,15 @@ const CardsPage = async ({
     redirect(ROUTES.SIGN_IN);
   }
 
-  const { cards, error } = await getCards(userId, currentPage);
+  const [{ cards, error }, { cards: topCardsResponse }] = await runServerEffect(
+    Effect.all([getCardsEffect(userId, currentPage), getCardsEffect(userId, 1, 3)], {
+      concurrency: 'unbounded',
+    }),
+  );
 
-  return <CardsPageContent cards={cards} error={error} />;
+  const topCards = [...(topCardsResponse?.data ?? [])];
+
+  return <CardsPageContent cards={cards} topCards={topCards} error={error} />;
 };
 
 export default CardsPage;

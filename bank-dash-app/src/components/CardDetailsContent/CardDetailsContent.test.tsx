@@ -7,6 +7,13 @@ import { CardDetailsContent } from './CardDetailsContent';
 // Types
 import type { Card } from '@/types/card';
 
+const mockGet = jest.fn();
+jest.mock('next/navigation', () => ({
+  useSearchParams: () => ({
+    get: mockGet,
+  }),
+}));
+
 // Mock the updateCardDetails service
 jest.mock('@/services/cards', () => ({
   updateCardDetails: jest.fn(),
@@ -33,12 +40,37 @@ const mockCard: Card = {
 describe('CardDetailsContent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockGet.mockReturnValue(null);
   });
 
   it('renders card holder name as heading', () => {
     render(<CardDetailsContent card={mockCard} />);
 
     expect(screen.getByRole('heading', { name: mockCard.name })).toBeInTheDocument();
+  });
+
+  it('renders back button linking to cards page', () => {
+    render(<CardDetailsContent card={mockCard} />);
+
+    const backLink = screen.getByRole('link', { name: /back to cards/i });
+    expect(backLink).toBeInTheDocument();
+    expect(backLink).toHaveAttribute('href', '/cards');
+  });
+
+  it('renders back button with page param when page is provided', () => {
+    mockGet.mockReturnValue('2');
+    render(<CardDetailsContent card={mockCard} />);
+
+    const backLink = screen.getByRole('link', { name: /back to cards/i });
+    expect(backLink).toHaveAttribute('href', '/cards?page=2');
+  });
+
+  it('renders back button without page param when page is 1', () => {
+    mockGet.mockReturnValue('1');
+    render(<CardDetailsContent card={mockCard} />);
+
+    const backLink = screen.getByRole('link', { name: /back to cards/i });
+    expect(backLink).toHaveAttribute('href', '/cards');
   });
 
   it('renders card details correctly', () => {

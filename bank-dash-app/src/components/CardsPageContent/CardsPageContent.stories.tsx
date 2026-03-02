@@ -18,6 +18,7 @@ const mockCardsData: CardsResponse = {
       expiration: '2022-12-01',
       isActive: true,
       isPhysical: true,
+      address: '123 Main St, New York',
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
     },
@@ -30,6 +31,7 @@ const mockCardsData: CardsResponse = {
       expiration: '2024-06-01',
       isActive: true,
       isPhysical: false,
+      address: '456 Oak Ave, Los Angeles',
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
     },
@@ -42,6 +44,7 @@ const mockCardsData: CardsResponse = {
       expiration: '2025-09-01',
       isActive: true,
       isPhysical: true,
+      address: '789 Pine Rd, Chicago',
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
     },
@@ -55,6 +58,8 @@ const mockCardsData: CardsResponse = {
     },
   },
 };
+
+const mockTopCards = [...mockCardsData.data];
 
 const meta: Meta<typeof CardsPageContent> = {
   title: 'Pages/CardsPageContent',
@@ -78,6 +83,7 @@ type Story = StoryObj<typeof CardsPageContent>;
 export const Default: Story = {
   args: {
     cards: mockCardsData,
+    topCards: mockTopCards,
     error: null,
   },
   render: (args) => (
@@ -90,6 +96,7 @@ export const Default: Story = {
 export const WithError: Story = {
   args: {
     cards: null,
+    topCards: [],
     error: 'Failed to load cards. Please try again.',
   },
   render: (args) => (
@@ -112,6 +119,7 @@ export const NoCards: Story = {
         },
       },
     },
+    topCards: [],
     error: null,
   },
   render: (args) => (
@@ -124,6 +132,7 @@ export const NoCards: Story = {
 export const MobileView: Story = {
   args: {
     cards: mockCardsData,
+    topCards: mockTopCards,
     error: null,
   },
   parameters: {
@@ -141,6 +150,7 @@ export const MobileView: Story = {
 export const TabletView: Story = {
   args: {
     cards: mockCardsData,
+    topCards: mockTopCards,
     error: null,
   },
   parameters: {

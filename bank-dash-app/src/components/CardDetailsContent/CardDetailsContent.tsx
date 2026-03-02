@@ -2,9 +2,11 @@
 
 // Libraries
 import { useState, useTransition } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { format } from 'date-fns';
 
 // Components
+import Link from 'next/link';
 import { CreditCard } from '@/components/CreditCard';
 import { CardSetting } from '@/components/CardSetting';
 import { Icons } from '@/components/Icons/Icons';
@@ -25,8 +27,12 @@ interface CardDetailsContentProps {
 export const CardDetailsContent = ({ card }: CardDetailsContentProps) => {
   const [isActive, setIsActive] = useState(card.isActive);
   const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
 
   const { balance, name, number: cardNumber, expiration, isPhysical, documentId, address } = card;
+
+  const page = searchParams.get('page');
+  const backHref = page && page !== '1' ? `/cards?page=${page}` : '/cards';
 
   const cardData = {
     balance,
@@ -76,7 +82,16 @@ export const CardDetailsContent = ({ card }: CardDetailsContentProps) => {
   return (
     <div className="flex flex-col lg:flex-row gap-8">
       <div className="flex-1">
-        <h2 className="text-[22px] font-semibold text-tx-primary mb-5">{cardData.cardHolder}</h2>
+        <div className="flex items-center gap-3 mb-5">
+          <Link
+            href={backHref}
+            className="flex items-center justify-center w-9 h-9 rounded-full bg-white border border-neutral-10 hover:bg-neutral-10 transition-colors"
+            aria-label="Back to cards"
+          >
+            <Icons.ChevronBackward className="w-5 h-5 fill-tx-primary" />
+          </Link>
+          <h2 className="text-[22px] font-semibold text-tx-primary">{cardData.cardHolder}</h2>
+        </div>
 
         <div className="relative flex flex-col lg:flex-row gap-6 bg-white rounded-xl p-6">
           <div className="relative flex-shrink-0 self-start">

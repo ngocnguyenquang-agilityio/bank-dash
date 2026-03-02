@@ -2,6 +2,7 @@
 
 // Libraries
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
 // Components
 import { Icons } from '@/components/Icons/Icons';
@@ -14,6 +15,7 @@ export interface CardListItemProps {
   isPhysical: boolean;
   cardNumber: string;
   nameOnCard: string;
+  address?: string;
   maskOption?: MaskOption;
 }
 
@@ -22,8 +24,12 @@ export const CardListItem = ({
   isPhysical,
   cardNumber,
   nameOnCard,
+  address,
   maskOption = 'last4',
 }: CardListItemProps) => {
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page');
+  const detailsHref = page && page !== '1' ? `/cards/${id}?page=${page}` : `/cards/${id}`;
   return (
     <div className="w-full bg-white rounded-[20px] border border-neutral-10 p-4 sm:h-[90px] sm:flex sm:items-center sm:px-6 sm:py-0 sm:gap-6">
       {/* Mobile layout */}
@@ -50,7 +56,7 @@ export const CardListItem = ({
 
         {/* Mobile: View Details arrow */}
         <Link
-          href={`/cards/${id}`}
+          href={detailsHref}
           className="sm:hidden text-[15px] font-medium text-blue-50 shrink-0"
           aria-label="View Details"
         >
@@ -66,8 +72,8 @@ export const CardListItem = ({
         </div>
 
         <div className="hidden sm:flex sm:flex-col sm:flex-1 sm:min-w-0">
-          <div className="text-base font-medium text-black">Bank</div>
-          <div className="text-[15px] text-tx-secondary mt-1">--</div>
+          <div className="text-base font-medium text-black">Card Address</div>
+          <div className="text-[15px] text-tx-secondary mt-1">{address || '--'}</div>
         </div>
 
         <div className="hidden sm:flex sm:flex-col sm:flex-1 sm:min-w-0">
@@ -83,10 +89,7 @@ export const CardListItem = ({
         </div>
 
         <div className="hidden sm:block shrink-0">
-          <Link
-            href={`/cards/${id}`}
-            className="text-[15px] font-medium text-blue-50 hover:underline"
-          >
+          <Link href={detailsHref} className="text-[15px] font-medium text-blue-50 hover:underline">
             View Details
           </Link>
         </div>
