@@ -1,12 +1,14 @@
 // Libraries
-import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+
+// Utils
+import { getAuth } from '@/lib/auth';
 
 // Components
 import { HomePageWrapper } from '@/components/HomePageWrapper/HomePageWrapper';
 
 export default async function HomePage() {
-  const { userId } = await auth();
+  const { userId } = await getAuth();
 
   if (userId) {
     redirect('/dashboard');

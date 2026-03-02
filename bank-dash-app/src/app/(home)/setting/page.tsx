@@ -1,6 +1,8 @@
 // Libraries
-import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+
+// Utils
+import { getAuth } from '@/lib/auth';
 
 // Components
 import { SettingPageContent } from '@/components/SettingPageContent';
@@ -17,7 +19,7 @@ import { createMetadata } from '@/utils';
 export const metadata = createMetadata('Setting');
 
 const SettingPage = async () => {
-  const { userId } = await auth();
+  const { userId } = await getAuth();
 
   if (!userId) {
     redirect(ROUTES.SIGN_IN);

@@ -1,5 +1,4 @@
 // Libraries
-import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import { Effect } from 'effect';
 
@@ -12,17 +11,16 @@ import { getRecentTransactionsEffect } from '@/services/transactions.effect';
 
 // Utils
 import { runServerEffect } from '@/lib/effect/runtime';
+import { getAuth } from '@/lib/auth';
+import { createMetadata } from '@/utils';
 
 // Constants
 import { ROUTES } from '@/constants/route';
 
-// Utils
-import { createMetadata } from '@/utils';
-
 export const metadata = createMetadata('Dashboard');
 
 const HomePage = async () => {
-  const { userId } = await auth();
+  const { userId } = await getAuth();
 
   if (!userId) {
     redirect(ROUTES.SIGN_IN);

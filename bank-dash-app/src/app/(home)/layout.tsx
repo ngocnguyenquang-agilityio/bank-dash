@@ -1,7 +1,9 @@
 // Libraries
 import { type ReactNode, Suspense } from 'react';
-import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+
+// Utils
+import { getAuth } from '@/lib/auth';
 
 // Components
 import { Sidebar } from '@/components/Sidebar';
@@ -15,7 +17,7 @@ type HomeLayoutProps = {
 };
 
 const HomeLayout = async ({ children }: HomeLayoutProps) => {
-  const { userId } = await auth();
+  const { userId } = await getAuth();
 
   if (!userId) {
     redirect(ROUTES.SIGN_IN);

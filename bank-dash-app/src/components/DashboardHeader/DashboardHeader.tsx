@@ -1,5 +1,5 @@
 // Libraries
-import { auth } from '@clerk/nextjs/server';
+import { getAuth } from '@/lib/auth';
 
 // Services
 import { getMemberByClerkId } from '@/services/members';
@@ -11,7 +11,7 @@ import { getInitials, getStrapiMedia } from '@/utils';
 import { DashboardHeaderContent } from './DashboardHeaderContent';
 
 export const DashboardHeader = async () => {
-  const { userId } = await auth();
+  const { userId } = await getAuth();
 
   let memberName = 'User';
   let memberInitials = 'U';
