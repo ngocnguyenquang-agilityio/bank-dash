@@ -40,8 +40,16 @@ export const sendAmount = async (
       );
     }
 
-    // Find the first card with sufficient balance
-    const targetCard = cards.data.find((card) => parseFloat(card.balance) >= amount);
+    // Find the first active card with sufficient balance
+    const activeCards = cards.data.filter((card) => card.isActive);
+
+    if (activeCards.length === 0) {
+      return yield* Effect.fail(
+        new ApiRequestError({ message: TRANSACTION_ERRORS.ALL_CARDS_BLOCKED }),
+      );
+    }
+
+    const targetCard = activeCards.find((card) => parseFloat(card.balance) >= amount);
 
     if (!targetCard) {
       return yield* Effect.fail(

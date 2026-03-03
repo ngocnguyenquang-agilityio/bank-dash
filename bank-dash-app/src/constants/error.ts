@@ -33,4 +33,5 @@ export const TRANSACTION_ERRORS = {
   INVALID_AMOUNT: 'Please enter a valid amount',
   INSUFFICIENT_BALANCE: 'Balance not enough',
   FAILED_TRANSACTION: 'Transaction failed',
+  ALL_CARDS_BLOCKED: 'Unlock your card to transfer',
 };
