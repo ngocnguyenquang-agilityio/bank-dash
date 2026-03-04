@@ -2,6 +2,7 @@
 
 // Libraries
 import { Effect } from 'effect';
+import { updateTag } from 'next/cache';
 
 // Services
 import { apiClient } from '@/services/api';
@@ -13,6 +14,9 @@ import { runServerEffect } from '@/lib/effect/runtime';
 // Types
 import type { MembersResponse } from '@/types/member';
 
+// Constants
+import { CACHE_TAGS, REVALIDATE } from '@/constants/cache';
+
 interface GetMemberResult {
   member: MembersResponse['data'][0] | null;
   error: string | null;
@@ -21,7 +25,14 @@ interface GetMemberResult {
 export const getMemberByClerkId = async (clerkId: string): Promise<GetMemberResult> => {
   const url = `/members?populate=*&filters[clerkId][$eq]=${clerkId}`;
 
-  const effect = requestEffect(apiClient.get<MembersResponse>(url)).pipe(
+  const effect = requestEffect(
+    apiClient.get<MembersResponse>(url, {
+      next: {
+        revalidate: REVALIDATE.MEMBERS,
+        tags: [CACHE_TAGS.MEMBERS, CACHE_TAGS.MEMBER(clerkId)],
+      },
+    }),
+  ).pipe(
     Effect.map((response) => ({
       member: response.data[0] || null,
       error: null,
@@ -58,7 +69,10 @@ export const updateMember = async (
       body: { data },
     }),
   ).pipe(
-    Effect.map(() => ({ success: true, error: null })),
+    Effect.map(() => {
+      updateTag(CACHE_TAGS.MEMBERS);
+      return { success: true, error: null };
+    }),
     Effect.catchAll((error) =>
       Effect.succeed({
         success: false,

@@ -2,7 +2,7 @@
 
 // Libraries
 import { Effect } from 'effect';
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 // Services
 import { apiClient } from '@/services/api';
@@ -18,6 +18,7 @@ import type { MembersResponse } from '@/types/member';
 
 // Constants
 import { CARD_ERRORS, NOT_FOUND_ERRORS } from '@/constants/error';
+import { CACHE_TAGS, REVALIDATE } from '@/constants/cache';
 
 type ServiceResult<T extends Record<string, unknown> = Record<string, never>> = {
   error: string | null;
@@ -62,7 +63,7 @@ export const addCard = async (
       );
     }),
     Effect.map(() => {
-      revalidatePath('/cards');
+      updateTag(CACHE_TAGS.CARDS);
       return { success: true, error: null };
     }),
     Effect.catchAll((error) =>
@@ -81,7 +82,14 @@ export const getCardDetails = async (
 ): Promise<ServiceResult<{ card: Card | null }>> => {
   const url = `/cards/${documentId}?populate=*`;
 
-  const effect = requestEffect(apiClient.get<{ data: Card }>(url)).pipe(
+  const effect = requestEffect(
+    apiClient.get<{ data: Card }>(url, {
+      next: {
+        revalidate: REVALIDATE.CARD_DETAIL,
+        tags: [CACHE_TAGS.CARDS, CACHE_TAGS.CARD_DETAIL(documentId)],
+      },
+    }),
+  ).pipe(
     Effect.map((response) => ({ card: response.data, error: null })),
     Effect.catchAll((error) =>
       Effect.succeed({
@@ -125,7 +133,11 @@ export const updateCardDetails = async (
       body: { data: payload },
     }),
   ).pipe(
-    Effect.map((response) => ({ success: true, card: response.data, error: null })),
+    Effect.map((response) => {
+      updateTag(CACHE_TAGS.CARDS);
+      updateTag(CACHE_TAGS.CARD_DETAIL(documentId));
+      return { success: true, card: response.data, error: null };
+    }),
     Effect.catchAll((error) =>
       Effect.succeed({
         success: false,
@@ -149,7 +161,11 @@ export const updateCardBalance = async (
       body: { data: { balance: newBalance } },
     }),
   ).pipe(
-    Effect.map(() => ({ success: true, error: null })),
+    Effect.map(() => {
+      updateTag(CACHE_TAGS.CARDS);
+      updateTag(CACHE_TAGS.CARD_DETAIL(documentId));
+      return { success: true, error: null };
+    }),
     Effect.catchAll((error) =>
       Effect.succeed({
         success: false,

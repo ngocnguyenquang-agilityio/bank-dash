@@ -2,7 +2,7 @@
 
 // Libraries
 import { Effect } from 'effect';
-import { revalidatePath } from 'next/cache';
+import { updateTag } from 'next/cache';
 
 // Services
 import { apiClient } from '@/services/api';
@@ -15,6 +15,7 @@ import { Transactions } from '@/types/card';
 
 // Constants
 import { TRANSACTION_ERRORS } from '@/constants/error';
+import { CACHE_TAGS } from '@/constants/cache';
 
 interface SendAmountResult {
   success: boolean;
@@ -81,7 +82,8 @@ export const sendAmount = async (
       }),
     );
 
-    revalidatePath('/dashboard');
+    updateTag(CACHE_TAGS.CARDS);
+    updateTag(CACHE_TAGS.TRANSACTIONS);
     return { success: true, error: null } satisfies SendAmountResult;
   }).pipe(
     Effect.catchAll((error) =>

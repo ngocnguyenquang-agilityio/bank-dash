@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
     staleTimes: {
       dynamic: 180,
     },
+    turbopackFileSystemCacheForDev: true,
   },
   reactCompiler: true,
   images: {

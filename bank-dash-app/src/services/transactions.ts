@@ -2,6 +2,7 @@
 
 // Libraries
 import { Effect } from 'effect';
+import { updateTag } from 'next/cache';
 
 // Services
 import { apiClient } from '@/services/api';
@@ -10,6 +11,9 @@ import { getRecentTransactionsEffect } from '@/services/transactions.effect';
 
 // Utils
 import { runServerEffect } from '@/lib/effect/runtime';
+
+// Constants
+import { CACHE_TAGS } from '@/constants/cache';
 
 // Types
 import type { Transactions } from '@/types/card';
@@ -47,7 +51,10 @@ export const createTransaction = async (
       body: { data: payload },
     }),
   ).pipe(
-    Effect.map(() => ({ success: true, error: null })),
+    Effect.map(() => {
+      updateTag(CACHE_TAGS.TRANSACTIONS);
+      return { success: true, error: null };
+    }),
     Effect.catchAll((error) =>
       Effect.succeed({
         success: false,

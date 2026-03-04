@@ -3,6 +3,7 @@ export default [
   'strapi::errors',
   'strapi::security',
   'strapi::cors',
+  'global::cache-control',
   'strapi::poweredBy',
   'strapi::query',
   'strapi::body',
