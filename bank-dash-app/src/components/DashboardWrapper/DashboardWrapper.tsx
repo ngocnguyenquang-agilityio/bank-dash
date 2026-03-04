@@ -51,7 +51,7 @@ export const DashboardWrapper = ({ cards, transactions, error, userId }: Dashboa
               </Link>
             ) : null}
           </div>
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 overflow-x-auto pb-2 scrollbar-hide">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 lg:gap-8 overflow-x-auto scrollbar-hide flex-1 items-start">
             {cardsData.length === 0 ? (
               <div className="w-full sm:w-[350px] h-[200px] sm:h-[235px] rounded-[25px] border border-dashed border-neutral-20 flex flex-col items-center justify-center gap-3 flex-shrink-0 bg-white">
                 <Icons.CreditCard className="w-10 h-10 fill-blue-50" />

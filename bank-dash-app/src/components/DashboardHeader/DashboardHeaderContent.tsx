@@ -2,6 +2,7 @@
 
 // Libraries
 import { useMemo } from 'react';
+import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 // Utils
@@ -65,18 +66,21 @@ export const DashboardHeaderContent = ({
             <Input
               placeholder="Search for something"
               className="pl-10 md:pl-14 h-10 md:h-[50px] rounded-[40px] bg-neutral-10 border-0 text-sm md:text-[15px] text-tx-primary placeholder:text-neutral-30"
+              disabled
             />
           </div>
 
           {/* Settings Icon */}
-          <Button
-            variant="ghost"
-            size="md"
-            className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors"
-            aria-label="Settings"
-          >
-            <SettingIcon className="w-5 h-5 md:w-6 md:h-6" />
-          </Button>
+          <Link href="/setting">
+            <Button
+              variant="ghost"
+              size="md"
+              className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors"
+              aria-label="Settings"
+            >
+              <SettingIcon className="w-5 h-5 md:w-6 md:h-6" />
+            </Button>
+          </Link>
 
           {/* Notification Icon */}
           <Button
@@ -84,6 +88,7 @@ export const DashboardHeaderContent = ({
             size="md"
             className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors relative"
             aria-label="Notifications"
+            disabled
           >
             <NotificationIcon className="w-5 h-5 md:w-6 md:h-6" />
           </Button>

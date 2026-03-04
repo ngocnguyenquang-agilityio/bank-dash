@@ -9,32 +9,51 @@ jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
 }));
 
+const enabledItems = ['Dashboard', 'Cards', 'Setting'];
+const disabledItems = [
+  'Transactions',
+  'Accounts',
+  'Investments',
+  'Loans',
+  'Services',
+  'My Privileges',
+];
+
 describe('Sidebar', () => {
   beforeEach(() => {
     (usePathname as jest.Mock).mockReturnValue('/dashboard');
   });
 
-  it('renders the brand and all main navigation items', () => {
+  it('renders the brand and all navigation items', () => {
     render(<Sidebar />);
 
-    // Brand
     expect(screen.getByText('BankDash.')).toBeInTheDocument();
 
-    // Primary items (spot check a few + ensure total count)
-    const items = [
-      'Dashboard',
-      'Transactions',
-      'Accounts',
-      'Investments',
-      'Cards',
-      'Loans',
-      'Services',
-      'My Privileges',
-      'Setting',
-    ];
+    [...enabledItems, ...disabledItems].forEach((label) => {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    });
+  });
 
-    items.forEach((label) => {
+  it('renders enabled items as links', () => {
+    render(<Sidebar />);
+
+    enabledItems.forEach((label) => {
       expect(screen.getByRole('link', { name: label })).toBeInTheDocument();
+    });
+  });
+
+  it('renders disabled items as non-clickable spans with disabled styling', () => {
+    render(<Sidebar />);
+
+    disabledItems.forEach((label) => {
+      // Should NOT be a link
+      expect(screen.queryByRole('link', { name: label })).not.toBeInTheDocument();
+
+      // Should be rendered as text with disabled styling
+      const element = screen.getByText(label).closest('span[class]');
+      expect(element).toBeInTheDocument();
+      expect(element?.className).toContain('opacity-50');
+      expect(element?.className).toContain('cursor-not-allowed');
     });
   });
 
@@ -44,8 +63,8 @@ describe('Sidebar', () => {
     const dashboardLink = screen.getByRole('link', { name: 'Dashboard' });
     expect(dashboardLink.className).toContain('text-blue-30');
 
-    const transactionsLink = screen.getByRole('link', { name: 'Transactions' });
-    expect(transactionsLink.className).not.toContain('text-blue-30');
+    const cardsLink = screen.getByRole('link', { name: 'Cards' });
+    expect(cardsLink.className).not.toContain('text-blue-30');
   });
 
   it('toggles the mobile menu open/close and closes on link click', () => {
@@ -62,8 +81,8 @@ describe('Sidebar', () => {
     expect(sidebar.className).not.toContain('-translate-x-full');
 
     // Clicking a nav link should close the menu again
-    const transactionsLink = screen.getByRole('link', { name: 'Transactions' });
-    fireEvent.click(transactionsLink);
+    const cardsLink = screen.getByRole('link', { name: 'Cards' });
+    fireEvent.click(cardsLink);
 
     // After closing, expect off-screen class back
     expect(sidebar.className).toContain('-translate-x-full');

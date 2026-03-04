@@ -30,7 +30,7 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
 
   if (transactionsData.length === 0) {
     return (
-      <Card className="w-full h-auto xl:h-[235px] rounded-[25px] border-0">
+      <Card className="w-full h-auto sm:h-[235px] rounded-[25px] border-0">
         <CardContent className="flex items-center justify-center h-full">
           <p className="text-tx-secondary text-sm">No recent transactions</p>
         </CardContent>
@@ -39,7 +39,7 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
   }
 
   return (
-    <Card className="w-full h-auto xl:h-[235px] rounded-[25px] border-0">
+    <Card className="w-full h-auto sm:h-[235px] rounded-[25px] border-0">
       <CardContent className="space-y-3 sm:space-y-4">
         {transactionsData.map((transaction) => {
           const iconConfig = ICON_MAP[transaction.type] ?? ICON_MAP[Transactions.Withdrawal];

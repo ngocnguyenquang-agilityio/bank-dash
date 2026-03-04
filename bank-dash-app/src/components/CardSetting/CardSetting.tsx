@@ -17,7 +17,7 @@ export const CardSetting = ({ isActive, isPending, onToggleBlock }: CardSettingP
         onClick={isPending ? undefined : onToggleBlock}
         className={cn(
           'flex items-center gap-4 w-full text-left transition-opacity cursor-pointer',
-          isPending ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80'
+          isPending ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80',
         )}
       >
         <div className="w-[60px] h-[60px] rounded-[15px] bg-yellow-20 flex items-center justify-center flex-shrink-0">
@@ -41,7 +41,7 @@ export const CardSetting = ({ isActive, isPending, onToggleBlock }: CardSettingP
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 opacity-50 cursor-not-allowed">
         <div className="w-[60px] h-[60px] rounded-[15px] bg-blue-10 flex items-center justify-center flex-shrink-0">
           <Icons.Lock className="fill-blue-30" />
         </div>
@@ -51,7 +51,7 @@ export const CardSetting = ({ isActive, isPending, onToggleBlock }: CardSettingP
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 opacity-50 cursor-not-allowed">
         <div className="w-[60px] h-[60px] rounded-[15px] bg-red-30 flex items-center justify-center flex-shrink-0">
           <Icons.Google className="fill-red-50" />
         </div>
@@ -61,7 +61,7 @@ export const CardSetting = ({ isActive, isPending, onToggleBlock }: CardSettingP
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 opacity-50 cursor-not-allowed">
         <div className="w-[60px] h-[60px] rounded-[15px] bg-green-30 flex items-center justify-center flex-shrink-0">
           <Icons.Apple className="size-8 fill-green-50" />
         </div>
@@ -71,7 +71,7 @@ export const CardSetting = ({ isActive, isPending, onToggleBlock }: CardSettingP
         </div>
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 opacity-50 cursor-not-allowed">
         <div className="w-[60px] h-[60px] rounded-[15px] bg-green-30 flex items-center justify-center flex-shrink-0">
           <Icons.Apple className="size-8 fill-green-50" />
         </div>

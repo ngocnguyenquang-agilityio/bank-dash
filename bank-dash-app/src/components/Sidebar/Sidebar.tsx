@@ -21,13 +21,13 @@ interface SidebarProps {
 
 const menuItems = [
   { icon: Icons.Home, label: 'Dashboard', href: '/dashboard' },
-  { icon: Icons.Transactions, label: 'Transactions', href: '/transactions' },
-  { icon: Icons.User, label: 'Accounts', href: '/accounts' },
-  { icon: Icons.Investment, label: 'Investments', href: '/investments' },
+  { icon: Icons.Transactions, label: 'Transactions', href: '/transactions', disabled: true },
+  { icon: Icons.User, label: 'Accounts', href: '/accounts', disabled: true },
+  { icon: Icons.Investment, label: 'Investments', href: '/investments', disabled: true },
   { icon: Icons.CreditCard, label: 'Cards', href: '/cards' },
-  { icon: Icons.Loan, label: 'Loans', href: '/loans' },
-  { icon: Icons.Service, label: 'Services', href: '/services' },
-  { icon: Icons.Econometrics, label: 'My Privileges', href: '/privileges' },
+  { icon: Icons.Loan, label: 'Loans', href: '/loans', disabled: true },
+  { icon: Icons.Service, label: 'Services', href: '/services', disabled: true },
+  { icon: Icons.Econometrics, label: 'My Privileges', href: '/privileges', disabled: true },
   { icon: Icons.Settings, label: 'Setting', href: '/setting' },
 ];
 
@@ -93,24 +93,37 @@ export const Sidebar = ({ className }: SidebarProps) => {
               {menuItems.map((item) => {
                 const isActive =
                   item.href === '/cards' ? pathname?.startsWith('/cards') : pathname === item.href;
+                const baseClassName = cn(
+                  'flex items-center gap-4 sm:gap-6 px-4 sm:px-7 md:px-11 py-[18px] rounded-r-[10px] text-base sm:text-[18px] font-medium transition-colors relative',
+                  item.disabled
+                    ? 'text-neutral-30 opacity-50 cursor-not-allowed'
+                    : isActive
+                      ? 'text-blue-30'
+                      : 'text-neutral-30 hover:text-tx-primary',
+                );
+
                 return (
                   <li key={item.label}>
-                    <Link
-                      href={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={cn(
-                        'flex items-center gap-4 sm:gap-6 px-4 sm:px-7 md:px-11 py-[18px] rounded-r-[10px] text-base sm:text-[18px] font-medium transition-colors relative',
-                        isActive ? 'text-blue-30' : 'text-neutral-30 hover:text-tx-primary',
-                      )}
-                    >
-                      {isActive && (
-                        <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-30 rounded-r-[10px]" />
-                      )}
-                      <item.icon
-                        className={cn('w-6 h-6', isActive ? 'fill-blue-30' : 'fill-neutral-30')}
-                      />
-                      <span>{item.label}</span>
-                    </Link>
+                    {item.disabled ? (
+                      <span className={baseClassName}>
+                        <item.icon className="w-6 h-6 fill-neutral-30" />
+                        <span>{item.label}</span>
+                      </span>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={baseClassName}
+                      >
+                        {isActive && (
+                          <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-30 rounded-r-[10px]" />
+                        )}
+                        <item.icon
+                          className={cn('w-6 h-6', isActive ? 'fill-blue-30' : 'fill-neutral-30')}
+                        />
+                        <span>{item.label}</span>
+                      </Link>
+                    )}
                   </li>
                 );
               })}
