@@ -7,6 +7,7 @@ import { updateTag } from 'next/cache';
 // Services
 import { apiClient } from '@/services/api';
 import { requestEffect } from '@/services/api.effect';
+import { getMembersEffect } from '@/services/members.effect';
 
 // Utils
 import { runServerEffect } from '@/lib/effect/runtime';
@@ -46,6 +47,15 @@ export const getMemberByClerkId = async (clerkId: string): Promise<GetMemberResu
   );
 
   return runServerEffect(effect);
+};
+
+interface GetMembersResult {
+  members: MembersResponse | null;
+  error: string | null;
+}
+
+export const getMembers = async (currentClerkId: string): Promise<GetMembersResult> => {
+  return runServerEffect(getMembersEffect(currentClerkId));
 };
 
 interface UpdateMemberResult {

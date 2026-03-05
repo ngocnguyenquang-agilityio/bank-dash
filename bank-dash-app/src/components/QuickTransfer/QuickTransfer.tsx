@@ -1,7 +1,7 @@
 'use client';
 
 // Libraries
-import { useState, useTransition } from 'react';
+import { useMemo, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 // Components
@@ -14,29 +14,71 @@ import { Icons } from '@/components/Icons/Icons';
 // Services
 import { sendAmount } from '@/services/transfers';
 
+// Utils
+import { getInitials } from '@/utils';
+
+// Types
+import type { Member } from '@/types/member';
+
 // Constants
 import { TRANSACTION_ERRORS } from '@/constants/error';
 
-const contacts = [
-  { name: 'Livia Bator', role: 'CEO', avatar: 'LB' },
-  { name: 'Randy Press', role: 'Director', avatar: 'RP' },
-  { name: 'Workman', role: 'Designer', avatar: 'W' },
-];
+const STRAPI_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://127.0.0.1:1337';
 
 interface QuickTransferProps {
   userClerkId: string;
+  senderName: string;
+  members: Member[];
 }
 
-export const QuickTransfer = ({ userClerkId }: QuickTransferProps) => {
+export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransferProps) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const [amount, setAmount] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [selectedContact, setSelectedContact] = useState(contacts[0]);
+  const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+
+  const disabledMemberIds = useMemo(() => {
+    const ids = new Set<string>();
+
+    for (const member of members) {
+      const hasActiveCard = member.cards?.some((card) => card.isActive) ?? false;
+
+      if (!hasActiveCard) {
+        ids.add(member.documentId);
+      }
+    }
+
+    return ids;
+  }, [members]);
+
+  const selectableMember = useMemo(
+    () => members.filter((m) => !disabledMemberIds.has(m.documentId)),
+    [members, disabledMemberIds],
+  );
+
+  // Auto-select the first selectable member
+  const activeSelectedMember = useMemo(() => {
+    if (selectedMember && !disabledMemberIds.has(selectedMember.documentId)) {
+      return selectedMember;
+    }
+
+    return selectableMember[0] ?? null;
+  }, [selectedMember, selectableMember, disabledMemberIds]);
+
+  const handleSelectMember = (member: Member) => {
+    if (disabledMemberIds.has(member.documentId)) return;
+    setSelectedMember(member);
+  };
 
   const handleSend = () => {
     setError(null);
+
+    if (!activeSelectedMember) {
+      setError(TRANSACTION_ERRORS.RECIPIENT_NOT_FOUND);
+      return;
+    }
 
     // Validate amount
     const numericAmount = parseFloat(amount);
@@ -45,9 +87,15 @@ export const QuickTransfer = ({ userClerkId }: QuickTransferProps) => {
       return;
     }
 
-    // Call API — server handles multi-card balance check
+    // Call API — two-sided transfer with compensating rollback
     startTransition(async () => {
-      const result = await sendAmount(userClerkId, numericAmount, selectedContact?.name ?? '');
+      const result = await sendAmount(
+        userClerkId,
+        activeSelectedMember.clerkId,
+        numericAmount,
+        senderName,
+        activeSelectedMember.name,
+      );
 
       if (!result.success) {
         setError(result.error || TRANSACTION_ERRORS.FAILED_TRANSACTION);
@@ -60,40 +108,54 @@ export const QuickTransfer = ({ userClerkId }: QuickTransferProps) => {
     });
   };
 
+  const getMemberPhotoUrl = (member: Member): string | undefined => {
+    if (!member.photo?.url) return undefined;
+
+    // If the URL is already absolute, return as-is
+    if (member.photo.url.startsWith('http')) return member.photo.url;
+
+    // Prefix with Strapi base URL for relative paths
+    return `${STRAPI_BASE_URL}${member.photo.url}`;
+  };
+
   return (
     <Card className="w-full flex-1 rounded-[25px] border-0 outline-none shadow-none">
       <CardContent className="px-4 py-6 flex flex-col justify-between h-full gap-6">
-        {/* Contacts */}
+        {/* Members */}
         <div className="flex items-center justify-between gap-3 sm:gap-4 md:gap-7 overflow-x-auto pb-2 scrollbar-hide">
           <div className="flex items-center gap-6">
-            {contacts.map((contact, index) => (
-              <Button
-                key={index}
-                variant="ghost"
-                onClick={() => setSelectedContact(contact)}
-                className={`flex flex-col items-center gap-2 flex-shrink-0 p-3 h-auto rounded-2xl transition-all duration-200 ${
-                  selectedContact?.name === contact.name
-                    ? 'bg-transparent border-2 border-blue-50 shadow-md'
-                    : 'border-2 border-transparent hover:bg-black/5'
-                }`}
-              >
-                <Avatar className="w-14 h-14 sm:w-16 sm:h-16 md:w-[70px] md:h-[70px]">
-                  <AvatarImage
-                    src={`https://i.pravatar.cc/150?u=${contact.name}`}
-                    alt={`${contact.name} avatar`}
-                  />
-                  <AvatarFallback className="bg-gradient-to-br from-blue-400 to-purple-500 text-white text-lg">
-                    {contact.avatar}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-center">
-                  <div className="font-semibold text-sm sm:text-[16px] text-black whitespace-nowrap">
-                    {contact.name}
+            {members.map((member) => {
+              const isDisabled = disabledMemberIds.has(member.documentId);
+              const isSelected = activeSelectedMember?.documentId === member.documentId;
+
+              return (
+                <Button
+                  key={member.documentId}
+                  variant="ghost"
+                  onClick={() => handleSelectMember(member)}
+                  disabled={isDisabled}
+                  className={`flex flex-col items-center gap-2 flex-shrink-0 p-3 h-auto rounded-2xl transition-all duration-200 ${
+                    isSelected
+                      ? 'bg-transparent border-2 border-blue-50 shadow-md'
+                      : 'border-2 border-transparent hover:bg-black/5'
+                  } ${isDisabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+                >
+                  <Avatar className="w-14 h-14 sm:w-16 sm:h-16 md:w-[70px] md:h-[70px]">
+                    {getMemberPhotoUrl(member) && (
+                      <AvatarImage src={getMemberPhotoUrl(member)!} alt={`${member.name} avatar`} />
+                    )}
+                    <AvatarFallback className="bg-gradient-to-br from-blue-400 to-purple-500 text-white text-lg">
+                      {getInitials(member.name)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="text-center">
+                    <div className="font-semibold text-sm sm:text-[16px] text-black whitespace-nowrap">
+                      {member.name}
+                    </div>
                   </div>
-                  <div className="text-xs sm:text-[15px] text-neutral-30">{contact.role}</div>
-                </div>
-              </Button>
-            ))}
+                </Button>
+              );
+            })}
           </div>
 
           {/* See More */}
@@ -133,7 +195,7 @@ export const QuickTransfer = ({ userClerkId }: QuickTransferProps) => {
             </div>
             <Button
               onClick={handleSend}
-              disabled={isPending || !userClerkId}
+              disabled={isPending || !userClerkId || !activeSelectedMember}
               className="h-12 sm:h-[50px] px-5 sm:px-6 rounded-[50px] bg-blue-50 hover:bg-blue-50/90 text-white gap-2 shadow-lg disabled:opacity-50"
             >
               {isPending ? (

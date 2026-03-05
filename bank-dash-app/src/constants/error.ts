@@ -34,4 +34,6 @@ export const TRANSACTION_ERRORS = {
   INSUFFICIENT_BALANCE: 'Balance not enough',
   FAILED_TRANSACTION: 'Transaction failed',
   ALL_CARDS_BLOCKED: 'Unlock your card to transfer',
+  RECIPIENT_NO_ACTIVE_CARD: 'Recipient has no active card to receive funds',
+  RECIPIENT_NOT_FOUND: 'Recipient not found',
 };

@@ -1,6 +1,9 @@
 // Libraries
 import { Schema } from 'effect';
 
+// Types
+import { CardSchema } from '@/types/card';
+
 // Strapi media object schema
 export const StrapiMediaSchema = Schema.Struct({
   id: Schema.Number,
@@ -28,6 +31,7 @@ export const MemberSchema = Schema.Struct({
   postalCode: Schema.optional(Schema.NullOr(Schema.String)),
   country: Schema.optional(Schema.NullOr(Schema.String)),
   photo: Schema.optional(Schema.NullOr(StrapiMediaSchema)),
+  cards: Schema.optional(Schema.NullOr(Schema.Array(CardSchema))),
 });
 
 export const MemberProfileSchema = Schema.Struct({
