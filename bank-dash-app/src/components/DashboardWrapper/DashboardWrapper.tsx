@@ -101,7 +101,7 @@ export const DashboardWrapper = ({
       </section>
 
       <section className="flex flex-col lg:flex-row items-stretch gap-6 lg:gap-[30px]">
-        <div className="flex flex-col space-y-4 lg:flex-1">
+        <div className="flex flex-col space-y-4 lg:flex-1 min-w-0">
           <h2 className="text-lg sm:text-xl md:text-[22px] font-semibold text-tx-primary">
             Quick Transfer
           </h2>

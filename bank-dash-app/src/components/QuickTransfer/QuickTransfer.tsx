@@ -1,7 +1,7 @@
 'use client';
 
 // Libraries
-import { useMemo, useState, useTransition } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 
 // Components
@@ -38,6 +38,32 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
   const [amount, setAmount] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [selectedMember, setSelectedMember] = useState<Member | null>(null);
+  const [showNextButton, setShowNextButton] = useState(true);
+  const [showPrevButton, setShowPrevButton] = useState(false);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const checkScrollPosition = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const atStart = container.scrollLeft <= 0;
+    const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+    setShowPrevButton(!atStart);
+    setShowNextButton(!atEnd);
+  }, []);
+
+  useEffect(() => {
+    checkScrollPosition();
+  }, [members, checkScrollPosition]);
+
+  const handleScrollNext = () => {
+    scrollContainerRef.current?.scrollBy({ left: 150, behavior: 'smooth' });
+  };
+
+  const handleScrollPrev = () => {
+    scrollContainerRef.current?.scrollBy({ left: -150, behavior: 'smooth' });
+  };
 
   const disabledMemberIds = useMemo(() => {
     const ids = new Set<string>();
@@ -119,11 +145,28 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
   };
 
   return (
-    <Card className="w-full flex-1 rounded-[25px] border-0 outline-none shadow-none">
+    <Card className="w-full flex-1 rounded-[25px] border-0 outline-none shadow-none overflow-hidden">
       <CardContent className="px-4 py-6 flex flex-col justify-between h-full gap-6">
         {/* Members */}
-        <div className="flex items-center justify-between gap-3 sm:gap-4 md:gap-7 overflow-x-auto pb-2 scrollbar-hide">
-          <div className="flex items-center gap-6">
+        <div className="relative w-full overflow-hidden">
+          {/* See Previous */}
+          <Button
+            variant="ghost"
+            size="md"
+            onClick={handleScrollPrev}
+            className={`absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 md:w-[50px] md:h-[50px] px-0 rounded-full bg-white shadow-md hover:shadow-lg flex items-center justify-center transition-opacity duration-200 ${
+              showPrevButton ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
+            aria-label="See previous"
+          >
+            <Icons.ChevronBackward className="w-5 h-5 sm:w-6 sm:h-6 fill-neutral-30" />
+          </Button>
+
+          <div
+            ref={scrollContainerRef}
+            onScroll={checkScrollPosition}
+            className="flex items-center gap-6 overflow-x-hidden w-full"
+          >
             {members.map((member) => {
               const isDisabled = disabledMemberIds.has(member.documentId);
               const isSelected = activeSelectedMember?.documentId === member.documentId;
@@ -162,7 +205,10 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
           <Button
             variant="ghost"
             size="md"
-            className="w-10 h-10 sm:w-12 sm:h-12 md:w-[50px] md:h-[50px] px-0 rounded-full bg-white shadow-md hover:shadow-lg transition-shadow flex items-center justify-center flex-shrink-0"
+            onClick={handleScrollNext}
+            className={`absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 sm:w-12 sm:h-12 md:w-[50px] md:h-[50px] px-0 rounded-full bg-white shadow-md hover:shadow-lg flex items-center justify-center transition-opacity duration-200 ${
+              showNextButton ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
             aria-label="See more"
           >
             <Icons.ChevronForwardIcon className="w-5 h-5 sm:w-6 sm:h-6 fill-neutral-30" />
