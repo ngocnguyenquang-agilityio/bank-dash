@@ -21,7 +21,7 @@ interface SidebarProps {
 
 const menuItems = [
   { icon: Icons.Home, label: 'Dashboard', href: '/dashboard' },
-  { icon: Icons.Transactions, label: 'Transactions', href: '/transactions', disabled: true },
+  { icon: Icons.Transactions, label: 'Transactions', href: '/transactions' },
   { icon: Icons.User, label: 'Accounts', href: '/accounts', disabled: true },
   { icon: Icons.Investment, label: 'Investments', href: '/investments', disabled: true },
   { icon: Icons.CreditCard, label: 'Cards', href: '/cards' },

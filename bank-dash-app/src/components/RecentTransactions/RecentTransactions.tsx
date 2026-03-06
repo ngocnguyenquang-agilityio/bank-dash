@@ -3,12 +3,16 @@
 // Components
 import { Card, CardContent } from '@/components/ui/card';
 
+// Utils
+import { cn } from '@/lib/utils';
+
 // Types
 import { Transactions, TransactionType } from '@/types/card';
 import type { TransactionsResponse } from '@/types/transaction';
 
 interface RecentTransactionsProps {
   transactions: TransactionsResponse | null;
+  className?: string;
 }
 
 const ICON_MAP: Record<TransactionType, { icon: string; iconBg: string }> = {
@@ -25,12 +29,12 @@ const formatDate = (dateString: string) => {
   });
 };
 
-export const RecentTransactions = ({ transactions }: RecentTransactionsProps) => {
+export const RecentTransactions = ({ transactions, className }: RecentTransactionsProps) => {
   const transactionsData = transactions?.data || [];
 
   if (transactionsData.length === 0) {
     return (
-      <Card className="w-full h-auto sm:h-[235px] rounded-[25px] border-0">
+      <Card className={cn('w-full h-auto sm:h-[235px] rounded-[25px] border-0', className)}>
         <CardContent className="flex items-center justify-center h-full">
           <p className="text-tx-secondary text-sm">No recent transactions</p>
         </CardContent>
@@ -39,7 +43,7 @@ export const RecentTransactions = ({ transactions }: RecentTransactionsProps) =>
   }
 
   return (
-    <Card className="w-full h-auto sm:h-[235px] rounded-[25px] border-0">
+    <Card className={cn('w-full h-auto sm:h-[235px] rounded-[25px] border-0', className)}>
       <CardContent className="space-y-3 sm:space-y-4">
         {transactionsData.map((transaction) => {
           const iconConfig = ICON_MAP[transaction.type] ?? ICON_MAP[Transactions.Withdrawal];

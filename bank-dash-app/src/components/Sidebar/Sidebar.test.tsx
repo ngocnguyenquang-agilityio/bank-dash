@@ -9,15 +9,8 @@ jest.mock('next/navigation', () => ({
   usePathname: jest.fn(),
 }));
 
-const enabledItems = ['Dashboard', 'Cards', 'Setting'];
-const disabledItems = [
-  'Transactions',
-  'Accounts',
-  'Investments',
-  'Loans',
-  'Services',
-  'My Privileges',
-];
+const enabledItems = ['Dashboard', 'Transactions', 'Cards', 'Setting'];
+const disabledItems = ['Accounts', 'Investments', 'Loans', 'Services', 'My Privileges'];
 
 describe('Sidebar', () => {
   beforeEach(() => {

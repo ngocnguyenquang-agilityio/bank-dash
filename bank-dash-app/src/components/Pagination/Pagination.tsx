@@ -13,9 +13,10 @@ export interface PaginationProps {
   page: number;
   pageCount: number;
   onPageChange?: (page: number) => void;
+  className?: string;
 }
 
-export const Pagination = ({ page, pageCount, onPageChange }: PaginationProps) => {
+export const Pagination = ({ page, pageCount, onPageChange, className }: PaginationProps) => {
   const totalPages = pageCount;
 
   // Generate page numbers to display
@@ -46,7 +47,7 @@ export const Pagination = ({ page, pageCount, onPageChange }: PaginationProps) =
   };
 
   return (
-    <div className="flex items-center justify-center sm:justify-end gap-3 mt-8">
+    <div className={cn('flex items-center justify-center sm:justify-end gap-3 mt-8', className)}>
       <Button
         variant="ghost"
         onClick={handlePreviousPage}

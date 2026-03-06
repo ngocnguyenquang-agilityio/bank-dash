@@ -1,36 +1,49 @@
 // Libraries
-import Link from 'next/link';
-
-// Icons
-import { Construction } from 'lucide-react';
+import { Effect } from 'effect';
+import { redirect } from 'next/navigation';
 
 // Components
-import { Button } from '@/components/ui/button';
+import { TransactionsPageContent } from '@/components/TransactionsPageContent';
+
+// Services
+import { getCardsEffect } from '@/services/cards.effect';
+import { getTransactionsEffect } from '@/services/transactions.effect';
 
 // Utils
+import { runServerEffect } from '@/lib/effect/runtime';
+import { getAuth } from '@/lib/auth';
 import { createMetadata } from '@/utils';
+
+// Constants
+import { ROUTES } from '@/constants/route';
 
 export const metadata = createMetadata('Transactions');
 
-const TransactionsPage = () => (
-  <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4">
-    <div className="w-20 h-20 rounded-full bg-blue-10 flex items-center justify-center">
-      <Construction className="w-10 h-10 text-blue-50" />
-    </div>
+const TransactionsPage = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ page: string | undefined }>;
+}) => {
+  const { userId } = await getAuth();
+  const { page } = await searchParams;
+  const currentPage = Number(page) || 1;
 
-    <div className="space-y-2">
-      <h2 className="text-2xl sm:text-3xl font-semibold text-tx-primary">Page not available</h2>
-      <p className="text-base sm:text-lg text-neutral-30 max-w-md">
-        This will be implemented in the future
-      </p>
-    </div>
+  if (!userId) {
+    redirect(ROUTES.SIGN_IN);
+  }
 
-    <Link href="/dashboard">
-      <Button className="h-[50px] px-8 rounded-[15px] bg-blue-50 text-white text-base font-medium hover:bg-blue-60 transition-colors">
-        Back to Dashboard
-      </Button>
-    </Link>
-  </div>
-);
+  const [cardsResult, transactionsResult] = await runServerEffect(
+    Effect.all([getCardsEffect(userId, 1, 1), getTransactionsEffect(userId, currentPage, 5)], {
+      concurrency: 'unbounded',
+    }),
+  );
+
+  const { cards, error: cardsError } = cardsResult;
+  const { transactions, error: transactionsError } = transactionsResult;
+
+  const error = [cardsError, transactionsError].filter(Boolean).join('; ') || null;
+
+  return <TransactionsPageContent cards={cards} transactions={transactions} error={error} />;
+};
 
 export default TransactionsPage;
