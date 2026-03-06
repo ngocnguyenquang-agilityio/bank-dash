@@ -24,25 +24,25 @@ interface TransactionsPageContentProps {
 
 const SUMMARY_CARDS = [
   {
-    icon: '💰',
+    icon: <Icons.MoneyTag className="fill-[#FFBB38]" />,
     iconBg: '#FFF5D9',
     label: 'My Balance',
     value: '$12,750',
   },
   {
-    icon: '💵',
+    icon: <Icons.Invest className="fill-[#396AFF]" />,
     iconBg: '#E7EDFF',
     label: 'Income',
     value: '$5,600',
   },
   {
-    icon: '🧾',
+    icon: <Icons.MedicalRecipe className="fill-[#FF82AC]" />,
     iconBg: '#FFE0EB',
     label: 'Expense',
     value: '$3,460',
   },
   {
-    icon: '🏦',
+    icon: <Icons.Saving className="fill-[#16DBCC]" />,
     iconBg: '#DCFAF8',
     label: 'Total Saving',
     value: '$7,920',
