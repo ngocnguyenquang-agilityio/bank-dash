@@ -95,7 +95,7 @@ export const TransactionsPageContent = ({
 
   return (
     <main>
-      {/* Summary Cards Row */}
+      {/* Summary Cards Section */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-[30px] mb-6">
         {SUMMARY_CARDS.map((card) => (
           <TransactionsSummaryCard

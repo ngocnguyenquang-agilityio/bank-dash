@@ -1,7 +1,11 @@
 'use client';
 
+// Libraries
+import React from 'react';
+
 // Components
 import { Card, CardContent } from '@/components/ui/card';
+import { Icons } from '@/components/Icons/Icons';
 
 // Utils
 import { cn } from '@/lib/utils';
@@ -15,9 +19,15 @@ interface RecentTransactionsProps {
   className?: string;
 }
 
-const ICON_MAP: Record<TransactionType, { icon: string; iconBg: string }> = {
-  [Transactions.Deposit]: { icon: '💰', iconBg: 'var(--color-green-40)' },
-  [Transactions.Withdrawal]: { icon: '💳', iconBg: 'var(--color-yellow-30)' },
+const ICON_MAP: Record<TransactionType, { icon: React.ReactNode; iconBg: string }> = {
+  [Transactions.Deposit]: {
+    icon: <Icons.MoneyTag className="fill-[#16DBCC]" />,
+    iconBg: '#DCFAF8',
+  },
+  [Transactions.Withdrawal]: {
+    icon: <Icons.MedicalRecipe className="fill-[#FF82AC]" />,
+    iconBg: '#FFE0EB',
+  },
 };
 
 const formatDate = (dateString: string) => {
@@ -53,7 +63,7 @@ export const RecentTransactions = ({ transactions, className }: RecentTransactio
             <div key={transaction.documentId} className="flex items-center gap-3 sm:gap-4">
               {/* Icon */}
               <div
-                className="w-10 h-10 sm:w-[55px] sm:h-[55px] rounded-full flex items-center justify-center text-xl sm:text-2xl flex-shrink-0"
+                className="w-10 h-10 sm:w-[55px] sm:h-[55px] rounded-full flex items-center justify-center flex-shrink-0"
                 style={{ backgroundColor: iconBg }}
               >
                 {icon}
