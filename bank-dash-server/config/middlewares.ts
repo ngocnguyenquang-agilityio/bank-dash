@@ -4,6 +4,7 @@ export default [
   'strapi::security',
   'strapi::cors',
   'global::cache-control',
+  'global::upload-eperm-handler',
   'strapi::poweredBy',
   'strapi::query',
   'strapi::body',

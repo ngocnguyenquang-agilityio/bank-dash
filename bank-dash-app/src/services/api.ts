@@ -89,6 +89,18 @@ export class ApiClient {
     return this.request<T>(url, config);
   }
 
+  postFormData<T>(
+    url: string,
+    formData: FormData,
+    config: Omit<RequestInitExtended, 'body'> = {},
+  ): Effect.Effect<T, ApiError | NetworkError> {
+    return this.request<T>(url, {
+      ...config,
+      method: 'POST',
+      body: formData,
+    });
+  }
+
   post<T>(
     url: string,
     config: RequestInitExtended = {},

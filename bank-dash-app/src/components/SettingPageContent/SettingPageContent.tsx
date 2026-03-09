@@ -28,14 +28,14 @@ import { MemberProfileSchema, type Member, type MemberProfile } from '@/types/me
 // Utils
 import { getStrapiMedia } from '@/utils';
 
+// Constants
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/constants/upload';
+
 const PROFILE_IMAGE = '/next.svg';
 
 interface SettingPageContentProps {
   initialData?: Member | null;
 }
-
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export const SettingPageContent = ({ initialData }: SettingPageContentProps) => {
   const router = useRouter();
@@ -74,7 +74,7 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
       const file = e.target.files?.[0];
       if (!file) return;
 
-      if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      if (!ACCEPTED_IMAGE_TYPES.includes(file.type as (typeof ACCEPTED_IMAGE_TYPES)[number])) {
         toast.error('Invalid file type. Please upload a JPEG, PNG, or WebP image.');
         return;
       }
@@ -107,33 +107,34 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
     setIsLoading(true);
 
     try {
+      let uploadedPhotoId: number | null = null;
+
       // Upload avatar if a new file was selected
       if (selectedFile) {
         const formData = new FormData();
         formData.append('file', selectedFile);
 
-        const uploadResult = await uploadAvatar(Number(initialData.id), formData);
+        const uploadResult = await uploadAvatar(formData);
 
-        if (!uploadResult.success) {
+        if (!uploadResult.success || !uploadResult.fileId) {
           toast.error(uploadResult.error || 'Failed to upload avatar');
           return;
         }
+
+        uploadedPhotoId = uploadResult.fileId;
       }
 
-      // Update profile fields if any changed
+      // Build update payload: always include photo to preserve or update the relation
+      const sanitizedData = {
+        ...data,
+        postalCode: data.postalCode || null,
+        dob: data.dob || null,
+        photo: uploadedPhotoId ?? initialData.photo?.id ?? null,
+      };
+
       const hasChangedFields = Object.values(dirtyFields).some(Boolean);
 
-      if (hasChangedFields) {
-        // Send all form data (not just dirty fields) because Strapi PUT replaces the entire entity.
-        // Sending only changed fields would clear unmentioned fields like photo.
-        // Convert empty strings to null for fields that are non-string types in Strapi.
-        // Preserve the existing photo relation so PUT doesn't clear it.
-        const sanitizedData = {
-          ...data,
-          postalCode: data.postalCode || null,
-          dob: data.dob || null,
-          ...(initialData.photo && !selectedFile ? { photo: initialData.photo.id } : {}),
-        };
+      if (hasChangedFields || uploadedPhotoId) {
         const { success, error } = await updateMember(initialData.documentId, sanitizedData);
 
         if (!success) {
@@ -157,12 +158,12 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
   };
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // Let handleSubmit run and fully complete (including resetting isSubmitting)
-    // before calling router.refresh(), which can cause re-renders that interfere
-    // with react-hook-form's internal state management.
     await handleSubmit(onSubmit)(e);
     router.refresh();
   };
+
+  // console.log('initialData', initialData);
+  // console.log('imageUrl', getStrapiMedia(initialData?.photo?.url));
 
   return (
     <div className="bg-white rounded-[25px] p-6 sm:p-8 lg:p-[30px]">

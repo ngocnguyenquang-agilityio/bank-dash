@@ -17,6 +17,7 @@ import type { MembersResponse } from '@/types/member';
 
 // Constants
 import { CACHE_TAGS, REVALIDATE } from '@/constants/cache';
+import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/constants/upload';
 
 interface GetMemberResult {
   member: MembersResponse['data'][0] | null;
@@ -94,62 +95,49 @@ export const updateMember = async (
   return runServerEffect(effect);
 };
 
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-
 interface UploadAvatarResult {
   success: boolean;
+  fileId: number | null;
   error: string | null;
 }
 
-export const uploadAvatar = async (
-  memberId: number,
-  formData: FormData,
-): Promise<UploadAvatarResult> => {
+export const uploadAvatar = async (formData: FormData): Promise<UploadAvatarResult> => {
   const file = formData.get('file') as File | null;
 
   if (!file) {
-    return { success: false, error: 'No file provided' };
+    return { success: false, fileId: null, error: 'No file provided' };
   }
 
-  if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+  if (!ACCEPTED_IMAGE_TYPES.includes(file.type as (typeof ACCEPTED_IMAGE_TYPES)[number])) {
     return {
       success: false,
+      fileId: null,
       error: 'Invalid file type. Please upload a JPEG, PNG, or WebP image.',
     };
   }
 
   if (file.size > MAX_FILE_SIZE) {
-    return { success: false, error: 'File is too large. Maximum size is 5MB.' };
+    return { success: false, fileId: null, error: 'File is too large. Maximum size is 5MB.' };
   }
-
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://127.0.0.1:1337';
 
   const uploadData = new FormData();
   uploadData.append('files', file);
-  uploadData.append('ref', 'api::member.member');
-  uploadData.append('refId', String(memberId));
-  uploadData.append('field', 'photo');
 
-  const effect = Effect.tryPromise({
-    try: async () => {
-      const response = await fetch(`${baseUrl}/api/upload`, {
-        method: 'POST',
-        body: uploadData,
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || 'Upload failed');
-      }
-
-      return { success: true, error: null };
-    },
-    catch: (error) => ({
-      success: false,
-      error: error instanceof Error ? error.message : 'Failed to upload avatar',
+  const effect = requestEffect(
+    apiClient.postFormData<Array<{ id: number }>>('/upload', uploadData),
+  ).pipe(
+    Effect.map((result) => {
+      const uploaded = Array.isArray(result) ? result[0] : result;
+      return { success: true, fileId: uploaded?.id ?? null, error: null };
     }),
-  }).pipe(Effect.catchAll((result) => Effect.succeed(result)));
+    Effect.catchAll((error) =>
+      Effect.succeed({
+        success: false,
+        fileId: null,
+        error: error.message || 'Failed to upload avatar',
+      }),
+    ),
+  );
 
   return runServerEffect(effect);
 };
