@@ -26,12 +26,10 @@ import { updateMember, uploadAvatar } from '@/services/members';
 import { MemberProfileSchema, type Member, type MemberProfile } from '@/types/member';
 
 // Utils
-import { getStrapiMedia } from '@/utils';
+import { getInitials, getStrapiMedia } from '@/utils';
 
 // Constants
 import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/constants/upload';
-
-const PROFILE_IMAGE = '/next.svg';
 
 interface SettingPageContentProps {
   initialData?: Member | null;
@@ -39,6 +37,7 @@ interface SettingPageContentProps {
 
 export const SettingPageContent = ({ initialData }: SettingPageContentProps) => {
   const router = useRouter();
+  const memberInitials = getInitials(initialData?.name || 'User');
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -162,9 +161,6 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
     router.refresh();
   };
 
-  // console.log('initialData', initialData);
-  // console.log('imageUrl', getStrapiMedia(initialData?.photo?.url));
-
   return (
     <div className="bg-white rounded-[25px] p-6 sm:p-8 lg:p-[30px]">
       <Tabs defaultValue="edit-profile" onValueChange={() => {}}>
@@ -207,9 +203,9 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                       className="w-full h-full object-cover"
                       unoptimized
                     />
-                  ) : (
+                  ) : getStrapiMedia(initialData?.photo?.url) ? (
                     <Image
-                      src={getStrapiMedia(initialData?.photo?.url) || PROFILE_IMAGE}
+                      src={getStrapiMedia(initialData?.photo?.url)!}
                       alt="Profile"
                       width={130}
                       height={130}
@@ -220,6 +216,10 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                         false
                       }
                     />
+                  ) : (
+                    <span className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600 text-white text-4xl font-semibold">
+                      {memberInitials}
+                    </span>
                   )}
                 </div>
                 <input
