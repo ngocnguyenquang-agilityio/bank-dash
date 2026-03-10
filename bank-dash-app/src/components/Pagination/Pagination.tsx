@@ -4,7 +4,7 @@
 import { cn } from '@/lib/utils';
 
 // Icons
-import { ChevronBackwardIcon, ChevronForwardIcon } from '@/components/Icons';
+import { Icons } from '@/components/Icons';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -54,7 +54,7 @@ export const Pagination = ({ page, pageCount, onPageChange, className }: Paginat
         disabled={page === 1}
         className="group flex items-center gap-2 text-[15px] font-medium text-tx-primary hover:bg-transparent hover:text-tx-primary/80"
       >
-        <ChevronBackwardIcon className="fill-tx-primary group-hover:fill-tx-primary/80" />
+        <Icons.ChevronBackward className="fill-tx-primary group-hover:fill-tx-primary/80" />
         Previous
       </Button>
 
@@ -82,7 +82,7 @@ export const Pagination = ({ page, pageCount, onPageChange, className }: Paginat
         className="flex items-center gap-2 text-[15px] font-medium text-tx-primary hover:bg-transparent hover:text-tx-primary/80"
       >
         Next
-        <ChevronForwardIcon className="fill-tx-primary group-hover:fill-tx-primary/80" />
+        <Icons.ChevronForwardIcon className="fill-tx-primary group-hover:fill-tx-primary/80" />
       </Button>
     </div>
   );

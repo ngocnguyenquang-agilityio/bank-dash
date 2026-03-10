@@ -29,5 +29,6 @@ export const getCardsEffect = (userClerkId: string, page: number = 1, pageSize: 
         error: error.message || 'Failed to fetch cards',
       }),
     ),
+    Effect.withSpan('getCardsEffect', { attributes: { userClerkId, page, pageSize } }),
   );
 };

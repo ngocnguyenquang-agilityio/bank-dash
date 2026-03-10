@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 // Icons
-import { SettingIcon, SignoutIcon } from '@/components/Icons';
+import { Icons } from '@/components/Icons';
 
 // Constants
 import { ROUTES } from '@/constants/route';
@@ -60,14 +60,14 @@ export const AvatarProfile = ({ imageUrl, fallback, alt }: AvatarProfileProps) =
           onClick={handleNavigateToSettings}
           className="cursor-pointer gap-3 py-2.5 px-3 hover:bg-neutral-10 focus:bg-neutral-10 transition-colors"
         >
-          <SettingIcon className="w-4 h-4 text-neutral-30" />
+          <Icons.Setting className="w-4 h-4 text-neutral-30" />
           <span className="text-tx-primary">Setting</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={handleLogout}
           className="cursor-pointer gap-3 py-2.5 px-3 hover:bg-red-50 focus:bg-red-50 text-red-600 focus:text-red-600 transition-colors"
         >
-          <SignoutIcon className="w-4 h-4" />
+          <Icons.Signout className="w-4 h-4 fill-neutral-30" />
           <span>Logout</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

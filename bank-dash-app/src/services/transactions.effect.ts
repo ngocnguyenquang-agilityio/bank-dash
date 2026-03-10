@@ -29,6 +29,7 @@ export const getRecentTransactionsEffect = (userClerkId: string) => {
         error: error.message || 'Failed to fetch transactions',
       }),
     ),
+    Effect.withSpan('getRecentTransactionsEffect', { attributes: { userClerkId } }),
   );
 };
 
@@ -54,5 +55,6 @@ export const getTransactionsEffect = (
         error: error.message || 'Failed to fetch transactions',
       }),
     ),
+    Effect.withSpan('getTransactionsEffect', { attributes: { userClerkId, page, pageSize } }),
   );
 };

@@ -9,7 +9,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { getStrapiMedia } from '@/utils';
 
 // Icons
-import { SearchIcon, SettingIcon, NotificationIcon } from '@/components/Icons';
+import { Icons } from '@/components/Icons';
 
 // Components
 import { Button } from '@/components/ui/button';
@@ -62,7 +62,7 @@ export const DashboardHeaderContent = ({
         <div className="flex items-center gap-2 sm:gap-4 md:gap-8">
           {/* Search */}
           <div className="relative w-32 sm:w-48 md:w-[255px] hidden sm:block">
-            <SearchIcon className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5" />
+            <Icons.Search className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-4 md:w-5 h-4 md:h-5" />
             <Input
               placeholder="Search for something"
               className="pl-10 md:pl-14 h-10 md:h-[50px] rounded-[40px] bg-neutral-10 border-0 text-sm md:text-[15px] text-tx-primary placeholder:text-neutral-30"
@@ -78,7 +78,7 @@ export const DashboardHeaderContent = ({
               className="w-10 h-10 md:w-[50px] md:h-[50px] px-0 rounded-full bg-neutral-10 flex items-center justify-center hover:bg-gray-200 transition-colors"
               aria-label="Settings"
             >
-              <SettingIcon className="w-5 h-5 md:w-6 md:h-6" />
+              <Icons.Setting className="w-5 h-5 md:w-6 md:h-6" />
             </Button>
           </Link>
 
@@ -90,7 +90,7 @@ export const DashboardHeaderContent = ({
             aria-label="Notifications"
             disabled
           >
-            <NotificationIcon className="w-5 h-5 md:w-6 md:h-6" />
+            <Icons.Notification className="w-5 h-5 md:w-6 md:h-6" />
           </Button>
           {/* Profile Avatar with Dropdown */}
           <AvatarProfile
