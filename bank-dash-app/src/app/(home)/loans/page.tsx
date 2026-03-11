@@ -10,7 +10,10 @@ import { Button } from '@/components/ui/button';
 // Utils
 import { createMetadata } from '@/utils';
 
-export const metadata = createMetadata('Loans');
+export const metadata = createMetadata(
+  'Loans',
+  'Manage your active loans and explore borrowing options',
+);
 
 const LoansPage = () => (
   <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4">

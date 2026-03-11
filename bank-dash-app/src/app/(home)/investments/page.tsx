@@ -10,7 +10,10 @@ import { Button } from '@/components/ui/button';
 // Utils
 import { createMetadata } from '@/utils';
 
-export const metadata = createMetadata('Investment');
+export const metadata = createMetadata(
+  'Investment',
+  'Track your investment portfolio and explore new opportunities',
+);
 
 const InvestmentsPage = () => (
   <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4">

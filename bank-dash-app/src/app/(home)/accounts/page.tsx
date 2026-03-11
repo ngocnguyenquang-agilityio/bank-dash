@@ -10,7 +10,10 @@ import { Button } from '@/components/ui/button';
 // Utils
 import { createMetadata } from '@/utils';
 
-export const metadata = createMetadata('Accounts');
+export const metadata = createMetadata(
+  'Accounts',
+  'View and manage all your bank accounts in one place',
+);
 
 const AccountsPage = () => (
   <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4">

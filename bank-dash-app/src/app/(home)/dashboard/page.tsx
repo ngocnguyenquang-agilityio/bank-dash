@@ -24,7 +24,10 @@ import { createMetadata } from '@/utils';
 // Constants
 import { ROUTES } from '@/constants/route';
 
-export const metadata = createMetadata('Dashboard');
+export const metadata = createMetadata(
+  'Dashboard',
+  'Overview of your account, recent transactions, and quick transfer tools',
+);
 
 const HomePage = async () => {
   const { userId } = await getAuth();

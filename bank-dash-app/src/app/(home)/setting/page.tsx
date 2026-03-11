@@ -16,7 +16,10 @@ import { ROUTES } from '@/constants/route';
 // Utils
 import { createMetadata } from '@/utils';
 
-export const metadata = createMetadata('Setting');
+export const metadata = createMetadata(
+  'Setting',
+  'Manage your account preferences, profile, and security settings',
+);
 
 const SettingPage = async () => {
   const { userId } = await getAuth();

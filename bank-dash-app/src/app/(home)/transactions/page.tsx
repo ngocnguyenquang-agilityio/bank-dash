@@ -17,7 +17,10 @@ import { createMetadata } from '@/utils';
 // Constants
 import { ROUTES } from '@/constants/route';
 
-export const metadata = createMetadata('Transactions');
+export const metadata = createMetadata(
+  'Transactions',
+  'View and filter your complete transaction history',
+);
 
 const TransactionsPage = async ({
   searchParams,

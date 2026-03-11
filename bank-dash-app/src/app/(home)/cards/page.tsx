@@ -16,7 +16,10 @@ import { createMetadata } from '@/utils';
 import { runServerEffect } from '@/lib/effect/runtime';
 import { getAuth } from '@/lib/auth';
 
-export const metadata = createMetadata('Cards');
+export const metadata = createMetadata(
+  'Cards',
+  'Manage your debit and credit cards, view limits and activity',
+);
 
 const CardsPage = async ({
   searchParams,

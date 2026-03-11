@@ -10,7 +10,10 @@ import { Button } from '@/components/ui/button';
 // Utils
 import { createMetadata } from '@/utils';
 
-export const metadata = createMetadata('Privileges');
+export const metadata = createMetadata(
+  'Privileges',
+  'View your account privileges, rewards, and exclusive benefits',
+);
 
 const PrivilegesPage = () => (
   <div className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4">
