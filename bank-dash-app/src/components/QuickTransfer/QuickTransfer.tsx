@@ -43,28 +43,6 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const checkScrollPosition = useCallback(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const atStart = container.scrollLeft <= 0;
-    const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
-    setShowPrevButton(!atStart);
-    setShowNextButton(!atEnd);
-  }, []);
-
-  useEffect(() => {
-    checkScrollPosition();
-  }, [members, checkScrollPosition]);
-
-  const handleScrollNext = () => {
-    scrollContainerRef.current?.scrollBy({ left: 150, behavior: 'smooth' });
-  };
-
-  const handleScrollPrev = () => {
-    scrollContainerRef.current?.scrollBy({ left: -150, behavior: 'smooth' });
-  };
-
   const disabledMemberIds = useMemo(() => {
     const ids = new Set<string>();
 
@@ -83,6 +61,28 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
     () => members.filter((m) => !disabledMemberIds.has(m.documentId)),
     [members, disabledMemberIds],
   );
+
+  const checkScrollPosition = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const atStart = container.scrollLeft <= 0;
+    const atEnd = container.scrollLeft + container.clientWidth >= container.scrollWidth - 1;
+    setShowPrevButton(!atStart);
+    setShowNextButton(!atEnd);
+  }, []);
+
+  useEffect(() => {
+    checkScrollPosition();
+  }, [selectableMember, checkScrollPosition]);
+
+  const handleScrollNext = () => {
+    scrollContainerRef.current?.scrollBy({ left: 150, behavior: 'smooth' });
+  };
+
+  const handleScrollPrev = () => {
+    scrollContainerRef.current?.scrollBy({ left: -150, behavior: 'smooth' });
+  };
 
   // Auto-select the first selectable member
   const activeSelectedMember = useMemo(() => {
@@ -167,8 +167,7 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
             onScroll={checkScrollPosition}
             className="flex items-center gap-6 overflow-x-hidden w-full"
           >
-            {members.map((member) => {
-              const isDisabled = disabledMemberIds.has(member.documentId);
+            {selectableMember.map((member) => {
               const isSelected = activeSelectedMember?.documentId === member.documentId;
 
               return (
@@ -176,12 +175,11 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
                   key={member.documentId}
                   variant="ghost"
                   onClick={() => handleSelectMember(member)}
-                  disabled={isDisabled}
                   className={`flex flex-col items-center gap-2 flex-shrink-0 p-3 h-auto rounded-2xl transition-all duration-200 ${
                     isSelected
                       ? 'bg-transparent border-2 border-blue-50 shadow-md'
                       : 'border-2 border-transparent hover:bg-black/5'
-                  } ${isDisabled ? 'opacity-40 cursor-not-allowed' : ''}`}
+                  }`}
                 >
                   <Avatar className="w-14 h-14 sm:w-16 sm:h-16 md:w-[70px] md:h-[70px]">
                     {getMemberPhotoUrl(member) && (

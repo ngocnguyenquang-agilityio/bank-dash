@@ -118,13 +118,16 @@ describe('QuickTransfer', () => {
     expect(screen.getByText('Please enter a valid amount')).toBeInTheDocument();
   });
 
-  it('disables members without active cards', () => {
+  it('hides members without active cards', () => {
     const membersWithDisabled = [...mockMembersWithCards, mockMemberNoCards];
 
     render(<QuickTransfer {...defaultProps} members={membersWithDisabled} />);
 
-    // Charlie Brown should be in the DOM but disabled
-    const charlieButton = screen.getByText('Charlie Brown').closest('button');
-    expect(charlieButton).toBeDisabled();
+    // Charlie Brown should not be rendered
+    expect(screen.queryByText('Charlie Brown')).not.toBeInTheDocument();
+
+    // Active members should still be visible
+    expect(screen.getByText('Alice Johnson')).toBeInTheDocument();
+    expect(screen.getByText('Bob Smith')).toBeInTheDocument();
   });
 });
