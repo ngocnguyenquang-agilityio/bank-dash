@@ -1,5 +1,6 @@
 // Components
 import { Icons } from '@/components/Icons/Icons';
+import { Button } from '@/components/ui/button';
 
 // Utils
 import { cn } from '@/lib/utils';
@@ -13,10 +14,13 @@ interface CardSettingProps {
 export const CardSetting = ({ isActive, isPending, onToggleBlock }: CardSettingProps) => {
   return (
     <div className="bg-white rounded-[25px] p-8 flex flex-col gap-5">
-      <div
+      <Button
+        variant="ghost"
         onClick={isPending ? undefined : onToggleBlock}
+        disabled={isPending}
+        aria-label={isActive ? 'Block this card' : 'Unblock this card'}
         className={cn(
-          'flex items-center gap-4 w-full text-left transition-opacity cursor-pointer',
+          'flex items-center gap-4 w-full text-left transition-opacity cursor-pointer bg-transparent border-0 p-0 h-auto hover:bg-transparent',
           isPending ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80',
         )}
       >
@@ -39,7 +43,7 @@ export const CardSetting = ({ isActive, isPending, onToggleBlock }: CardSettingP
                 : 'Reactivate your card'}
           </div>
         </div>
-      </div>
+      </Button>
 
       <div className="flex items-center gap-4 opacity-50 cursor-not-allowed">
         <div className="w-[60px] h-[60px] rounded-[15px] bg-blue-10 flex items-center justify-center flex-shrink-0">

@@ -47,11 +47,16 @@ export const Pagination = ({ page, pageCount, onPageChange, className }: Paginat
   };
 
   return (
-    <div className={cn('flex items-center justify-center sm:justify-end gap-3 mt-8', className)}>
+    <div
+      aria-label="Pagination"
+      role="navigation"
+      className={cn('flex items-center justify-center sm:justify-end gap-3 mt-8', className)}
+    >
       <Button
         variant="ghost"
         onClick={handlePreviousPage}
         disabled={page === 1}
+        aria-label="Go to previous page"
         className="group flex items-center gap-2 text-[15px] font-medium text-tx-primary hover:bg-transparent hover:text-tx-primary/80"
       >
         <Icons.ChevronBackward className="fill-tx-primary group-hover:fill-tx-primary/80" />
@@ -65,6 +70,8 @@ export const Pagination = ({ page, pageCount, onPageChange, className }: Paginat
             variant={page === pageNum ? 'default' : 'ghost'}
             size="icon"
             onClick={() => handlePageChange(pageNum)}
+            aria-label={`Page ${pageNum}`}
+            aria-current={page === pageNum ? 'page' : undefined}
             className={cn(
               'w-10 h-10 rounded-[10px] text-[15px] font-medium',
               page === pageNum ? 'bg-blue-50 text-white hover:bg-blue-60' : 'text-tx-primary',
@@ -79,6 +86,7 @@ export const Pagination = ({ page, pageCount, onPageChange, className }: Paginat
         variant="ghost"
         onClick={handleNextPage}
         disabled={page === totalPages}
+        aria-label="Go to next page"
         className="flex items-center gap-2 text-[15px] font-medium text-tx-primary hover:bg-transparent hover:text-tx-primary/80"
       >
         Next

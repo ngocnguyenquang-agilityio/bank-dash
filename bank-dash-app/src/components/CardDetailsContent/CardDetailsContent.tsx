@@ -4,6 +4,7 @@
 import { useState, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { format } from 'date-fns';
+import { toast } from 'sonner';
 
 // Components
 import Link from 'next/link';
@@ -53,7 +54,7 @@ export const CardDetailsContent = ({ card }: CardDetailsContentProps) => {
       if (success) {
         setIsActive(newIsActive);
       } else {
-        console.error('Failed to update card:', error);
+        toast.error(error || 'Failed to update card status');
       }
     });
   };

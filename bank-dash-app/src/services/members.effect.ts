@@ -29,5 +29,6 @@ export const getMembersEffect = (currentClerkId: string) => {
         error: error.message || 'Failed to fetch members',
       }),
     ),
+    Effect.withSpan('getMembersEffect', { attributes: { currentClerkId } }),
   );
 };

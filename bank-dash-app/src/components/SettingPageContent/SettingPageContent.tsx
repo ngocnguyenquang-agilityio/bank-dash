@@ -198,15 +198,12 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                     <Image
                       src={previewUrl}
                       alt="Profile preview"
-                      width={130}
-                      height={130}
                       className="w-full h-full object-cover"
-                      unoptimized
                     />
                   ) : getStrapiMedia(initialData?.photo?.url) ? (
                     <Image
                       src={getStrapiMedia(initialData?.photo?.url)!}
-                      alt="Profile"
+                      alt={`${initialData?.name || 'User'} profile picture`}
                       width={130}
                       height={130}
                       className="w-full h-full object-cover"

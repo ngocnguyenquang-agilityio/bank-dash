@@ -15,18 +15,19 @@ describe('Pagination', () => {
   it('renders page numbers correctly', () => {
     render(<Pagination page={1} pageCount={5} onPageChange={mockOnPageChange} />);
 
-    expect(screen.getByRole('button', { name: '1' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '2' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '3' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '4' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '5' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Page 1' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Page 2' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Page 3' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Page 4' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Page 5' })).toBeInTheDocument();
   });
 
   it('highlights the current page', () => {
     render(<Pagination page={3} pageCount={5} onPageChange={mockOnPageChange} />);
 
-    const page3Button = screen.getByRole('button', { name: '3' });
+    const page3Button = screen.getByRole('button', { name: 'Page 3' });
     expect(page3Button).toHaveClass('bg-blue-50');
+    expect(page3Button).toHaveAttribute('aria-current', 'page');
   });
 
   it('renders Previous and Next buttons', () => {
@@ -54,7 +55,7 @@ describe('Pagination', () => {
     const user = userEvent.setup();
     render(<Pagination page={1} pageCount={5} onPageChange={mockOnPageChange} />);
 
-    const page3Button = screen.getByRole('button', { name: '3' });
+    const page3Button = screen.getByRole('button', { name: 'Page 3' });
     await user.click(page3Button);
 
     expect(mockOnPageChange).toHaveBeenCalledWith(3);
@@ -84,7 +85,7 @@ describe('Pagination', () => {
     const user = userEvent.setup();
     render(<Pagination page={3} pageCount={5} onPageChange={mockOnPageChange} />);
 
-    const page3Button = screen.getByRole('button', { name: '3' });
+    const page3Button = screen.getByRole('button', { name: 'Page 3' });
     await user.click(page3Button);
 
     expect(mockOnPageChange).not.toHaveBeenCalled();
@@ -101,15 +102,15 @@ describe('Pagination', () => {
   it('renders correctly with 2 pages', () => {
     render(<Pagination page={1} pageCount={2} onPageChange={mockOnPageChange} />);
 
-    expect(screen.getByRole('button', { name: '1' })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: '2' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Page 1' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Page 2' })).toBeInTheDocument();
   });
 
   it('renders all page numbers for 10 pages', () => {
     render(<Pagination page={1} pageCount={10} onPageChange={mockOnPageChange} />);
 
     for (let i = 1; i <= 10; i++) {
-      expect(screen.getByRole('button', { name: i.toString() })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: `Page ${i}` })).toBeInTheDocument();
     }
   });
 
@@ -145,5 +146,11 @@ describe('Pagination', () => {
     await user.click(nextButton);
 
     expect(mockOnPageChange).not.toHaveBeenCalled();
+  });
+
+  it('wraps pagination in a nav landmark', () => {
+    render(<Pagination page={1} pageCount={5} onPageChange={mockOnPageChange} />);
+
+    expect(screen.getByRole('navigation', { name: 'Pagination' })).toBeInTheDocument();
   });
 });

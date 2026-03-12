@@ -16,14 +16,13 @@ import { sendAmount } from '@/services/transfers';
 
 // Utils
 import { getInitials } from '@/utils';
+import { getStrapiBaseUrl } from '@/lib/utils';
 
 // Types
 import type { Member } from '@/types/member';
 
 // Constants
 import { TRANSACTION_ERRORS } from '@/constants/error';
-
-const STRAPI_BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://127.0.0.1:1337';
 
 interface QuickTransferProps {
   userClerkId: string;
@@ -141,7 +140,7 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
     if (member.photo.url.startsWith('http')) return member.photo.url;
 
     // Prefix with Strapi base URL for relative paths
-    return `${STRAPI_BASE_URL}${member.photo.url}`;
+    return `${getStrapiBaseUrl()}${member.photo.url}`;
   };
 
   return (

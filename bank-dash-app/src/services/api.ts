@@ -4,6 +4,7 @@ import { Effect, Schema } from 'effect';
 // Utils
 import type { RequestInitExtended } from '@/lib/effect/http';
 import { withAbortController } from '@/lib/effect/operators';
+import { getApiBaseUrl } from '@/lib/utils';
 
 // Define Errors
 export class ApiError extends Schema.TaggedError<ApiError>()('ApiError', {
@@ -140,5 +141,5 @@ export class ApiClient {
 }
 
 export const apiClient = ApiClient.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || '',
+  baseURL: getApiBaseUrl(),
 });

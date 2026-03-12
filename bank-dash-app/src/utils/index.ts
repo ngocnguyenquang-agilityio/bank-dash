@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getStrapiBaseUrl } from '@/lib/utils';
 
 const SITE_NAME = 'BankDash';
 
@@ -27,8 +28,7 @@ export const getStrapiMedia = (url: string | null | undefined) => {
     return url;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://127.0.0.1:1337';
-  const cleanBase = baseUrl.replace(/\/+$/, '');
+  const cleanBase = getStrapiBaseUrl();
   const cleanPath = url.replace(/^\/+/, '');
 
   return `${cleanBase}/${cleanPath}`;

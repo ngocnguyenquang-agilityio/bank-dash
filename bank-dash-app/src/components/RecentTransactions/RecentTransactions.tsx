@@ -81,11 +81,13 @@ export const RecentTransactions = ({ transactions, className }: RecentTransactio
 
               {/* Amount */}
               <div
+                aria-label={`${transaction.type === Transactions.Deposit ? 'Received' : 'Sent'} $${transaction.amount.toLocaleString()}`}
                 className={`font-medium text-sm sm:text-[16px] flex-shrink-0 ${
-                  transaction.type === 'deposit' ? 'text-green-40' : 'text-red-60'
+                  transaction.type === Transactions.Deposit ? 'text-green-40' : 'text-red-60'
                 }`}
               >
-                {transaction.type === 'deposit' ? '+' : '-'}${transaction.amount.toLocaleString()}
+                {transaction.type === Transactions.Deposit ? '+' : '-'}$
+                {transaction.amount.toLocaleString()}
               </div>
             </div>
           );

@@ -33,6 +33,8 @@ export const CreditCard = ({
 
   return (
     <Card
+      role="region"
+      aria-label={`Credit card for ${cardHolder}`}
       className={cn(
         'relative w-[300px] sm:w-[350px] h-[200px] sm:h-[235px] rounded-[25px] p-0 overflow-hidden flex-shrink-0 border',
         isBlue
@@ -48,6 +50,7 @@ export const CreditCard = ({
               Balance
             </div>
             <div
+              aria-label={`Balance: $${balance}`}
               className={cn(
                 'text-lg sm:text-xl font-semibold mt-1',
                 isBlue ? 'text-white' : 'text-tx-primary',
@@ -107,6 +110,7 @@ export const CreditCard = ({
         >
           <div className="flex items-center justify-between">
             <div
+              aria-label={`Card number ending in ${cardNumber.slice(-4)}`}
               className={cn(
                 'text-base sm:text-[22px] font-semibold tracking-wider',
                 isBlue ? 'text-white' : 'text-tx-primary',

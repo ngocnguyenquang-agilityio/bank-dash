@@ -14,6 +14,11 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 
+// Mock toast notifications
+jest.mock('sonner', () => ({
+  toast: { error: jest.fn(), success: jest.fn() },
+}));
+
 // Mock the updateCardDetails service
 jest.mock('@/services/cards', () => ({
   updateCardDetails: jest.fn(),
