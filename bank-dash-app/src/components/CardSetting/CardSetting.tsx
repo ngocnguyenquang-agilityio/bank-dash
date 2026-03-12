@@ -20,7 +20,7 @@ export const CardSetting = ({ isActive, isPending, onToggleBlock }: CardSettingP
         disabled={isPending}
         aria-label={isActive ? 'Block this card' : 'Unblock this card'}
         className={cn(
-          'flex items-center gap-4 w-full text-left transition-opacity cursor-pointer bg-transparent border-0 p-0 h-auto hover:bg-transparent',
+          'flex items-center gap-4 w-full text-left transition-opacity cursor-pointer bg-transparent border-0 p-0 h-auto hover:bg-transparent justify-start',
           isPending ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80',
         )}
       >
