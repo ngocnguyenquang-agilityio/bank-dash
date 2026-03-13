@@ -9,8 +9,15 @@ const meta: Meta<typeof CardListItem> = {
   component: CardListItem,
   parameters: {
     layout: 'centered',
+    nextjs: {
+      navigation: {
+        pathname: '/cards',
+        query: {},
+      },
+    },
   },
   args: {
+    id: '1',
     isPhysical: false,
     cardNumber: '**** **** 5600',
     nameOnCard: 'William',

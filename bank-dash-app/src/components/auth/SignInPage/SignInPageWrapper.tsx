@@ -1,14 +1,27 @@
 'use client';
 
 // Libraries
+import { useEffect } from 'react';
 import Link from 'next/link';
 
 // Components
-import { SignIn } from '@clerk/nextjs';
+import { SignIn, useAuth } from '@clerk/nextjs';
 import { Icons } from '@/components/Icons/Icons';
 import { CreditCard } from '@/components/CreditCard';
 
 export const SignInPageWrapper = () => {
+  const { isSignedIn, isLoaded, signOut } = useAuth();
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      signOut();
+    }
+  }, [isLoaded, isSignedIn, signOut]);
+
+  if (!isLoaded || isSignedIn) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-2">
       {/* Left: Branding Panel */}

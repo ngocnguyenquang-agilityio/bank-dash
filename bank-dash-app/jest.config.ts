@@ -20,6 +20,7 @@ const config: Config = {
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/*.stories.{js,jsx,ts,tsx}',
+    '!src/app/**',
     '!src/test/**',
   ],
   testPathIgnorePatterns: ['/node_modules/', '/.next/'],

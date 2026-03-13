@@ -28,7 +28,7 @@ export const CardListItem = ({
   maskOption = 'last4',
 }: CardListItemProps) => {
   const searchParams = useSearchParams();
-  const page = searchParams.get('page');
+  const page = searchParams?.get('page');
   const detailsHref = page && page !== '1' ? `/cards/${id}?page=${page}` : `/cards/${id}`;
   return (
     <div className="w-full bg-white rounded-[20px] border border-neutral-10 p-4 sm:h-[90px] sm:flex sm:items-center sm:px-6 sm:py-0 sm:gap-6">

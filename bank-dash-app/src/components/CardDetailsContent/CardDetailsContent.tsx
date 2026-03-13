@@ -32,7 +32,7 @@ export const CardDetailsContent = ({ card }: CardDetailsContentProps) => {
 
   const { balance, name, number: cardNumber, expiration, isPhysical, documentId, address } = card;
 
-  const page = searchParams.get('page');
+  const page = searchParams?.get('page');
   const backHref = page && page !== '1' ? `/cards?page=${page}` : '/cards';
 
   const cardData = {

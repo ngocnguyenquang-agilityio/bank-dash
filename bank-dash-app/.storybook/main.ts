@@ -17,6 +17,11 @@ const config: StorybookConfig = {
   ],
   framework: "@storybook/nextjs",
   staticDirs: ["..\\public"],
+  env: (config = {}) => ({
+    ...config,
+    NEXT_PUBLIC_API_URL:
+      config.NEXT_PUBLIC_API_URL || "http://localhost:1337/api",
+  }),
   webpackFinal: async (config) => {
     // Replace the Node.js-dependent Effect runtime with a browser-safe mock
     // so that stories importing server actions don't pull in node:* modules.

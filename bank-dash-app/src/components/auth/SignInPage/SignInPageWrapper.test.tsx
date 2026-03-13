@@ -17,6 +17,11 @@ jest.mock('@clerk/nextjs', () => ({
       Mock SignIn
     </div>
   ),
+  useAuth: () => ({
+    isSignedIn: false,
+    isLoaded: true,
+    signOut: jest.fn(),
+  }),
 }));
 
 jest.mock('@/components/CreditCard', () => ({
