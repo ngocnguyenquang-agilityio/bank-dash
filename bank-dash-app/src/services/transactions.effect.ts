@@ -10,6 +10,7 @@ import type { TransactionsResponse } from '@/types/transaction';
 
 // Constants
 import { CACHE_TAGS, REVALIDATE } from '@/constants/cache';
+import { TRANSACTION_ERRORS } from '@/constants/error';
 
 export const getRecentTransactionsEffect = (userClerkId: string) => {
   const url = `/transactions?populate=*&filters[card][member][clerkId][$eq]=${userClerkId}&pagination[page]=1&pagination[pageSize]=3&sort=updatedAt:desc`;
@@ -26,7 +27,7 @@ export const getRecentTransactionsEffect = (userClerkId: string) => {
     Effect.catchAll((error) =>
       Effect.succeed({
         transactions: null as TransactionsResponse | null,
-        error: error.message || 'Failed to fetch transactions',
+        error: error.message || TRANSACTION_ERRORS.GET_TRANSACTIONS_FAILED,
       }),
     ),
     Effect.withSpan('getRecentTransactionsEffect', { attributes: { userClerkId } }),
@@ -52,7 +53,7 @@ export const getTransactionsEffect = (
     Effect.catchAll((error) =>
       Effect.succeed({
         transactions: null as TransactionsResponse | null,
-        error: error.message || 'Failed to fetch transactions',
+        error: error.message || TRANSACTION_ERRORS.GET_TRANSACTIONS_FAILED,
       }),
     ),
     Effect.withSpan('getTransactionsEffect', { attributes: { userClerkId, page, pageSize } }),

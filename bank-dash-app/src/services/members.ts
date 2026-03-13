@@ -18,6 +18,7 @@ import type { MembersResponse } from '@/types/member';
 // Constants
 import { CACHE_TAGS, REVALIDATE } from '@/constants/cache';
 import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from '@/constants/upload';
+import { MEMBER_ERRORS } from '@/constants/error';
 
 interface GetMemberResult {
   member: MembersResponse['data'][0] | null;
@@ -42,9 +43,12 @@ export const getMemberByClerkId = async (clerkId: string): Promise<GetMemberResu
     Effect.catchAll((error) =>
       Effect.succeed({
         member: null,
-        error: error.message || 'Failed to fetch member',
+        error: error.message || MEMBER_ERRORS.GET_MEMBER_FAILED,
       }),
     ),
+    Effect.withSpan('getMemberByClerkId', {
+      attributes: { clerkId },
+    }),
   );
 
   return runServerEffect(effect);
@@ -87,9 +91,12 @@ export const updateMember = async (
     Effect.catchAll((error) =>
       Effect.succeed({
         success: false,
-        error: error.message || 'Failed to update member',
+        error: error.message || MEMBER_ERRORS.UPDATE_MEMBER_FAILED,
       }),
     ),
+    Effect.withSpan('updateMember', {
+      attributes: { documentId, data: JSON.stringify(data) },
+    }),
   );
 
   return runServerEffect(effect);
@@ -105,19 +112,19 @@ export const uploadAvatar = async (formData: FormData): Promise<UploadAvatarResu
   const file = formData.get('file') as File | null;
 
   if (!file) {
-    return { success: false, fileId: null, error: 'No file provided' };
+    return { success: false, fileId: null, error: MEMBER_ERRORS.NO_FILE_PROVIDED };
   }
 
   if (!ACCEPTED_IMAGE_TYPES.includes(file.type as (typeof ACCEPTED_IMAGE_TYPES)[number])) {
     return {
       success: false,
       fileId: null,
-      error: 'Invalid file type. Please upload a JPEG, PNG, or WebP image.',
+      error: MEMBER_ERRORS.INVALID_FILE_TYPE,
     };
   }
 
   if (file.size > MAX_FILE_SIZE) {
-    return { success: false, fileId: null, error: 'File is too large. Maximum size is 5MB.' };
+    return { success: false, fileId: null, error: MEMBER_ERRORS.FILE_TOO_LARGE };
   }
 
   const uploadData = new FormData();
@@ -134,9 +141,10 @@ export const uploadAvatar = async (formData: FormData): Promise<UploadAvatarResu
       Effect.succeed({
         success: false,
         fileId: null,
-        error: error.message || 'Failed to upload avatar',
+        error: error.message || MEMBER_ERRORS.UPLOAD_AVATAR_FAILED,
       }),
     ),
+    Effect.withSpan('uploadAvatar'),
   );
 
   return runServerEffect(effect);

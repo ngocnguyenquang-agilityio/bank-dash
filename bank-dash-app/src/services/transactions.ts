@@ -14,6 +14,7 @@ import { runServerEffect } from '@/lib/effect/runtime';
 
 // Constants
 import { CACHE_TAGS } from '@/constants/cache';
+import { TRANSACTION_ERRORS } from '@/constants/error';
 
 // Types
 import type { Transactions } from '@/types/card';
@@ -58,9 +59,12 @@ export const createTransaction = async (
     Effect.catchAll((error) =>
       Effect.succeed({
         success: false,
-        error: error.message || 'Failed to create transaction',
+        error: error.message || TRANSACTION_ERRORS.CREATE_TRANSACTION_FAILED,
       }),
     ),
+    Effect.withSpan('createTransaction', {
+      attributes: { cardDocumentId: data.cardDocumentId, type: data.type },
+    }),
   );
 
   return runServerEffect(effect);

@@ -27,6 +27,17 @@ export const CARD_ERRORS = {
   ADD_CARD_FAILED: 'Failed to add card',
   UPDATE_CARD_FAILED: 'Failed to update card details',
   GET_CARD_FAILED: 'Failed to fetch card details',
+  GET_CARDS_FAILED: 'Failed to fetch cards data',
+};
+
+export const MEMBER_ERRORS = {
+  GET_MEMBER_FAILED: 'Failed to fetch member',
+  GET_MEMBERS_FAILED: 'Failed to fetch members',
+  UPDATE_MEMBER_FAILED: 'Failed to update member',
+  UPLOAD_AVATAR_FAILED: 'Failed to upload avatar',
+  NO_FILE_PROVIDED: 'No file provided',
+  INVALID_FILE_TYPE: 'Invalid file type. Please upload a JPEG, PNG, or WebP image.',
+  FILE_TOO_LARGE: 'File is too large. Maximum size is 5MB.',
 };
 
 export const TRANSACTION_ERRORS = {
@@ -36,4 +47,6 @@ export const TRANSACTION_ERRORS = {
   ALL_CARDS_BLOCKED: 'Unlock your card to transfer',
   RECIPIENT_NO_ACTIVE_CARD: 'Recipient has no active card to receive funds',
   RECIPIENT_NOT_FOUND: 'Recipient not found',
+  GET_TRANSACTIONS_FAILED: 'Failed to fetch transactions',
+  CREATE_TRANSACTION_FAILED: 'Failed to create transaction',
 };

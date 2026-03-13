@@ -10,6 +10,7 @@ import type { CardsResponse } from '@/types/card';
 
 // Constants
 import { CACHE_TAGS, REVALIDATE } from '@/constants/cache';
+import { CARD_ERRORS } from '@/constants/error';
 
 export const getCardsEffect = (userClerkId: string, page: number = 1, pageSize: number = 5) => {
   const url = `/cards?populate=*&sort=updatedAt:desc&filters[member][clerkId][$eq]=${userClerkId}&pagination[page]=${page}&pagination[pageSize]=${pageSize}`;
@@ -26,7 +27,7 @@ export const getCardsEffect = (userClerkId: string, page: number = 1, pageSize: 
     Effect.catchAll((error) =>
       Effect.succeed({
         cards: null as CardsResponse | null,
-        error: error.message || 'Failed to fetch cards',
+        error: error.message || CARD_ERRORS.GET_CARDS_FAILED,
       }),
     ),
     Effect.withSpan('getCardsEffect', { attributes: { userClerkId, page, pageSize } }),

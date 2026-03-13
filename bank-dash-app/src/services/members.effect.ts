@@ -10,6 +10,7 @@ import type { MembersResponse } from '@/types/member';
 
 // Constants
 import { CACHE_TAGS, REVALIDATE } from '@/constants/cache';
+import { MEMBER_ERRORS } from '@/constants/error';
 
 export const getMembersEffect = (currentClerkId: string) => {
   const url = `/members?populate[0]=photo&populate[cards][populate]=*&filters[clerkId][$ne]=${currentClerkId}&pagination[pageSize]=100`;
@@ -26,7 +27,7 @@ export const getMembersEffect = (currentClerkId: string) => {
     Effect.catchAll((error) =>
       Effect.succeed({
         members: null as MembersResponse | null,
-        error: error.message || 'Failed to fetch members',
+        error: error.message || MEMBER_ERRORS.GET_MEMBERS_FAILED,
       }),
     ),
     Effect.withSpan('getMembersEffect', { attributes: { currentClerkId } }),

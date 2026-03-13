@@ -72,6 +72,9 @@ export const addCard = async (
         error: error.message || CARD_ERRORS.ADD_CARD_FAILED,
       }),
     ),
+    Effect.withSpan('addCard', {
+      attributes: { userId },
+    }),
   );
 
   return runServerEffect(effect);
@@ -97,6 +100,9 @@ export const getCardDetails = async (
         error: error.message || CARD_ERRORS.GET_CARD_FAILED,
       }),
     ),
+    Effect.withSpan('getCardDetails', {
+      attributes: { documentId },
+    }),
   );
 
   return runServerEffect(effect);
@@ -145,6 +151,9 @@ export const updateCardDetails = async (
         error: error.message || CARD_ERRORS.UPDATE_CARD_FAILED,
       }),
     ),
+    Effect.withSpan('updateCardDetails', {
+      attributes: { documentId },
+    }),
   );
 
   return runServerEffect(effect);
@@ -172,6 +181,9 @@ export const updateCardBalance = async (
         error: error.message || CARD_ERRORS.UPDATE_CARD_FAILED,
       }),
     ),
+    Effect.withSpan('updateCardBalance', {
+      attributes: { documentId, balance: newBalance },
+    }),
   );
 
   return runServerEffect(effect);
