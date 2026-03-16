@@ -81,7 +81,7 @@ export default ({ strapi }) => ({
         (Math.round(recipientCard.balance * 100) + amountCents) / 100;
 
       const today = new Date().toISOString().split("T")[0];
-      const now = Date.now();
+      const now = new Date().toISOString();
 
       // Get current max transaction_ord for each card
       const senderMaxOrd =
