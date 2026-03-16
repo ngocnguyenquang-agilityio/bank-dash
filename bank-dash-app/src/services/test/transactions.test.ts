@@ -11,7 +11,7 @@ jest.mock('next/cache', () => ({
   unstable_cacheTag: jest.fn(),
 }));
 
-import { getRecentTransactions, createTransaction } from './transactions';
+import { getRecentTransactions, createTransaction } from '../transactions';
 import { Transactions } from '@/types/card';
 
 const mockFetch = jest.fn();

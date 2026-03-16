@@ -6,6 +6,9 @@ import type { RequestInitExtended } from '@/lib/effect/http';
 import { withAbortController } from '@/lib/effect/operators';
 import { getApiBaseUrl } from '@/lib/utils';
 
+// Constants
+import { STATUS_CODES } from '@/constants/error';
+
 // Define Errors
 export class ApiError extends Schema.TaggedError<ApiError>()('ApiError', {
   message: Schema.String,
@@ -67,7 +70,7 @@ export class ApiClient {
             throw new ApiError({ message: errorText, status: response.status });
           }
 
-          if (response.status === 204) {
+          if (response.status === STATUS_CODES.NO_CONTENT) {
             return { success: true } as T;
           }
 
