@@ -147,7 +147,7 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
     <Card className="w-full flex-1 rounded-[25px] border-0 outline-none shadow-none overflow-hidden">
       <CardContent className="px-4 py-6 flex flex-col justify-between h-full gap-6">
         {/* Members */}
-        <div className="relative w-full overflow-hidden">
+        <div className="relative w-full overflow-hidden flex-1">
           {/* See Previous */}
           <Button
             variant="ghost"
@@ -166,6 +166,14 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
             onScroll={checkScrollPosition}
             className="flex items-center gap-6 overflow-x-hidden w-full"
           >
+            {selectableMember.length === 0 && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-center">
+                <Icons.User className="w-10 h-10 fill-neutral-30" />
+                <p className="text-sm font-medium text-neutral-30">
+                  No members available for transfer
+                </p>
+              </div>
+            )}
             {selectableMember.map((member) => {
               const isSelected = activeSelectedMember?.documentId === member.documentId;
 
@@ -213,48 +221,53 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
         </div>
 
         {/* Amount Input */}
-        <div className="space-y-2 sm:space-y-3">
-          <Label htmlFor="amount" className="text-sm sm:text-[16px] text-neutral-30">
-            Write Amount
-          </Label>
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 items-stretch sm:items-center">
-            <div className="flex-1 h-12 sm:h-[50px] bg-neutral-20 rounded-[50px] px-5 sm:px-7 flex items-center">
-              <input
-                id="amount"
-                type="text"
-                placeholder="525.50"
-                value={amount}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  // Only allow numbers and one decimal point
-                  if (val === '' || /^\d*\.?\d*$/.test(val)) {
-                    setAmount(val);
-                    setError(null);
-                  }
-                }}
-                disabled={isPending}
-                className="bg-transparent border-0 outline-none text-sm sm:text-[16px] text-tx-primary w-full placeholder:text-neutral-30 disabled:opacity-50"
-              />
+        {selectableMember.length > 0 && (
+          <div className="space-y-2">
+            <div className="flex items-center gap-4 sm:gap-6">
+              <Label
+                htmlFor="amount"
+                className="text-sm sm:text-[16px] text-neutral-30 whitespace-nowrap shrink-0"
+              >
+                Write Amount
+              </Label>
+              <div className="flex items-stretch flex-1 h-[50px] bg-neutral-20 rounded-[50px] pl-5 sm:pl-7">
+                <input
+                  id="amount"
+                  type="text"
+                  placeholder="525.50"
+                  value={amount}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    // Only allow numbers and one decimal point
+                    if (val === '' || /^\d*\.?\d*$/.test(val)) {
+                      setAmount(val);
+                      setError(null);
+                    }
+                  }}
+                  disabled={isPending}
+                  className="bg-transparent border-0 outline-none text-sm sm:text-[16px] text-tx-primary w-full placeholder:text-neutral-30 disabled:opacity-50 min-w-0 self-center"
+                />
+                <Button
+                  onClick={handleSend}
+                  disabled={isPending || !userClerkId || !activeSelectedMember}
+                  className="h-full px-5 sm:px-7 rounded-[50px] bg-blue-50 hover:bg-blue-50/90 text-white gap-2 shadow-md disabled:opacity-50 shrink-0"
+                >
+                  {isPending ? (
+                    <Icons.Process className="w-4 h-4 sm:w-5 sm:h-5 animate-spin fill-white" />
+                  ) : (
+                    <>
+                      <span className="font-medium text-sm sm:text-[16px]">Send</span>
+                      <Icons.Send className="w-4 h-4 sm:w-5 sm:h-5 fill-white" />
+                    </>
+                  )}
+                </Button>
+              </div>
             </div>
-            <Button
-              onClick={handleSend}
-              disabled={isPending || !userClerkId || !activeSelectedMember}
-              className="h-12 sm:h-[50px] px-5 sm:px-6 rounded-[50px] bg-blue-50 hover:bg-blue-50/90 text-white gap-2 shadow-lg disabled:opacity-50"
-            >
-              {isPending ? (
-                <Icons.Process className="w-4 h-4 sm:w-5 sm:h-5 animate-spin fill-white" />
-              ) : (
-                <>
-                  <span className="font-medium text-sm sm:text-[16px]">Send</span>
-                  <Icons.Send className="w-4 h-4 sm:w-5 sm:h-5 fill-white" />
-                </>
-              )}
-            </Button>
-          </div>
 
-          {/* Error Message */}
-          {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
-        </div>
+            {/* Error Message */}
+            {error && <p className="text-red-500 text-sm mt-1 pl-5">{error}</p>}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

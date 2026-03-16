@@ -11,7 +11,7 @@ jest.mock('next/cache', () => ({
   unstable_cacheTag: jest.fn(),
 }));
 
-import { getMemberByClerkId, getMembers, updateMember, uploadAvatar } from './members';
+import { getMemberByClerkId, getMembers, updateMember, uploadAvatar } from '../members';
 
 const mockFetch = jest.fn();
 global.fetch = mockFetch;

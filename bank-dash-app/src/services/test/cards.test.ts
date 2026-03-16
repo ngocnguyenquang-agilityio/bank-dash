@@ -13,7 +13,7 @@ jest.mock('next/cache', () => ({
   unstable_cacheTag: jest.fn(),
 }));
 
-import { getCards, addCard, getCardDetails, updateCardDetails, updateCardBalance } from './cards';
+import { getCards, addCard, getCardDetails, updateCardDetails, updateCardBalance } from '../cards';
 
 // Set up fetch mock
 const mockFetch = jest.fn();

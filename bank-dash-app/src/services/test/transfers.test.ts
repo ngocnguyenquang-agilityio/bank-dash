@@ -11,7 +11,7 @@ jest.mock('next/cache', () => ({
   unstable_cacheTag: jest.fn(),
 }));
 
-import { sendAmount } from './transfers';
+import { sendAmount } from '../transfers';
 import { TRANSACTION_ERRORS } from '@/constants/error';
 import { updateTag } from 'next/cache';
 
@@ -125,12 +125,14 @@ describe('sendAmount', () => {
     mockFetch.mockResolvedValueOnce({
       ok: true,
       status: 200,
-      json: async () => ({ data: { success: false, error: 'Unlock your card to transfer' } }),
+      json: async () => ({
+        data: { success: false, error: 'Unlock your card or create new to transfer' },
+      }),
     });
 
     const result = await sendAmount('sender', 'recipient', 100, 'Sender', 'Recipient');
     expect(result.success).toBe(false);
-    expect(result.error).toBe('Unlock your card to transfer');
+    expect(result.error).toBe('Unlock your card or create new to transfer');
   });
 
   it('returns backend error messages for recipient with no active card', async () => {

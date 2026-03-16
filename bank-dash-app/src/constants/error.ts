@@ -15,6 +15,7 @@ export const STATUS_CODES = {
   INTERNAL_SERVER_ERROR: 500,
   OK: 200,
   CREATED: 201,
+  NO_CONTENT: 204,
 };
 
 export const NOT_FOUND_ERRORS = {
@@ -44,7 +45,7 @@ export const TRANSACTION_ERRORS = {
   INVALID_AMOUNT: 'Please enter a valid amount',
   INSUFFICIENT_BALANCE: 'Balance not enough',
   FAILED_TRANSACTION: 'Transaction failed',
-  ALL_CARDS_BLOCKED: 'Unlock your card to transfer',
+  ALL_CARDS_BLOCKED: 'Unlock your card or create new to transfer',
   RECIPIENT_NO_ACTIVE_CARD: 'Recipient has no active card to receive funds',
   RECIPIENT_NOT_FOUND: 'Recipient not found',
   GET_TRANSACTIONS_FAILED: 'Failed to fetch transactions',

@@ -1,6 +1,6 @@
 import { Effect, Exit } from 'effect';
-import { requestEffect } from './api.effect';
-import { ApiError, NetworkError } from './api';
+import { requestEffect } from '../api.effect';
+import { ApiError, NetworkError } from '../api';
 
 describe('requestEffect', () => {
   it('passes through successful result', async () => {
