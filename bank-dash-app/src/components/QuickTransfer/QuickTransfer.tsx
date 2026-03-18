@@ -15,8 +15,7 @@ import { Icons } from '@/components/Icons/Icons';
 import { sendAmount } from '@/services/transfers';
 
 // Utils
-import { getInitials } from '@/utils';
-import { getStrapiBaseUrl } from '@/lib/utils';
+import { getInitials, getStrapiMedia } from '@/utils';
 
 // Types
 import type { Member } from '@/types/member';
@@ -133,16 +132,6 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
     });
   };
 
-  const getMemberPhotoUrl = (member: Member): string | undefined => {
-    if (!member.photo?.url) return undefined;
-
-    // If the URL is already absolute, return as-is
-    if (member.photo.url.startsWith('http')) return member.photo.url;
-
-    // Prefix with Strapi base URL for relative paths
-    return `${getStrapiBaseUrl()}${member.photo.url}`;
-  };
-
   return (
     <Card className="w-full flex-1 rounded-[25px] border-0 outline-none shadow-none overflow-hidden">
       <CardContent className="px-4 py-6 flex flex-col justify-between h-full gap-6">
@@ -189,8 +178,16 @@ export const QuickTransfer = ({ userClerkId, senderName, members }: QuickTransfe
                   }`}
                 >
                   <Avatar className="w-14 h-14 sm:w-16 sm:h-16 md:w-[70px] md:h-[70px]">
-                    {getMemberPhotoUrl(member) && (
-                      <AvatarImage src={getMemberPhotoUrl(member)!} alt={`${member.name} avatar`} />
+                    {getStrapiMedia(member.photo?.url) && (
+                      <AvatarImage
+                        src={getStrapiMedia(member.photo?.url)!}
+                        alt={`${member.name} avatar`}
+                        unoptimized={
+                          getStrapiMedia(member.photo?.url)?.includes('localhost') ||
+                          getStrapiMedia(member.photo?.url)?.includes('127.0.0.1') ||
+                          false
+                        }
+                      />
                     )}
                     <AvatarFallback className="bg-gradient-to-br from-blue-400 to-purple-500 text-white text-lg">
                       {getInitials(member.name)}
