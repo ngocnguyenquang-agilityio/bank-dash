@@ -13,7 +13,7 @@ import { CACHE_TAGS, REVALIDATE } from '@/constants/cache';
 import { MEMBER_ERRORS } from '@/constants/error';
 
 export const getMembersEffect = (currentClerkId: string) => {
-  const url = `/members?populate[0]=photo&populate[cards][populate]=*&filters[clerkId][$ne]=${currentClerkId}&pagination[pageSize]=100`;
+  const url = `/members?populate=*&filters[clerkId][$ne]=${currentClerkId}&pagination[pageSize]=100`;
 
   return requestEffect(
     apiClient.get<MembersResponse>(url, {
