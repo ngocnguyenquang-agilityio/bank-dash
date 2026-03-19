@@ -7,7 +7,7 @@ interface ParsedError {
   error: string | FieldErrors;
 }
 
-export function handleApiError(errorRaw: unknown): ParsedError {
+export const handleApiError = (errorRaw: unknown): ParsedError => {
   let message = MESSAGES.UNEXPECTED_ERROR;
 
   try {
@@ -38,4 +38,4 @@ export function handleApiError(errorRaw: unknown): ParsedError {
   }
 
   return { error: message };
-}
+};
