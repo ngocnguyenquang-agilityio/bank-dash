@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 // Components
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 // Icons
 import { MenuIcon, XIcon } from 'lucide-react';

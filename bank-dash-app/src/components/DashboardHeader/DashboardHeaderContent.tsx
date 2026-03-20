@@ -12,8 +12,8 @@ import { getStrapiMedia } from '@/utils';
 import { Icons } from '@/components/Icons';
 
 // Components
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { AvatarProfile } from '@/components/AvatarProfile';
 
 interface DashboardHeaderContentProps {

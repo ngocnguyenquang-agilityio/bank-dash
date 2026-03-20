@@ -19,7 +19,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-} from '@/components/ui/dialog';
+} from '@/components/ui/Dialog';
 import { useUnsavedChanges } from '@/hooks/useUnsavedChanges';
 import {
   Select,
@@ -27,12 +27,12 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+} from '@/components/ui/Select';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
+import { Label } from '@/components/ui/Label';
+import { Calendar } from '@/components/ui/Calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/Popover';
 import { UnsavedChangesModal } from '@/components/UnsavedChangesModal';
 import { CalendarIcon } from 'lucide-react';
 

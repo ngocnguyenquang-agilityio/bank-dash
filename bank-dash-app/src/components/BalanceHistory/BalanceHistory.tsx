@@ -1,8 +1,8 @@
 'use client';
 
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, ResponsiveContainer } from 'recharts';
-import { ChartConfig, ChartContainer } from '@/components/ui/chart';
+import { ChartConfig, ChartContainer } from '@/components/ui/Chart';
 
 const data = [
   { month: 'Jul', balance: 200 },

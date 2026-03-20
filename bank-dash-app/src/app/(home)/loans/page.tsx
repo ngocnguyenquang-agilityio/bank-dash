@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Construction } from 'lucide-react';
 
 // Components
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 
 // Utils
 import { createMetadata } from '@/utils';

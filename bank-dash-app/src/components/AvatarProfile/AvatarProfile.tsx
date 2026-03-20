@@ -5,13 +5,13 @@ import { useRouter } from 'next/navigation';
 import { useClerk } from '@clerk/nextjs';
 
 // Components
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/Avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/DropdownMenu';
 
 // Icons
 import { Icons } from '@/components/Icons';

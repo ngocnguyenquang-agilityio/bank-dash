@@ -1,264 +1,278 @@
 # Codebase Structure
 
-**Analysis Date:** 2026-03-18
+**Analysis Date:** 2026-03-20
 
 ## Directory Layout
 
 ```
-bank-dash/
-├── bank-dash-app/                # Frontend: Next.js 16 + React 19 + Tailwind
+bank-dash/                          # Monorepo root
+├── bank-dash-app/                  # Next.js 16 frontend
 │   ├── src/
-│   │   ├── app/                  # App Router pages and layouts
-│   │   │   ├── (auth)/           # Public auth routes (sign-in, sign-up)
-│   │   │   ├── (home)/           # Protected dashboard routes with layout
-│   │   │   ├── api/              # Backend API routes (webhooks)
-│   │   │   ├── layout.tsx        # Root layout with ClerkProvider
-│   │   │   ├── page.tsx          # Redirect to /dashboard or HomePageWrapper
-│   │   │   └── globals.css       # Tailwind imports
-│   │   ├── components/           # React components (Server and Client)
-│   │   │   ├── auth/             # Auth page wrappers (SignInPage, SignUpPage)
-│   │   │   ├── DashboardSections/ # Server components for dashboard sections
-│   │   │   ├── ui/               # shadcn/ui primitives (button, dialog, select, etc)
-│   │   │   └── [others]/         # Feature components (Cards, Transfer, etc)
-│   │   ├── services/             # Service layer (Effect definitions, server actions)
-│   │   │   ├── api.ts            # ApiClient singleton
-│   │   │   ├── api.effect.ts     # requestEffect wrapper
-│   │   │   ├── cards.effect.ts   # Card fetch effects
-│   │   │   ├── cards.ts          # Card server actions
-│   │   │   ├── transfers.ts      # Transfer server actions
-│   │   │   └── test/             # Service tests
-│   │   ├── lib/                  # Utilities and helpers
-│   │   │   ├── auth.ts           # getAuth() cached auth context
-│   │   │   ├── effect/           # Effect-TS utilities
-│   │   │   │   ├── operators.ts  # withTimeout, withRetry, withSpan, withAbortController
-│   │   │   │   ├── runtime.ts    # runServerEffect with DevTools
-│   │   │   │   ├── http.ts       # RequestInitExtended type, error formatters
-│   │   │   │   └── [*.test.ts]   # Effect utility tests
-│   │   │   ├── errors/           # Error handling
-│   │   │   └── utils.ts          # Utility functions (cn, maskCardNumber, getApiBaseUrl, etc)
-│   │   ├── types/                # TypeScript types and schemas
-│   │   │   ├── card.ts           # Card types, CardSchema, CardFormSchema
-│   │   │   ├── member.ts         # Member types
-│   │   │   └── [others]          # Transaction, Transfer types
-│   │   ├── constants/            # Constants
-│   │   │   ├── cache.ts          # CACHE_TAGS, REVALIDATE times
-│   │   │   ├── error.ts          # Error messages and status codes
-│   │   │   └── route.ts          # ROUTES enum
-│   │   ├── hooks/                # React hooks
-│   │   │   └── useUnsavedChanges.ts # Unsaved changes modal hook
-│   │   ├── utils/                # Utility modules
-│   │   └── proxy.ts              # Development proxy configuration
-│   ├── .storybook/               # Storybook configuration
-│   ├── jest.config.js            # Jest test configuration
-│   ├── tsconfig.json             # TypeScript configuration with path aliases
-│   ├── next.config.js            # Next.js configuration (Turbopack)
-│   ├── tailwind.config.ts        # Tailwind CSS configuration
-│   └── package.json              # Dependencies, scripts
+│   │   ├── app/                    # Next.js App Router
+│   │   │   ├── (auth)/             # Public auth routes
+│   │   │   ├── (home)/             # Protected home routes
+│   │   │   ├── api/                # Route handlers (webhooks, etc.)
+│   │   │   ├── layout.tsx           # Root layout with Clerk
+│   │   │   └── page.tsx             # Root page (redirects if auth)
+│   │   ├── components/              # React components
+│   │   │   ├── ui/                 # shadcn-style primitives
+│   │   │   ├── DashboardSections/   # Dashboard section components
+│   │   │   ├── CreditCard/          # Card display component
+│   │   │   └── ...                 # Feature-specific components
+│   │   ├── services/                # API layer with Effect-TS
+│   │   │   ├── api.ts              # ApiClient singleton
+│   │   │   ├── api.effect.ts       # requestEffect wrapper
+│   │   │   ├── cards.ts            # Card service (server actions)
+│   │   │   ├── cards.effect.ts     # Card Effect program
+│   │   │   ├── members.ts          # Member service
+│   │   │   ├── transactions.ts     # Transaction service
+│   │   │   └── test/               # Service tests
+│   │   ├── types/                   # Zod schemas + TS types
+│   │   │   ├── card.ts
+│   │   │   ├── member.ts
+│   │   │   ├── transaction.ts
+│   │   │   └── icon.ts
+│   │   ├── lib/                     # Utilities & infrastructure
+│   │   │   ├── effect/             # Effect-TS runtime
+│   │   │   ├── errors/             # Error handling utilities
+│   │   │   ├── auth.ts             # Cached Clerk wrapper
+│   │   │   └── utils.ts            # Helper functions
+│   │   ├── hooks/                   # React hooks
+│   │   ├── constants/               # App constants
+│   │   └── utils/                   # Utility functions
+│   └── package.json
 │
-├── bank-dash-server/             # Backend: Strapi 5 headless CMS
+├── bank-dash-server/                # Strapi 5 CMS backend
 │   ├── src/
-│   │   ├── api/                  # Content types and routes
-│   │   │   ├── card/             # Card content type
-│   │   │   │   ├── content-types/ # Schema definition
-│   │   │   │   ├── controllers/  # API controllers
-│   │   │   │   ├── routes/       # API routes
-│   │   │   │   └── services/     # Business logic
-│   │   │   ├── member/           # Member content type
-│   │   │   ├── transaction/      # Transaction content type
-│   │   │   └── transfer/         # Transfer endpoint (custom route + service)
-│   │   ├── middlewares/          # Custom Strapi middlewares
-│   │   │   └── cache-control.ts  # Cache control headers
-│   │   ├── extensions/           # Strapi extensions
-│   │   ├── admin/                # Admin panel configuration
-│   │   └── index.ts              # Bootstrap and register hooks
-│   ├── database.sqlite           # SQLite database file (default)
-│   ├── package.json              # Dependencies
-│   └── .env                      # Environment configuration (secrets)
+│   │   ├── api/                     # Domain APIs
+│   │   │   ├── card/               # Card collection
+│   │   │   │   ├── content-types/  # Schema definition
+│   │   │   │   ├── controllers/    # Auto-generated controller
+│   │   │   │   ├── services/       # Auto-generated service
+│   │   │   │   └── routes/         # Auto-generated routes
+│   │   │   ├── member/             # Member collection
+│   │   │   ├── transaction/        # Transaction collection
+│   │   │   └── transfer/           # Custom transfer endpoint
+│   │   │       ├── controllers/    # Custom request handler
+│   │   │       ├── services/       # Custom business logic
+│   │   │       └── routes/         # Custom route definition
+│   │   ├── admin/                  # Strapi admin config
+│   │   ├── extensions/             # Strapi extensions
+│   │   └── middlewares/            # Custom middlewares
+│   ├── config/                      # Strapi configuration
+│   │   └── database.ts             # DB config (SQLite default)
+│   └── package.json
 │
-└── .claude/                      # Project guidance
-    └── CLAUDE.md                 # Architecture and command documentation
-
+└── .planning/
+    └── codebase/                    # GSD documentation
+        ├── ARCHITECTURE.md
+        └── STRUCTURE.md
 ```
 
 ## Directory Purposes
 
-**Frontend Structure:**
+**Frontend: `bank-dash-app/src/app`**
+- Purpose: Next.js App Router with two route groups: public auth and protected home
+- Contains: Page components, layouts, route handlers
+- Key files:
+  - `layout.tsx`: Root layout wrapping app in ClerkProvider
+  - `page.tsx`: Root page that redirects authenticated users
+  - `(auth)/layout.tsx`, `sign-in/[[...rest]]/page.tsx`, `sign-up/[[...rest]]/page.tsx`: Auth flows
+  - `(home)/layout.tsx`: Protected layout with Sidebar + DashboardHeader
+  - `(home)/dashboard/page.tsx`: Main dashboard with sections
+  - `(home)/cards/page.tsx`, `(home)/cards/[id]/page.tsx`: Card pages
+  - `api/webhooks/route.ts`: Clerk webhook handler (POST)
 
-**`src/app/`**
-- Purpose: Next.js App Router pages and layout hierarchy
-- Contains: Page components, route layouts, special files (loading.tsx, error.tsx)
-- Key files: `layout.tsx` (root and per-group), page.tsx files for routes
+**Frontend: `bank-dash-app/src/components`**
+- Purpose: Reusable React components organized by feature
+- Contains: UI primitives, layout components, feature-specific sections
+- Key subdirectories:
+  - `ui/`: Radix UI + custom styled components (buttons, dialogs, etc.)
+  - `DashboardSections/`: Sections on dashboard (MyCardsSection, QuickTransferSection, RecentTransactionsSection)
+  - `CreditCard/`: Card display and related components
+  - `QuickTransfer/`: Quick transfer form and logic
+  - `AddCardModal/`, `CardSetting/`: Modal dialogs
+  - `Sidebar/`, `DashboardHeader/`: Layout components
 
-**`src/components/`**
-- Purpose: Reusable UI building blocks (React Server Components and Client Components)
-- Contains: Feature components, auth pages, dashboard sections, UI primitives
-- Key files: Component files with .tsx, .test.tsx, .stories.tsx (Storybook), index.ts barrel files
+**Frontend: `bank-dash-app/src/services`**
+- Purpose: API abstraction layer using Effect-TS
+- Contains: Raw fetch operations and Effect programs
+- Pattern: For each domain (cards, members, transactions), two files:
+  - `domain.ts`: Server actions that call Effect programs via `runServerEffect`
+  - `domain.effect.ts`: Effect programs that compose ApiClient calls with error handling
+- Key files:
+  - `api.ts`: ApiClient singleton with HTTP methods (get, post, put, delete)
+  - `api.effect.ts`: requestEffect wrapper that normalizes errors
+  - `cards.ts`: getCards, addCard, getCardDetails, updateCardDetails, updateCardBalance (server actions)
+  - `cards.effect.ts`: getCardsEffect (Effect program)
+  - `test/`: Jest tests for service functions
 
-**`src/services/`**
-- Purpose: Business logic layer between components and API
-- Contains: Effect definitions, server actions, API client, error handling
-- Key files: `api.ts` (ApiClient), `*.effect.ts` (effect definitions), `*.ts` (server actions)
+**Frontend: `bank-dash-app/src/types`**
+- Purpose: Zod schemas + TypeScript types colocated
+- Contains: Schema definitions that produce both runtime validation and type inference
+- Pattern: `Schema.Struct` definitions exported as `const`, with corresponding `type = typeof schema.Type`
+- Key files:
+  - `card.ts`: CardSchema, CardFormSchema, CardsResponseSchema, types
+  - `member.ts`: Member types and schemas
+  - `transaction.ts`: Transaction types
+  - `icon.ts`: Icon prop types
 
-**`src/lib/`**
-- Purpose: Reusable utilities and infrastructure code
-- Contains: Auth helpers, Effect-TS operators, error handlers, type utilities
-- Key files: `auth.ts`, `effect/` subdirectory, `errors/`, `utils.ts`
+**Frontend: `bank-dash-app/src/lib`**
+- Purpose: Infrastructure and utilities
+- Subdirectories:
+  - `effect/`: Effect-TS runtime setup (`runtime.ts` with optional DevTools layer)
+  - `errors/`: `handleApiError.ts` parses API responses and extracts field-level errors
+  - `auth.ts`: React cache wrapper around Clerk's auth()
+  - `utils.ts`: Helper functions (getApiBaseUrl, createMetadata, etc.)
 
-**`src/types/`**
-- Purpose: Shared TypeScript types and Effect schemas
-- Contains: Type definitions, schema validation
-- Key files: `card.ts`, `member.ts` with Type and Schema exports
+**Frontend: `bank-dash-app/src/constants`**
+- Purpose: Centralized constants
+- Files: `error.ts` (error messages and status codes), `cache.ts` (cache tags and revalidate times), `route.ts` (route paths), `regex.ts` (validation patterns), `upload.ts` (upload config)
 
-**`src/constants/`**
-- Purpose: Application-wide constants
-- Contains: Error messages, cache tags, revalidation times, route strings
-- Key files: `error.ts`, `cache.ts`, `route.ts`
+**Frontend: `bank-dash-app/src/hooks`**
+- Purpose: Reusable React hooks
+- Files: `useUnsavedChanges.ts` (modal state management for unsaved form changes)
 
-**`src/hooks/`**
-- Purpose: Custom React hooks for components
-- Contains: Reusable stateful logic
-- Key files: `useUnsavedChanges.ts`
+**Frontend: `bank-dash-app/src/utils`**
+- Purpose: Pure utility functions
+- Contains: General-purpose helpers not tied to a specific domain
 
-**Backend Structure:**
+**Backend: `bank-dash-server/src/api/card`**
+- Purpose: Card collection with CRUD operations
+- Contains:
+  - `content-types/card/schema.json`: Strapi schema definition (fields, relationships)
+  - `controllers/card.ts`: Auto-generated controller using Strapi factories
+  - `services/card.ts`: Auto-generated service with business logic hooks
+  - `routes/card.ts`: Auto-generated REST routes (/cards GET/POST, /cards/:id GET/PUT/DELETE)
 
-**`bank-dash-server/src/api/`**
-- Purpose: Content types and API endpoints
-- Contains: Controllers, routes, services, content type schemas
-- Pattern: Each content type (card, member, transaction) has controllers/, routes/, services/ subdirectories
+**Backend: `bank-dash-server/src/api/member`**
+- Purpose: Member (user profile) collection
+- Contains: Schema, controller, service, routes (auto-generated by Strapi)
+- Key field: `clerkId` links members to Clerk users
 
-**`bank-dash-server/src/middlewares/`**
-- Purpose: Strapi middleware plugins
-- Contains: Custom request/response handling
-- Key files: `cache-control.ts` (HTTP caching headers)
+**Backend: `bank-dash-server/src/api/transaction`**
+- Purpose: Transaction records (deposits/withdrawals)
+- Contains: Schema, controller, service, routes
+- Linked to cards via many-to-many relationship `transactions_card_lnk`
+
+**Backend: `bank-dash-server/src/api/transfer`**
+- Purpose: Custom endpoint for atomic fund transfers
+- Contains:
+  - `controllers/transfer.ts`: Handles POST request, validates input, delegates to service
+  - `services/transfer.ts`: Complex transfer logic using Knex transactions
+  - `routes/transfer.ts`: Custom route definition for POST /transfers
+- Not auto-generated; custom implementation to ensure atomicity
+
+**Backend: `bank-dash-server/config`**
+- Purpose: Strapi configuration
+- Files: `database.ts` configures DB client (SQLite, MySQL, PostgreSQL), connection pool, SSL options
 
 ## Key File Locations
 
 **Entry Points:**
-
-- `bank-dash-app/src/app/layout.tsx`: Root layout, ClerkProvider, Toaster
-- `bank-dash-app/src/app/(home)/layout.tsx`: Protected routes layout, auth check, Sidebar
-- `bank-dash-app/src/app/(home)/dashboard/page.tsx`: Main dashboard page
-- `bank-dash-app/src/app/api/webhooks/route.ts`: Clerk webhook handler
-- `bank-dash-server/src/index.ts`: Strapi bootstrap and error handlers
+- `bank-dash-app/src/app/layout.tsx`: Root layout, initializes Clerk provider
+- `bank-dash-app/src/app/page.tsx`: Home page, redirects if authenticated
+- `bank-dash-app/src/app/(home)/dashboard/page.tsx`: Main dashboard with card/transaction sections
+- `bank-dash-server/src/index.ts` (implicit): Strapi initialization
 
 **Configuration:**
-
-- `bank-dash-app/tsconfig.json`: Path aliases (`@/` → `src/`)
-- `bank-dash-app/next.config.js`: Turbopack, middleware
-- `bank-dash-app/jest.config.js`: Jest test configuration
-- `bank-dash-app/tailwind.config.ts`: Tailwind custom colors and plugins
-- `bank-dash-server/.env`: Environment variables (secrets)
+- `bank-dash-app/tsconfig.json`: TypeScript config with path aliases
+- `bank-dash-app/next.config.ts`: Next.js config (Turbopack, React Compiler, image remotePatterns)
+- `bank-dash-app/package.json`: Frontend dependencies and scripts
+- `bank-dash-server/config/database.ts`: Database connection setup
+- `bank-dash-server/package.json`: Backend dependencies
 
 **Core Logic:**
-
-- `bank-dash-app/src/services/api.ts`: ApiClient singleton with Effect-based request wrapping
-- `bank-dash-app/src/services/cards.effect.ts`: Card fetch effects
-- `bank-dash-app/src/services/cards.ts`: Card server actions (getCards, addCard, updateCard)
-- `bank-dash-app/src/lib/effect/operators.ts`: Effect composition utilities
-- `bank-dash-app/src/lib/effect/runtime.ts`: runServerEffect with DevTools integration
-- `bank-dash-server/src/api/transfer/services/transfer.ts`: Atomic transfer logic with Knex transactions
+- `bank-dash-app/src/services/api.ts`: ApiClient singleton (fetch abstraction)
+- `bank-dash-app/src/services/cards.ts`: Card service operations (server actions)
+- `bank-dash-app/src/services/cards.effect.ts`: Card Effect programs
+- `bank-dash-app/src/lib/effect/runtime.ts`: Effect-TS runtime runner
+- `bank-dash-server/src/api/transfer/services/transfer.ts`: Atomic transfer logic with Knex transaction
 
 **Testing:**
+- `bank-dash-app/src/services/test/`: Service test files (cards.test.ts, members.test.ts, transfers.test.ts)
+- `bank-dash-app/src/hooks/useUnsavedChanges.test.ts`: Hook tests
 
-- `bank-dash-app/src/components/**/*.test.tsx`: Component tests
-- `bank-dash-app/src/services/test/`: Service tests
-- `bank-dash-app/src/lib/effect/*.test.ts`: Effect operator tests
-- `bank-dash-app/src/components/**/*.stories.tsx`: Storybook stories
+**Types & Schemas:**
+- `bank-dash-app/src/types/card.ts`: Card Zod schemas and types
+- `bank-dash-app/src/types/member.ts`: Member types
+- `bank-dash-app/src/types/transaction.ts`: Transaction types
 
 ## Naming Conventions
 
 **Files:**
-
-- Components: PascalCase, one component per file: `AddCardModal.tsx`, `MyCardsSection.tsx`
-- Utilities: camelCase: `maskCardNumber.ts`, `getApiBaseUrl.ts`
-- Effects: `.effect.ts` suffix: `cards.effect.ts`, `transactions.effect.ts`
-- Server actions: `.ts` suffix: `cards.ts`, `transfers.ts`
-- Tests: `.test.ts` or `.test.tsx`: `AddCardModal.test.tsx`, `operators.test.ts`
-- Storybook: `.stories.tsx`: `AddCardModal.stories.tsx`
-- Barrel files: `index.ts` for re-exports: `src/components/DashboardSections/index.ts`
+- Components: PascalCase (e.g., `CreditCard.tsx`, `DashboardHeader.tsx`)
+- Services: camelCase (e.g., `cards.ts`, `members.ts`)
+- Types: camelCase (e.g., `card.ts`, `member.ts`)
+- Utilities: camelCase (e.g., `utils.ts`)
+- Hooks: camelCase (e.g., `useUnsavedChanges.ts`)
+- Tests: `[name].test.ts` or `[name].spec.ts`
+- Effect programs: `[domain].effect.ts` (e.g., `cards.effect.ts`)
 
 **Directories:**
+- Feature folders: PascalCase (e.g., `CreditCard/`, `DashboardSections/`)
+- Utility folders: lowercase (e.g., `lib/`, `utils/`, `constants/`, `types/`, `hooks/`)
+- API routes: lowercase (e.g., `api/`, `card/`, `member/`)
 
-- Feature directories: PascalCase: `components/AddCardModal/`, `components/DashboardSections/`
-- Utility directories: camelCase: `lib/effect/`, `src/services/`
-- Route groups: parentheses: `app/(auth)/`, `app/(home)/`
-- Typed resource folders (Strapi): lowercase: `api/card/`, `api/member/`
+**Variables & Functions:**
+- camelCase for all variables and function names
+- PascalCase for React components and classes
+- UPPER_SNAKE_CASE for constants (e.g., `CACHE_TAGS`, `STATUS_CODES`)
+
+**Types:**
+- PascalCase for all type and interface names (e.g., `Card`, `CardFormData`, `CardsResponse`)
+- Suffix pattern: Use descriptive suffixes like `Response`, `FormData`, `Error`, `Params`
 
 ## Where to Add New Code
 
-**New Feature:**
+**New Feature (e.g., Savings Goals):**
+1. Create component folder: `bank-dash-app/src/components/SavingsGoal/`
+2. Create page: `bank-dash-app/src/app/(home)/savings/page.tsx`
+3. Create service: `bank-dash-app/src/services/savings.ts` (server actions)
+4. Create Effect: `bank-dash-app/src/services/savings.effect.ts` (Effect programs)
+5. Create type: Add to `bank-dash-app/src/types/` (e.g., `saving.ts`)
+6. Add test: `bank-dash-app/src/services/test/savings.test.ts`
+7. Backend: Create `bank-dash-server/src/api/saving/` with Strapi collection files
 
-1. Create feature directory in `src/components/[FeatureName]/`
-2. Implement component(s) and export from `index.ts`
-3. Add tests in `[FeatureName].test.tsx`
-4. Add Storybook story in `[FeatureName].stories.tsx` if reusable
+**New Component/Module:**
+- Implementation: `bank-dash-app/src/components/[FeatureName]/[ComponentName].tsx`
+- If reusable UI primitive: `bank-dash-app/src/components/ui/[ComponentName].tsx`
+- If hook: `bank-dash-app/src/hooks/use[HookName].ts`
+- If utility: `bank-dash-app/src/lib/` or `bank-dash-app/src/utils/`
 
-**New Server Action/Service:**
-
-1. Add Effect definition in `src/services/[entity].effect.ts`:
-   - Define effect returning `Effect.Effect<Result, Error>`
-   - Use `requestEffect()` wrapper
-   - Add span for tracing
-   - Map errors to result tuple `{ data, error }`
-
-2. Export server action in `src/services/[entity].ts`:
-   - Mark with `'use server'`
-   - Call effect via `runServerEffect()`
-   - Return `{ data: T | null, error: string | null }`
-
-**New Type/Schema:**
-
-- Add to `src/types/[entity].ts`:
-  - Export TypeScript `type T = ...`
-  - Export Effect Schema: `const TSchema = Schema.Struct({ ... })`
-  - Export derived type: `type T = typeof TSchema.Type`
-
-**New Route/Page:**
-
-- Create file/directory in `src/app/(group)/[path]/page.tsx`
-- Use Server Components by default
-- Add auth check via `getAuth()` if protected
-- Wrap sections with `<Suspense>` for streaming
-
-**New Constant:**
-
-- Add to appropriate file in `src/constants/`:
-  - Error messages → `error.ts`
-  - Cache settings → `cache.ts`
-  - Routes → `route.ts`
-
-**New Hook:**
-
-- Create file in `src/hooks/[hookName].ts`
-- Use `'use client'` if component-specific
-- Export function starting with `use`
+**Utilities:**
+- Shared helpers: `bank-dash-app/src/lib/[domain]/` (e.g., `lib/errors/`, `lib/effect/`)
+- Pure functions: `bank-dash-app/src/utils/`
+- Constants: `bank-dash-app/src/constants/`
 
 ## Special Directories
 
-**`src/components/ui/`**
-- Purpose: shadcn/ui primitive components (not business logic)
-- Generated: Copied from shadcn/ui CLI
-- Committed: Yes
-- Modification: Only for project-specific customization
+**`bank-dash-app/.next`:**
+- Purpose: Next.js build output
+- Generated: Yes
+- Committed: No (in .gitignore)
 
-**`src/lib/effect/`**
-- Purpose: Effect-TS infrastructure (operators, runtime, HTTP utilities)
-- Generated: No
-- Committed: Yes
-- Modification: Only for new operators or runtime features
-
-**`bank-dash-server/database.sqlite`**
-- Purpose: SQLite database file
-- Generated: Yes (created by Strapi on first run)
-- Committed: No (ignored, local development only)
-- Reset: Delete file to reset to empty schema
-
-**`.next/` and `coverage/`**
-- Purpose: Build artifacts and test coverage reports
+**`bank-dash-app/node_modules`:**
+- Purpose: npm dependencies
 - Generated: Yes
 - Committed: No
-- Purpose: Build cache and test analysis
+
+**`bank-dash-server/.tmp`:**
+- Purpose: Strapi temp files (SQLite database in dev)
+- Generated: Yes
+- Committed: No
+
+**`bank-dash-app/src/components/ui`:**
+- Purpose: shadcn-style UI primitives (buttons, dialogs, forms, etc.)
+- Generated: No
+- Committed: Yes (hand-written Radix UI wrappers)
+
+**`bank-dash-app/src/services/test`:**
+- Purpose: Jest tests for service layer
+- Generated: No
+- Committed: Yes
+- Pattern: Mock fetch at global level, test Effect program composition
 
 ---
 
-*Structure analysis: 2026-03-18*
+*Structure analysis: 2026-03-20*

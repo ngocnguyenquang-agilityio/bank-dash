@@ -9,7 +9,7 @@ import { CreditCard } from '@/components/CreditCard';
 import { CardListItem } from '@/components/CardListItem';
 import { Pagination } from '@/components/Pagination';
 import { AddCardModal } from '@/components/AddCardModal';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { Icons } from '@/components/Icons/Icons';
 
 // Types

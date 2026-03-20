@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Components
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/ui/Card';
 
 interface TransactionsSummaryCardProps {
   icon: React.ReactNode;

@@ -1,111 +1,97 @@
 # Testing Patterns
 
-**Analysis Date:** 2026-03-18
+**Analysis Date:** 2026-03-20
 
 ## Test Framework
 
 **Runner:**
 - Jest 30.2.0
-- Config: `jest.config.ts`
-- Environment: jsdom (for DOM-based component testing)
+- Config: `jest.config.ts` at project root
+- Environment: jsdom
+- Transform: Next.js Jest setup (handles TypeScript, JSX via Turbopack)
 
 **Assertion Library:**
-- Jest built-in matchers (expect API)
-- `@testing-library/jest-dom` - DOM matchers (toBeInTheDocument, etc.)
+- Jest built-in matchers (expect)
+- `@testing-library/jest-dom` v6.9.1 for DOM assertions
+- `@testing-library/react` v16.3.2 for component testing
+- `@testing-library/user-event` v14.6.1 for user interaction simulation
 
 **Run Commands:**
 ```bash
-npm run test                    # Run all tests (watch mode)
-npm run test:watch             # Jest watch mode (re-run on file changes)
-npm run test:coverage          # Run with coverage report
-npm run test:update            # Update snapshots with --passWithNoTests
-npx jest path/to/test.spec.ts  # Run single test file
+npm run test              # Run all tests
+npm run test:watch       # Watch mode
+npm run test:coverage    # Coverage report
+npx jest [file.test.ts]  # Run single test file
 ```
 
 ## Test File Organization
 
 **Location:**
-- Co-located with source files (same directory as component/service)
-- Alternative: Separate `__tests__` directories via testMatch pattern
+- Co-located with source files (same directory)
+- Pattern: `[OriginalName].test.ts(x)` directly next to source
+- Services tests exception: located in `src/services/test/` subdirectory
 
 **Naming:**
-- `.test.ts` suffix for tests
-- `.test.tsx` for component tests
-- Pattern: `ComponentName.test.tsx`, `service.test.ts`, `useHook.test.ts`
+- `[Component].test.tsx` for component tests
+- `[Service].test.ts` for service tests
+- `[Utility].test.ts` for utility/helper tests
 
-**Structure:**
-```
-src/
-├── components/
-│   ├── AddCardModal/
-│   │   ├── AddCardModal.tsx
-│   │   ├── AddCardModal.test.tsx
-│   │   ├── AddCardModal.stories.tsx
-│   │   └── index.ts
-├── services/
-│   ├── cards.ts
-│   ├── test/
-│   │   ├── cards.test.ts
-│   │   ├── members.test.ts
-│   │   └── transfers.test.ts
-├── hooks/
-│   ├── useUnsavedChanges.ts
-│   └── useUnsavedChanges.test.ts
-├── lib/
-│   ├── effect/
-│   │   ├── operators.ts
-│   │   └── operators.test.ts
-│   ├── errors/
-│   │   ├── handleApiError.ts
-│   │   └── handleApiError.test.ts
-```
+**Structure Example Locations:**
+- Components: `src/components/[ComponentName]/[ComponentName].test.tsx`
+- Services: `src/services/test/[service].test.ts`
+- Hooks: `src/hooks/[hookName].test.ts`
+- Utils: `src/lib/errors/handleApiError.test.ts`
 
 ## Test Structure
 
 **Suite Organization:**
 ```typescript
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { AddCardModal } from '.';
-
-// Mock setup at top level
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({ push: mockPush, refresh: mockRefresh }),
-}));
-
-describe('AddCardModal', () => {
-  // Setup/teardown hooks
+// Test grouping pattern
+describe('FunctionOrComponentName', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  // Individual test cases
-  it('renders the dialog when open', () => {
-    render(<AddCardModal {...defaultProps} />);
-    expect(screen.getByText('Card Type')).toBeInTheDocument();
-  });
-
-  // Nested describe blocks for related tests
-  describe('form submission', () => {
-    it('shows submitting state', async () => {
-      // ...
-    });
+  it('test case description', () => {
+    // Arrange
+    // Act
+    // Assert
   });
 });
 ```
 
-**Patterns:**
-- Setup: `beforeEach(() => { jest.clearAllMocks() })` - Clear mocks between tests
-- Teardown: Not typically needed; jest.clearAllMocks() handles cleanup
-- Assertions: Use testing-library queries over direct DOM access
+**Setup Pattern:**
+```typescript
+// Module mocks at top (before importing tested module)
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ ... }),
+}));
+
+// Global mock setup
+const mockFetch = jest.fn();
+global.fetch = mockFetch;
+
+// Per-test cleanup
+beforeEach(() => {
+  jest.clearAllMocks();
+  mockFetch.mockReset();
+});
+```
+
+**Assertion Pattern:**
+- DOM queries: `screen.getByText()`, `screen.getByRole()`, `screen.queryByText()`, `screen.findByRole()`
+- User interactions: `userEvent.type()`, `userEvent.click()`
+- Async assertions: `waitFor()` for eventual consistency
+- Jest matchers: `toBeInTheDocument()`, `toBeEnabled()`, `toEqual()`, `toHaveAttribute()`
 
 ## Mocking
 
-**Framework:** Jest's native mocking system
+**Framework:** Jest mocking via `jest.mock()`
 
 **Patterns:**
+
 ```typescript
-// Mock modules at file top
+// Mock entire module with return value
 jest.mock('next/navigation', () => ({
   useRouter: () => ({
     push: mockPush,
@@ -113,61 +99,41 @@ jest.mock('next/navigation', () => ({
   }),
 }));
 
-// Mock fetch for API tests
-const mockFetch = jest.fn();
-global.fetch = mockFetch;
-
-// Mock service functions
+// Mock with implementation function
 jest.mock('@/services/cards', () => ({
   addCard: (...args: unknown[]) => mockAddCard(...args),
 }));
 
-// Setup mock responses
-mockFetch.mockResolvedValueOnce({
-  ok: true,
-  status: 200,
-  json: async () => ({ data: [...] }),
-});
-
-// Verify calls
-expect(mockFetch).toHaveBeenCalledWith(
-  expect.stringContaining('/cards'),
-  expect.objectContaining({ method: 'POST' })
-);
+// Global mocks for fetch-based APIs
+global.fetch = jest.fn();
 ```
 
 **What to Mock:**
-- Next.js hooks: `useRouter()`, `usePathname()`, `useSearchParams()`
-- Third-party auth: `@clerk/nextjs` `useUser()`, `useClerk()`
-- Service layers: API calls via `jest.mock('@/services/*')`
-- Toast notifications: `jest.mock('sonner')`
-- External libraries: `@hookform/resolvers`, date utilities if needed for deterministic tests
+- External libraries (Next.js, Clerk, Sonner toast notifications)
+- Service layer functions (cards.ts, members.ts)
+- Any dependency not being directly tested
 
 **What NOT to Mock:**
-- React hooks: `useState`, `useCallback`, `useEffect` (test real behavior)
-- Custom hooks: Test via `renderHook()` with actual logic
-- UI components from `@/components/ui/` (Radix UI primitives) - import and test real rendering
-- Utility functions: Test actual implementations in `src/lib/utils.ts`, `src/utils/`
-- Effect operators: Test via actual Effect.runPromise() (see `operators.test.ts`)
+- Components under test (render them directly)
+- Internal utilities/helpers (call them directly)
+- Effect-TS machinery itself (use `Effect.runPromise()` or `Effect.runPromiseExit()`)
 
 ## Fixtures and Factories
 
 **Test Data:**
 ```typescript
-// Default props for component tests
+// Inline constants for common test data
 const defaultProps = {
   open: true,
   onOpenChange: jest.fn(),
 };
 
-// Render wrapper
-render(<AddCardModal {...defaultProps} />);
-
-// API response fixtures in service tests
-const cardsData = {
-  data: [{ id: 1, documentId: 'card-1', name: 'Test Card' }],
-  meta: { pagination: { page: 1, pageSize: 5, pageCount: 1, total: 1 } },
+// Data creation in test setup
+const memberResponse = {
+  data: [{ id: 1, documentId: 'member-1', clerkId: 'clerk-123' }],
 };
+
+// Mock fetch responses
 mockFetch.mockResolvedValueOnce({
   ok: true,
   status: 200,
@@ -176,55 +142,105 @@ mockFetch.mockResolvedValueOnce({
 ```
 
 **Location:**
-- Inline in test files (small datasets)
-- Shared test data in `src/test/` directory (if large/reused)
-- No factory library; simple object literals with descriptive names
+- Inline in test file at top (after imports, before describe blocks)
+- No separate fixtures directory
+- Reused across multiple tests in same file via `defaultProps` pattern
 
 ## Coverage
 
-**Requirements:** Not enforced by config
+**Requirements:**
+- Target: Not enforced via config (configurable via CI/CD)
+- View coverage report: `npm run test:coverage`
+- Generated from v8 coverage provider
 
-**View Coverage:**
-```bash
-npm run test:coverage
-```
-
-**collectCoverageFrom (jest.config.ts):**
-- Includes: `src/**/*.{js,jsx,ts,tsx}`
-- Excludes:
-  - `.d.ts` files
-  - `.stories.{js,jsx,ts,tsx}` (Storybook only)
-  - `src/app/**` (Next.js pages/layouts)
-  - `src/test/**` (Test utilities themselves)
+**Exclusions (from coverage):**
+- `.d.ts` type definition files
+- `*.stories.tsx` Storybook stories
+- `src/app/**` Next.js app directory
+- `src/test/**` Test utilities
 
 ## Test Types
 
 **Unit Tests:**
-- Scope: Individual functions, hooks, components in isolation
-- Approach: Mock external dependencies (services, router, auth)
-- Examples:
-  - `operators.test.ts` - Effect utility functions
-  - `utils.test.ts` - Utility functions (getInitials, getStrapiMedia, parseBalanceToCents)
-  - `handleApiError.test.ts` - Error parsing logic
-  - `useUnsavedChanges.test.ts` - Hook behavior via renderHook
+- Scope: Individual functions, hooks, utilities
+- Approach: Jest with React Testing Library for components
+- Pattern: Mock all external dependencies
+- Example: `src/lib/errors/handleApiError.test.ts` tests error parsing logic
+- Example: `src/services/test/api.effect.test.ts` tests Effect pipeline transformations
 
 **Integration Tests:**
-- Scope: Services with mocked API, component trees with real children
-- Approach: Mock fetch/API, render components tree, test interactions
-- Examples:
-  - `cards.test.ts` - Service functions calling mocked API endpoints
-  - `AddCardModal.test.tsx` - Form submission, field validation, error handling
-  - `AvatarProfile.test.tsx` - Navigation and auth interaction
+- Scope: Service functions with Effect pipelines + API calls
+- Approach: Mock global fetch, test full request-response flow
+- Pattern: Mock fetch responses, verify combined behavior
+- Example: `src/services/test/cards.test.ts` tests getCards, addCard, updateCardDetails
+- Includes validation of error handling (member not found, network failures)
+
+**Component Tests:**
+- Scope: React component behavior and UI
+- Approach: React Testing Library with user events
+- Pattern: Render component, simulate user interaction, assert DOM changes
+- Example: `src/components/AddCardModal/AddCardModal.test.tsx`:
+  - Verifies dialog renders when open prop is true
+  - Tests form field formatting (card number dashes, balance commas)
+  - Confirms button states based on form validity
+  - Tests user interactions (typing, clicking, date picker)
 
 **E2E Tests:**
-- Framework: Not used in current setup
-- Note: Project focuses on unit/integration via Jest; no Cypress, Playwright, etc.
+- Framework: Not detected in codebase
+- Status: Not implemented
 
 ## Common Patterns
 
 **Async Testing:**
 ```typescript
-// Using userEvent.setup() for async user interactions
+// Pattern 1: Using userEvent (automatically handles async)
+const user = userEvent.setup();
+await user.type(input, 'text');
+
+// Pattern 2: Using waitFor for eventual assertions
+await waitFor(() => {
+  expect(screen.getByText('Success')).toBeInTheDocument();
+});
+
+// Pattern 3: Effect-TS async handling
+const result = await getCards('clerk-123');
+expect(result.error).toBeNull();
+
+// Pattern 4: Promise exit checking
+const exit = await Effect.runPromiseExit(effect);
+expect(Exit.isFailure(exit)).toBe(true);
+```
+
+**Error Testing:**
+```typescript
+// Service error response
+it('returns error on failure', async () => {
+  mockFetch.mockResolvedValueOnce({
+    ok: false,
+    status: 500,
+    text: async () => JSON.stringify({ error: { status: 500 } }),
+  });
+
+  const result = await getCards('clerk-123');
+  expect(result.error).toBeTruthy();
+});
+
+// Effect error handling
+it('converts ApiError to ApiRequestError', async () => {
+  const apiError = new ApiError({
+    message: JSON.stringify({ error: { message: 'Not found' } }),
+    status: 404,
+  });
+
+  const effect = requestEffect(Effect.fail(apiError));
+  const exit = await Effect.runPromiseExit(effect);
+  expect(Exit.isFailure(exit)).toBe(true);
+});
+```
+
+**Form Testing:**
+```typescript
+// Test field formatting with user input
 it('formats card number with dashes as user types', async () => {
   const user = userEvent.setup();
   render(<AddCardModal {...defaultProps} />);
@@ -235,103 +251,39 @@ it('formats card number with dashes as user types', async () => {
   expect(cardNumberInput).toHaveValue('1234-5678-9012-3456');
 });
 
-// Using waitFor for async updates
-it('shows success toast after submission', async () => {
+// Test button enable/disable based on form state
+it('enables Add Card button after filling required fields', async () => {
   const user = userEvent.setup();
-  mockAddCard.mockResolvedValueOnce({ success: true, error: null });
   render(<AddCardModal {...defaultProps} />);
 
-  await user.click(screen.getByRole('button', { name: 'Add Card' }));
-  await waitFor(() => {
-    expect(toast.success).toHaveBeenCalledWith('Card added successfully');
-  });
-});
+  await user.type(screen.getByPlaceholderText('My Cards'), 'John Doe');
+  await user.type(screen.getByPlaceholderText('**** **** **** ****'), '1234567890123456');
 
-// Testing Effect-based services
-it('returns cards on success', async () => {
-  const cardsData = { data: [...], meta: { pagination: {...} } };
-  mockFetch.mockResolvedValueOnce({
-    ok: true,
-    status: 200,
-    json: async () => cardsData,
-  });
-
-  const result = await getCards('clerk-123');
-  expect(result.error).toBeNull();
-  expect(result.cards).toEqual(cardsData);
+  expect(screen.getByRole('button', { name: 'Add Card' })).toBeEnabled();
 });
 ```
 
-**Error Testing:**
-```typescript
-// API error responses
-it('returns error when member not found', async () => {
-  mockFetch.mockResolvedValueOnce({
-    ok: true,
-    status: 200,
-    json: async () => ({ data: [] }),
-  });
+## Jest Setup
 
-  const result = await addCard('clerk-123', cardData);
-  expect(result.success).toBe(false);
-  expect(result.error).toBe('Member not found');
-});
+**Configuration Location:** `jest.config.ts`
 
-// Validation errors in components
-it('shows error message for invalid input', () => {
-  render(<AddCardModal {...defaultProps} />);
+**Key Settings:**
+- Module name mapping: `^@/(.*)$` → `<rootDir>/src/$1`
+- Test match patterns: `**/__tests__/**/*.[jt]s?(x)`, `**/?(*.)+(spec|test).[jt]s?(x)`
+- Setup file: `jest.setup.ts` runs before each test
+- Transform ignore patterns: Allow `@clerk` to be transformed
 
-  const cardNumberInput = screen.getByPlaceholderText('**** **** **** ****');
-  // Type invalid value
-  fireEvent.change(cardNumberInput, { target: { value: 'invalid' } });
-
-  // Error displays via form validation
-  expect(screen.getByText(/invalid card number/i)).toBeInTheDocument();
-});
-
-// Handling errors in hooks
-it('should handle API error in async effect', async () => {
-  const effect = getCardsEffect('user-123').pipe(
-    Effect.catchAll(() => Effect.succeed({ cards: null, error: 'API Error' }))
-  );
-
-  const result = await Effect.runPromise(effect);
-  expect(result.error).toBe('API Error');
-});
-```
-
-**Form Testing Pattern:**
-```typescript
-// Render component with form
-render(<AddCardModal open={true} onOpenChange={jest.fn()} />);
-
-// Fill form fields
-const user = userEvent.setup();
-await user.type(screen.getByPlaceholderText('My Cards'), 'John Doe');
-await user.type(screen.getByPlaceholderText('**** **** **** ****'), '1234567890123456');
-
-// Verify form state changes
-expect(screen.getByRole('button', { name: 'Add Card' })).toBeEnabled();
-
-// Submit form
-await user.click(screen.getByRole('button', { name: 'Add Card' }));
-
-// Verify service was called
-expect(mockAddCard).toHaveBeenCalledWith('user-123', expect.objectContaining({
-  cardNumber: '1234567890123456',
-  nameOnCard: 'John Doe',
-}));
-```
-
-## Setup Files
-
-**jest.setup.ts:**
+**Jest Setup File (`jest.setup.ts`):**
 - Imports `@testing-library/jest-dom` for DOM matchers
-- Polyfills TextEncoder, TextDecoder, ResizeObserver
-- Mocks `getBoundingClientRect()` for JSDOM (returns 800x600 by default)
-- Location: `jest.setup.ts` (root)
-- Loaded via `setupFilesAfterEnv` in jest.config.ts
+- Polyfills TextEncoder/TextDecoder for jsdom environment
+- Provides ResizeObserver polyfill
+- Overrides `getBoundingClientRect()` to return non-zero dimensions (required for Radix UI)
 
----
+## Test Environment Notes
 
-*Testing analysis: 2026-03-18*
+- JSDOM environment for browser-like testing
+- No DOM element scrolling support (mocked as needed)
+- Next.js Route Handlers and navigation mocked via jest.mock()
+- Clerk authentication mocked globally in component tests
+- Toast notifications (Sonner) mocked to prevent side effects
+
