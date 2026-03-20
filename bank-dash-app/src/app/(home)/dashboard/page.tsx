@@ -1,6 +1,5 @@
 // Libraries
 import { Suspense } from 'react';
-import { redirect } from 'next/navigation';
 import Link from 'next/link';
 
 // Components
@@ -18,11 +17,7 @@ import { RecentTransactionsSkeleton } from '@/components/RecentTransactions/Rece
 import { QuickTransferSkeleton } from '@/components/QuickTransfer/QuickTransferSkeleton';
 
 // Utils
-import { getAuth } from '@/lib/auth';
 import { createMetadata } from '@/utils';
-
-// Constants
-import { ROUTES } from '@/constants/route';
 
 export const metadata = createMetadata(
   'Dashboard',
@@ -30,12 +25,6 @@ export const metadata = createMetadata(
 );
 
 const HomePage = async () => {
-  const { userId } = await getAuth();
-
-  if (!userId) {
-    redirect(ROUTES.SIGN_IN);
-  }
-
   return (
     <main>
       <div className="flex flex-col xl:flex-row items-start gap-6 xl:gap-[30px] mb-6">

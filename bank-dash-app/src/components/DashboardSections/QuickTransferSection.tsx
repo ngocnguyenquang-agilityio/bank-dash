@@ -1,6 +1,3 @@
-// Libraries
-import { redirect } from 'next/navigation';
-
 // Components
 import { QuickTransfer } from '@/components/QuickTransfer';
 
@@ -10,17 +7,10 @@ import { getMemberByClerkId } from '@/services/members';
 
 // Utils
 import { runServerEffect } from '@/lib/effect/runtime';
-import { getAuth } from '@/lib/auth';
-
-// Constants
-import { ROUTES } from '@/constants/route';
+import { requireAuth } from '@/lib/auth';
 
 export const QuickTransferSection = async () => {
-  const { userId } = await getAuth();
-
-  if (!userId) {
-    redirect(ROUTES.SIGN_IN);
-  }
+  const userId = await requireAuth();
 
   const [membersResult, currentMemberResult] = await Promise.all([
     runServerEffect(getMembersEffect(userId)),
