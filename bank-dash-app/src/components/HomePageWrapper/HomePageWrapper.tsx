@@ -4,7 +4,7 @@
 import { useRouter } from 'next/navigation';
 
 // Components
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui/Button';
 import { FeatureCard } from '@/components/FeatureCard/FeatureCard';
 import { Icons } from '@/components/Icons/Icons';
 

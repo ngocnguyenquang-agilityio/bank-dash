@@ -4,7 +4,7 @@
 import React from 'react';
 
 // Components
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Icons } from '@/components/Icons/Icons';
 
 // Utils

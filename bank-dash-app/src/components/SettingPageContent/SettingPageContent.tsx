@@ -3,20 +3,17 @@
 // Libraries
 import { useCallback, useRef, useState } from 'react';
 import Image from 'next/image';
-import { format } from 'date-fns';
-import { ChevronDown, Loader2 } from 'lucide-react';
-import { useForm, useWatch } from 'react-hook-form';
+import { Loader2 } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 import { effectTsResolver } from '@hookform/resolvers/effect-ts';
-import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
 // Components
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
+import { Input } from '@/components/ui/Input';
+import { Button } from '@/components/ui/Button';
 import { Icons } from '@/components/Icons/Icons';
+import { DateOfBirthField } from '@/components/DateOfBirthField';
 import { UnsavedChangesModal } from '@/components/UnsavedChangesModal/UnsavedChangesModal';
 
 // Services
@@ -36,7 +33,6 @@ interface SettingPageContentProps {
 }
 
 export const SettingPageContent = ({ initialData }: SettingPageContentProps) => {
-  const router = useRouter();
   const memberInitials = getInitials(initialData?.name || 'User');
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -51,7 +47,7 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
     reset,
     control,
     formState: { errors, isDirty, dirtyFields },
-  } = useForm({
+  } = useForm<MemberProfile>({
     resolver: effectTsResolver(MemberProfileSchema),
     defaultValues: {
       name: initialData?.name || '',
@@ -65,8 +61,6 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
       country: initialData?.country || '',
     },
   });
-
-  const dob = useWatch({ control, name: 'dob' });
 
   const handleFileSelect = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,7 +152,6 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     await handleSubmit(onSubmit)(e);
-    router.refresh();
   };
 
   return (
@@ -302,31 +295,7 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
                 <label htmlFor="dob" className="block text-base text-black">
                   Date of Birth
                 </label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className={`w-full h-[50px] rounded-[15px] border-neutral-20 bg-white px-5 text-[15px] justify-between text-left font-normal ${dob ? 'text-tx-primary' : 'text-tx-secondary'}`}
-                    >
-                      {dob ? format(new Date(dob), 'PPP') : 'Select date'}
-                      <ChevronDown className="h-5 w-5 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={dob ? new Date(dob) : undefined}
-                      onSelect={(date) =>
-                        setValue('dob', date ? format(date, 'yyyy-MM-dd') : '', {
-                          shouldDirty: true,
-                        })
-                      }
-                      startMonth={new Date(1900, 0)}
-                      endMonth={new Date()}
-                      disabled={{ after: new Date() }}
-                    />
-                  </PopoverContent>
-                </Popover>
+                <DateOfBirthField control={control} setValue={setValue} />
               </div>
 
               <div className="space-y-[11px]">

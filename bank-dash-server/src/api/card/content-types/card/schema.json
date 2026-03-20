@@ -26,8 +26,7 @@
     },
     "number": {
       "type": "string",
-      "required": true,
-      "regex": "^[0-9]{16}$"
+      "required": true
     },
     "isPhysical": {
       "type": "boolean",

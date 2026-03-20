@@ -1,182 +1,177 @@
 # External Integrations
 
-**Analysis Date:** 2026-03-18
+**Analysis Date:** 2026-03-20
 
 ## APIs & External Services
 
+**Strapi Headless CMS:**
+- Purpose: Serves as backend API for all data (cards, transactions, members, transfers)
+- Endpoint: `NEXT_PUBLIC_API_URL` (defaults to `http://localhost:1337/api`)
+- Client: Custom `ApiClient` in `src/services/api.ts` using native `fetch` API
+- Protocol: REST JSON over HTTP
+
 **Clerk Authentication:**
-- Service: Clerk (https://clerk.com)
-- What it's used for: User authentication, session management, user data storage
-- SDK/Client: @clerk/nextjs 6.36.10
-- Auth: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY, CLERK_SECRET_KEY, CLERK_WEBHOOK_SIGNING_SECRET
-- Implementation: `<ClerkProvider>` wraps root layout (`src/app/layout.tsx`), auth enforced via `getAuth()` in layout redirects
-- Webhook: POST `src/app/api/webhooks/route.ts` listens for `user.created` event
+- Service: Clerk.dev identity and access management
+- Purpose: User signup, sign-in, session management, user profiles
+- SDK: @clerk/nextjs 6.36.10
+- Configuration:
+  - Public key: `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+  - Secret key: `CLERK_SECRET_KEY`
+  - Webhook signing: `CLERK_WEBHOOK_SIGNING_SECRET`
+- Usage locations:
+  - Layout: `src/app/layout.tsx` (ClerkProvider wrapper)
+  - Auth hooks: `src/lib/auth.ts` (getAuth() caching)
+  - Sign-in page: `src/components/auth/SignInPage/SignInPageWrapper.tsx`
+  - Sign-up page: `src/components/auth/SignUpPage/SignUpPageWrapper.tsx`
+  - User profile: `src/components/AvatarProfile/AvatarProfile.tsx` (useClerk hook)
 
 ## Data Storage
 
-**Primary Database:**
-- Type/Provider: SQLite (default) or MySQL/PostgreSQL configurable
-- Location: `bank-dash-server/` (Strapi backend)
-- Connection: Via `DATABASE_CLIENT`, `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`
-- Config: `bank-dash-server/config/database.ts`
-- Client: Knex.js (via Strapi)
-- Driver: better-sqlite3 12.4.1 (for SQLite), mysql2 (for MySQL), pg (for PostgreSQL)
+**Databases:**
+- SQLite (development default)
+  - Connection: `DATABASE_FILENAME=.tmp/data.db`
+  - Driver: better-sqlite3 12.4.1
+  - File: `bank-dash-server/.tmp/data.db`
+- PostgreSQL (production option)
+  - Connection: `DATABASE_URL` or `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`
+  - Pool: min 2, max 10 connections
+  - SSL support configurable via `DATABASE_SSL*` env vars
+- MySQL (production option)
+  - Connection: `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`
+  - Pool: min 2, max 10 connections
+  - SSL support configurable
 
-**Content Types (Strapi):**
-- `card` - Bank card records
-- `member` - User membership records (created via Clerk webhook)
-- `transaction` - Financial transaction records
-- `transfer` - Money transfer operations (uses Knex atomic transactions)
+**ORM/Query Layer:**
+- Strapi's built-in ORM (Bookshelf-based query builder)
+- No external ORM library (managed by Strapi internally)
 
 **File Storage:**
-- Type: Local filesystem uploads (Strapi default)
-- Location: `bank-dash-server/public/uploads/`
-- Configuration: Strapi file upload plugin
-- Custom middleware: `upload-eperm-handler.ts` (Windows EPERM error fix)
-- Frontend image access: Next.js Image component with remote patterns configured for localhost:1337 and HTTPS domains
+- Local filesystem only
+  - Upload directory: Strapi default uploads via `/uploads/**` paths
+  - Next.js image remotePatterns configured for:
+    - Local: `http://localhost:1337/uploads/**` and `http://127.0.0.1:1337/uploads/**`
+    - Remote: HTTPS any domain via `https://**`
+  - Windows EPERM fix: Async cleanup handler in `bank-dash-server/src/index.ts`
 
 **Caching:**
-- Type: Next.js built-in Data Cache + On-Demand ISR (Incremental Static Regeneration)
-- Strategy: Cache tags + revalidation times
-- Tags: `CACHE_TAGS.CARDS`, `CACHE_TAGS.TRANSACTIONS`, `CACHE_TAGS.MEMBERS`
-- Revalidation times:
-  - Cards: 5 minutes
-  - Transactions: 1 minute
-  - Members: 10 minutes
-- Implementation: Via `next` option in ApiClient requests (`src/services/api.ts`)
-- Invalidation: Manual revalidation via `revalidateTag()` in server actions
+- None (no Redis, Memcached, etc.)
+- Next.js App Router stale-time: 180s for dynamic routes (experimental)
 
 ## Authentication & Identity
 
 **Auth Provider:**
-- Service: Clerk
-- Implementation: OAuth/JWT-based authentication
-- Session management: Clerk sessions stored in cookies
-- User data flow:
-  1. User signs up via Clerk UI (`/sign-up`)
-  2. Clerk webhook triggers `POST /api/webhooks` with `user.created` event
-  3. Webhook handler (`src/app/api/webhooks/route.ts`) creates Strapi member record with Clerk user ID
-  4. Member linked by `clerkId` field in Strapi database
-- Protected routes: Implemented via layout-level `getAuth()` checks in `src/app/(home)/layout.tsx`
-- Public routes: `/sign-in`, `/sign-up`, `/api/webhooks`
+- Clerk.dev (third-party SaaS)
 
-## API Communication
+**Implementation Approach:**
+- Frontend: Clerk UI components (SignIn, SignUp) via `@clerk/nextjs`
+- Backend: Webhook-based user sync
+  - Webhook endpoint: `POST /api/webhooks` in `src/app/api/webhooks/route.ts`
+  - Trigger: `user.created` event from Clerk
+  - Action: Creates corresponding member record in Strapi
+  - Data sync: Clerk user ID → `clerkId` field in members collection
 
-**Frontend → Backend:**
-- Base URL: `NEXT_PUBLIC_API_URL` (default: http://localhost:1337/api)
-- Client: Custom `ApiClient` singleton (`src/services/api.ts`)
-- Method: Native `fetch` API wrapped in Effect-ts
-- Endpoints used:
-  - `GET /cards?populate=*&filters[member][clerkId][$eq]={userClerkId}` - Get user cards
-  - `GET /transactions?populate=*&filters[member][clerkId][$eq]={userClerkId}` - Get transactions
-  - `GET /members/{id}` - Get member profile
-  - `POST /members` - Create new member (via webhook)
-  - `POST /transfers` - Create transfer (server action)
-  - `POST /cards` - Create card
+**Session Management:**
+- Handled by Clerk (JWT tokens in cookies)
+- Deduplication: `getAuth()` cached per request via React's `cache()` in `src/lib/auth.ts`
 
-**Error Handling:**
-- ApiError: HTTP errors with status codes
-- NetworkError: Network connectivity failures
-- ApiRequestError: High-level error wrapper with message + details
-- Implementation: `src/services/api.effect.ts` (requestEffect), `src/lib/errors/handleApiError.ts`
+**User Data Linkage:**
+- Clerk user ID (`id`) stored in `members.clerkId` field
+- Used to associate Clerk sessions with bank member records in Strapi
 
 ## Monitoring & Observability
 
 **Error Tracking:**
-- Type: Console logging (native implementation)
-- Implementation: Console.error() in Effect pipelines and error handlers
-- No external error tracking service (Sentry, LogRocket, etc.)
+- None detected (no Sentry, LogRocket, etc.)
 
 **Logs:**
-- Approach: Browser console logs (development) and server console logs (both frontend and backend)
-- Implementation:
-  - Frontend: `console.log`, `console.error` in components and services
-  - Backend: Strapi built-in logging
-- Tracing: OpenTelemetry spans via Effect's `withSpan()` operator
-  - Implementation: `src/lib/effect/operators.ts` provides `withSpan(name, attributes)` wrapper
-  - Example: `Effect.withSpan('getCardsEffect', { attributes: { userClerkId } })`
-- DevTools: Effect DevTools WebSocket at ws://localhost:34437 when `EFFECT_DEVTOOLS=true` and `NODE_ENV=development`
+- Console output (console.log, console.warn, console.error)
+- Error logging in webhook handler: `bank-dash-app/src/app/api/webhooks/route.ts`
+- Strapi logs to stdout by default
+- Windows file cleanup warnings: Logged in `bank-dash-server/src/index.ts`
+
+**Debugging:**
+- Effect-TS DevTools support (optional via `EFFECT_DEVTOOLS=true`)
+  - WebSocket connection to `EFFECT_DEVTOOLS_URL` (default: `ws://localhost:34437`)
+  - Enabled only in development mode
 
 ## CI/CD & Deployment
 
 **Hosting:**
-- Frontend: No external hosting configured (development mode only)
-- Backend: No external hosting configured (development mode only)
-- Recommended: Vercel (frontend), Heroku/Railway/Render (backend)
+- Not specified in codebase (flexible deployment)
+- Next.js frontend: Suitable for Vercel, Docker, or Node.js hosting
+- Strapi backend: Requires Node.js 20+ host (Docker, Railway, custom VPS, etc.)
 
 **CI Pipeline:**
-- Type: None detected (no GitHub Actions, GitLab CI, or CircleCI configured)
-- Pre-commit hooks: Husky + commitlint
-  - Enforces conventional commits (feat:, fix:, chore:, etc.)
-  - Runs ESLint + Prettier on staged files via lint-staged
+- None detected (no GitHub Actions, GitLab CI, Jenkins config)
+
+**Build & Deploy Scripts:**
+- Frontend: `npm run build` (Next.js production build)
+- Backend: `npm run build` (Strapi admin build)
+- Start commands in scripts section of respective `package.json` files
+
+## Environment Configuration
+
+**Required env vars (Frontend):**
+- `NEXT_PUBLIC_API_URL` - Strapi API endpoint (e.g., `http://localhost:1337/api`)
+- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` - Clerk public key
+- `CLERK_SECRET_KEY` - Clerk secret (backend only)
+- `CLERK_WEBHOOK_SIGNING_SECRET` - Webhook verification secret
+- `NEXT_PUBLIC_CLERK_SIGN_IN_URL` - Redirect URL (e.g., `/sign-in`)
+- `NEXT_PUBLIC_CLERK_SIGN_UP_URL` - Redirect URL (e.g., `/sign-up`)
+- `NEXT_PUBLIC_CLERK_SIGN_UP_FALLBACK_REDIRECT_URL` - Fallback redirect
+- `NEXT_PUBLIC_CLERK_SIGN_UP_FORCE_REDIRECT_URL` - Force redirect (e.g., `/dashboard`)
+
+**Required env vars (Backend/Strapi):**
+- `HOST` - Server bind address (default: `0.0.0.0`)
+- `PORT` - Server port (default: `1337`)
+- `APP_KEYS` - Comma-separated CSRF token generation keys
+- `API_TOKEN_SALT` - API token salt
+- `ADMIN_JWT_SECRET` - Admin panel JWT secret
+- `TRANSFER_TOKEN_SALT` - Transfer operation token salt
+- `JWT_SECRET` - General JWT secret
+- `ENCRYPTION_KEY` - Data encryption key
+- `DATABASE_CLIENT` - Database driver (default: `sqlite`)
+- `DATABASE_FILENAME` - SQLite file path (default: `.tmp/data.db`)
+- Database credentials (if using postgres/mysql): `DATABASE_HOST`, `DATABASE_PORT`, `DATABASE_NAME`, `DATABASE_USERNAME`, `DATABASE_PASSWORD`
+
+**Secrets Location:**
+- `.env` and `.env.local` files (git-ignored)
+- Secrets should be managed via environment variables in CI/CD systems
+- No secrets manager integration detected (Vault, AWS Secrets Manager, etc.)
 
 ## Webhooks & Callbacks
 
 **Incoming Webhooks:**
-- Clerk User Created Webhook
-  - Endpoint: `POST /api/webhooks/route.ts`
-  - Trigger: `user.created` event from Clerk
-  - Payload: WebhookEvent with user data (id, email_addresses, first_name, last_name, username)
-  - Handler: Creates Strapi member record linked to clerkId
-  - Signature verification: Clerk webhook signing secret validation (via @clerk/nextjs)
+- Clerk webhook: `POST /api/webhooks` (`bank-dash-app/src/app/api/webhooks/route.ts`)
+  - Event: `user.created` from Clerk
+  - Signature verification: Via `CLERK_WEBHOOK_SIGNING_SECRET`
+  - Payload handling: Effect-TS based with Zod schema validation
+  - Action: POST to Strapi `POST /api/members` to create member record
 
 **Outgoing Webhooks:**
-- Type: None detected (frontend doesn't make outbound webhook calls)
+- None detected (no outgoing third-party integrations)
 
-## Service Configuration
+## API Client Architecture
 
-**Strapi Plugins Enabled:**
-- @strapi/plugin-users-permissions - User authentication and role management
-- @strapi/plugin-cloud - Cloud deployment and hosting features
-- strapi-health-plugin - Health check monitoring
-- Custom plugins in `bank-dash-server/config/plugins.ts`
+**Frontend HTTP Layer:**
+- Location: `src/services/api.ts` - ApiClient singleton class
+- Methods: `get()`, `post()`, `postFormData()`, `put()`, `delete()`
+- Error handling: Effect-TS typed errors (`ApiError`, `NetworkError`)
+- Timeout support: AbortController-based via `withAbortController()` operator
+- Request composition: Base URL + path-based routing
+- Deduplication: Singleton ApiClient pattern
 
-**Custom Middlewares (Strapi):**
-- cache-control.ts - HTTP cache control headers
-- upload-eperm-handler.ts - Windows EPERM error handling for file uploads
+**Effect-TS Integration:**
+- Location: `src/lib/effect/runtime.ts` - Effect runtime setup
+- DevTools: Optional WebSocket-based debugging
+- Operations: `src/services/*.effect.ts` files expose Effect operations for React components
+- Error handling: Discriminated union types for API/Network errors
 
-**API Authentication:**
-- Strapi API tokens: Generated in Strapi admin panel
-- JWT: Admin JWT secret in `ADMIN_JWT_SECRET`
-- Public routes: Strapi content type permissions allow public read access (default)
-
-## Data Exchange Formats
-
-**API Response Format:**
-- JSON (application/json)
-- Pagination: `pagination[page]`, `pagination[pageSize]` query params
-- Population: `populate=*` for eager loading related records
-- Filtering: `filters[field][$eq]=value` for query conditions
-- Sorting: `sort=field:desc` or `sort=field:asc`
-
-**Form Validation:**
-- Frontend: react-hook-form + Zod (for forms)
-- Server: Effect Schema validation (for API responses)
-- No form submission webhooks
-
-## Rate Limiting
-
-**Rate Limits:**
-- Type: Not detected (no rate limiting configured)
-- Recommended: Configure Strapi rate limiting middleware for production
-
-## Third-Party Integrations
-
-**Chart Library (Recharts):**
-- Used in: `BalanceHistory.tsx`, `WeeklyActivity.tsx`
-- Purpose: Display financial data visualizations (area charts, bar charts)
-- No external API calls (client-side only)
-
-**Icon Library (Lucide React):**
-- Used throughout components for UI icons
-- No external API calls (SVG icons bundled)
-
-**Theme Management (next-themes):**
-- Used in: `src/components/ui/sonner.tsx`
-- Purpose: Dark/light mode theme switching
-- Storage: localStorage (next-themes default)
-- No external API calls
+**Service Layer Pattern:**
+- `*.ts` - Raw fetch/network operations via ApiClient
+- `*.effect.ts` - Reusable Effect operations combining multiple network calls
+- Example: `src/services/cards.ts` (raw API calls) + `src/services/cards.effect.ts` (composed operations)
 
 ---
 
-*Integration audit: 2026-03-18*
+*Integration audit: 2026-03-20*

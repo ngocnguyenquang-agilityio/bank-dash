@@ -90,6 +90,35 @@ describe('AddCardModal', () => {
     expect(cardNumberInput).toHaveValue('1234-5678-9012-3456');
   });
 
+  it('shows validation error when card number is incomplete', async () => {
+    const user = userEvent.setup();
+    render(<AddCardModal {...defaultProps} />);
+
+    // Type only 8 digits — formatter produces "1234-5678"
+    await user.type(screen.getByPlaceholderText('**** **** **** ****'), '12345678');
+    await user.type(screen.getByPlaceholderText('My Cards'), 'John Doe');
+    // Submit the form
+    await user.click(screen.getByRole('button', { name: 'Add Card' }));
+
+    expect(await screen.findByText('Card number must be 16 digits')).toBeInTheDocument();
+    // Verify no server call was made — validation is client-side only
+    expect(mockAddCard).not.toHaveBeenCalled();
+  });
+
+  it('does not show card number error when all 16 digits entered', async () => {
+    const user = userEvent.setup();
+    render(<AddCardModal {...defaultProps} />);
+
+    await user.type(screen.getByPlaceholderText('**** **** **** ****'), '1234567890123456');
+    await user.type(screen.getByPlaceholderText('My Cards'), 'John Doe');
+    await user.click(screen.getByRole('button', { name: 'Add Card' }));
+
+    // Wait briefly for any validation to trigger
+    await waitFor(() => {
+      expect(screen.queryByText('Card number must be 16 digits')).not.toBeInTheDocument();
+    });
+  });
+
   it('formats balance with commas as user types', async () => {
     const user = userEvent.setup();
     render(<AddCardModal {...defaultProps} />);

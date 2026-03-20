@@ -4,7 +4,7 @@
 import { format, parseISO } from 'date-fns';
 
 // Components
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/ui/Card';
 import { Icons } from '@/components/Icons/Icons';
 
 // Utils
