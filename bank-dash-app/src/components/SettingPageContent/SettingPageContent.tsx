@@ -16,6 +16,9 @@ import { Icons } from '@/components/Icons/Icons';
 import { DateOfBirthField } from '@/components/DateOfBirthField';
 import { UnsavedChangesModal } from '@/components/UnsavedChangesModal/UnsavedChangesModal';
 
+// Stores
+import { useMemberStore } from '@/stores/member';
+
 // Services
 import { updateMember, uploadAvatar } from '@/services/members';
 
@@ -33,6 +36,7 @@ interface SettingPageContentProps {
 }
 
 export const SettingPageContent = ({ initialData }: SettingPageContentProps) => {
+  const updateMemberData = useMemberStore((s) => s.updateMemberData);
   const memberInitials = getInitials(initialData?.name || 'User');
   const [showUnsavedModal, setShowUnsavedModal] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -128,11 +132,19 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
       const hasChangedFields = Object.values(dirtyFields).some(Boolean);
 
       if (hasChangedFields || uploadedPhotoId) {
-        const { success, error } = await updateMember(initialData.documentId, sanitizedData);
+        const {
+          success,
+          member: updatedMember,
+          error,
+        } = await updateMember(initialData.documentId, sanitizedData);
 
         if (!success) {
           toast.error(error || 'Failed to update profile');
           return;
+        }
+
+        if (updatedMember) {
+          updateMemberData(updatedMember);
         }
       }
 
@@ -186,12 +198,14 @@ export const SettingPageContent = ({ initialData }: SettingPageContentProps) => 
             {/* Profile Avatar */}
             <div className="flex justify-center lg:justify-start shrink-0">
               <div className="relative w-[130px] h-[130px]">
-                <div className="w-[130px] h-[130px] rounded-full overflow-hidden bg-neutral-20">
+                <div className="relative w-[130px] h-[130px] rounded-full overflow-hidden bg-neutral-20">
                   {previewUrl ? (
                     <Image
                       src={previewUrl}
                       alt="Profile preview"
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
+                      unoptimized
                     />
                   ) : getStrapiMedia(initialData?.photo?.url) ? (
                     <Image

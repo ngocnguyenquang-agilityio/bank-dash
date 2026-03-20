@@ -65,6 +65,7 @@ export const getMembers = async (currentClerkId: string): Promise<GetMembersResu
 
 interface UpdateMemberResult {
   success: boolean;
+  member: MembersResponse['data'][0] | null;
   error: string | null;
 }
 
@@ -77,20 +78,21 @@ export const updateMember = async (
   documentId: string,
   data: UpdateMemberData,
 ): Promise<UpdateMemberResult> => {
-  const url = `/members/${documentId}`;
+  const url = `/members/${documentId}?populate=*`;
 
   const effect = requestEffect(
     apiClient.put<{ data: MembersResponse['data'][0] }>(url, {
       body: { data },
     }),
   ).pipe(
-    Effect.map(() => {
+    Effect.map((response) => {
       updateTag(CACHE_TAGS.MEMBERS);
-      return { success: true, error: null };
+      return { success: true, member: response.data, error: null };
     }),
     Effect.catchAll((error) =>
       Effect.succeed({
         success: false,
+        member: null,
         error: error.message || MEMBER_ERRORS.UPDATE_MEMBER_FAILED,
       }),
     ),
