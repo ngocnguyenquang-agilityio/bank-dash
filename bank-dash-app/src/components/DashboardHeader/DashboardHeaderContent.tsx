@@ -5,8 +5,8 @@ import { useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-// Utils
-import { getStrapiMedia } from '@/utils';
+// Stores
+import { useMemberStore } from '@/stores/member';
 
 // Icons
 import { Icons } from '@/components/Icons';
@@ -16,12 +16,6 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { AvatarProfile } from '@/components/AvatarProfile';
 
-interface DashboardHeaderContentProps {
-  memberName: string;
-  memberInitials: string;
-  memberImageUrl: string;
-}
-
 const toTitleCase = (segment: string) => {
   return segment
     .replace(/[-_]+/g, ' ')
@@ -30,11 +24,10 @@ const toTitleCase = (segment: string) => {
     .join(' ');
 };
 
-export const DashboardHeaderContent = ({
-  memberName,
-  memberInitials,
-  memberImageUrl,
-}: DashboardHeaderContentProps) => {
+export const DashboardHeaderContent = () => {
+  const memberName = useMemberStore((s) => s.memberName);
+  const memberInitials = useMemberStore((s) => s.memberInitials);
+  const memberImageUrl = useMemberStore((s) => s.memberImageUrl);
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -93,11 +86,7 @@ export const DashboardHeaderContent = ({
             <Icons.Notification className="w-5 h-5 md:w-6 md:h-6" />
           </Button>
           {/* Profile Avatar with Dropdown */}
-          <AvatarProfile
-            imageUrl={getStrapiMedia(memberImageUrl) ?? ''}
-            fallback={memberInitials}
-            alt={memberName}
-          />
+          <AvatarProfile imageUrl={memberImageUrl} fallback={memberInitials} alt={memberName} />
         </div>
       </div>
     </header>
