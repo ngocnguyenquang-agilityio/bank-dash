@@ -1,9 +1,8 @@
 // Libraries
 import { type ReactNode } from 'react';
-import { redirect } from 'next/navigation';
 
 // Utils
-import { getAuth } from '@/lib/auth';
+import { requireAuth } from '@/lib/auth';
 
 // Services
 import { getMemberByClerkId } from '@/services/members';
@@ -13,19 +12,12 @@ import { Sidebar } from '@/components/Sidebar';
 import { DashboardHeaderContent } from '@/components/DashboardHeader';
 import { MemberStoreHydrator } from '@/stores/member';
 
-// Constants
-import { ROUTES } from '@/constants/route';
-
 type HomeLayoutProps = {
   children: ReactNode;
 };
 
 const HomeLayout = async ({ children }: HomeLayoutProps) => {
-  const { userId } = await getAuth();
-
-  if (!userId) {
-    redirect(ROUTES.SIGN_IN);
-  }
+  const userId = await requireAuth();
 
   const { member } = await getMemberByClerkId(userId);
 

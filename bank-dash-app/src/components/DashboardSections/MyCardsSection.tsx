@@ -1,6 +1,5 @@
 // Libraries
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
 
 // Components
 import { CreditCard } from '@/components/CreditCard';
@@ -11,17 +10,10 @@ import { getCardsEffect } from '@/services/cards.effect';
 
 // Utils
 import { runServerEffect } from '@/lib/effect/runtime';
-import { getAuth } from '@/lib/auth';
-
-// Constants
-import { ROUTES } from '@/constants/route';
+import { requireAuth } from '@/lib/auth';
 
 export const MyCardsSection = async () => {
-  const { userId } = await getAuth();
-
-  if (!userId) {
-    redirect(ROUTES.SIGN_IN);
-  }
+  const userId = await requireAuth();
 
   const { cards, error } = await runServerEffect(getCardsEffect(userId, 1, 2));
 

@@ -1,6 +1,3 @@
-// Libraries
-import { redirect } from 'next/navigation';
-
 // Components
 import { RecentTransactions } from '@/components/RecentTransactions';
 
@@ -9,17 +6,10 @@ import { getRecentTransactionsEffect } from '@/services/transactions.effect';
 
 // Utils
 import { runServerEffect } from '@/lib/effect/runtime';
-import { getAuth } from '@/lib/auth';
-
-// Constants
-import { ROUTES } from '@/constants/route';
+import { requireAuth } from '@/lib/auth';
 
 export const RecentTransactionsSection = async () => {
-  const { userId } = await getAuth();
-
-  if (!userId) {
-    redirect(ROUTES.SIGN_IN);
-  }
+  const userId = await requireAuth();
 
   const { transactions, error } = await runServerEffect(getRecentTransactionsEffect(userId));
 
